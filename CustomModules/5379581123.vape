@@ -449,7 +449,7 @@ runcode(function()
 						local killer = players[tab[1].Value.Name]
 						local killed = players[tab[2].Parent.Name]
 						if killer == lplr and tab[4] > 500 then
-							game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("L "..killed.Name, "All")
+							game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("sorry i killed you "..killed.Name.." pls don't be angry :(", "All")
 						end
 					end)
 				end)
