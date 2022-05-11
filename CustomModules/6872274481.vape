@@ -6261,9 +6261,9 @@ runcode(function()
 						plr = players:GetPlayerFromCharacter(p7.entityInstance)
 					end
 					if plr and bedwars["GamePlayerUtil"].getGamePlayer(plr):isSpectator() and AutoToxicFinalKill["Enabled"] then
-						local custommsg = #AutoToxicPhrases2["ObjectList"] > 0 and AutoToxicPhrases2["ObjectList"][math.random(1, #AutoToxicPhrases2["ObjectList"])] or "sorry for killing you <name> my guy | vxpe.xyz"
+						local custommsg = #AutoToxicPhrases2["ObjectList"] > 0 and AutoToxicPhrases2["ObjectList"][math.random(1, #AutoToxicPhrases2["ObjectList"])] or "sorry for ending you <name> my guy | vxpe.xyz"
 						if custommsg == lastsaid then
-							custommsg = #AutoToxicPhrases2["ObjectList"] > 0 and AutoToxicPhrases2["ObjectList"][math.random(1, #AutoToxicPhrases2["ObjectList"])] or "sorry for killing you <name> my guy | vxpe.xyz"
+							custommsg = #AutoToxicPhrases2["ObjectList"] > 0 and AutoToxicPhrases2["ObjectList"][math.random(1, #AutoToxicPhrases2["ObjectList"])] or "sorry for ending you <name> my guy | vxpe.xyz"
 						else
 							lastsaid = custommsg
 						end
