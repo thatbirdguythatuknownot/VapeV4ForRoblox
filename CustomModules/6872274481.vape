@@ -5909,7 +5909,11 @@ chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvent
 		if custommsg then
 			custommsg = custommsg:gsub("<name>", (plr.DisplayName or plr.Name))
 		end
-		local msg = custommsg or "Sorry "..(plr.DisplayName or plr.Name).." but I really wanna do this for the win :( | vxpe.xyz"
+		local msg
+		if lplr:GetAttribute("Team") ~= "Spectators" then
+			msg = custommsg or "Sorry "..(plr.DisplayName or plr.Name).." but I really wanna do this for the win :( | vxpe.xyz"
+		else
+			msg = custommsrg or "I tried to do it "..(plr.DisplayName or plr.Name).." but failed as you can see :( | vxpe.xyz"
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 		table.insert(ignoredplayers, plr.UserId)
 	end
@@ -6198,7 +6202,7 @@ runcode(function()
 			end
 			if AutoToxic["Enabled"] then
 				if AutoToxicBedDestroyed["Enabled"] and p14.brokenBedTeam.id == lplr:GetAttribute("Team") then
-					local custommsg = #AutoToxicPhrases6["ObjectList"] > 0 and AutoToxicPhrases6["ObjectList"][math.random(1, #AutoToxicPhrases6["ObjectList"])] or "Oh nice, you broke my bed <name> | vxpe.xyz"
+					local custommsg = #AutoToxicPhrases6["ObjectList"] > 0 and AutoToxicPhrases6["ObjectList"][math.random(1, #AutoToxicPhrases6["ObjectList"])] or "Oh nice, you broke my bed <name> :) | vxpe.xyz"
 					if custommsg then
 						custommsg = custommsg:gsub("<name>", (p14.player.DisplayName or p14.player.Name))
 					end
@@ -6227,7 +6231,7 @@ runcode(function()
 				if bedwars["GamePlayerUtil"].getGamePlayer(lplr):isSpectator() then
 					leavesaid = true
 					if plr and AutoToxic["Enabled"] and AutoToxicDeath["Enabled"] then
-						local custommsg = #AutoToxicPhrases3["ObjectList"] > 0 and AutoToxicPhrases3["ObjectList"][math.random(1, #AutoToxicPhrases3["ObjectList"])] or "Wow, you got pure skill <name> | vxpe.xyz"
+						local custommsg = #AutoToxicPhrases3["ObjectList"] > 0 and AutoToxicPhrases3["ObjectList"][math.random(1, #AutoToxicPhrases3["ObjectList"])] or "Wow, you got pure skill <name>, gg :) | vxpe.xyz"
 						if custommsg then
 							custommsg = custommsg:gsub("<name>", (plr.DisplayName or plr.Name))
 						end
