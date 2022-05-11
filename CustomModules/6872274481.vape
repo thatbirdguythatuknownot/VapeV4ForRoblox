@@ -5910,10 +5910,11 @@ chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvent
 			custommsg = custommsg:gsub("<name>", (plr.DisplayName or plr.Name))
 		end
 		local msg
-		--if lplr:GetAttribute("Team") ~= "Spectators" then
+		if lplr:GetAttribute("Team") ~= "Spectators" then
 			msg = custommsg or "Sorry "..(plr.DisplayName or plr.Name).." but I really wanna do this for the win :( | vxpe.xyz"
-		--else
-		--	msg = custommsrg or "I tried to do it "..(plr.DisplayName or plr.Name).." but failed as you can see :( | vxpe.xyz"
+		else
+			msg = custommsg or "I tried to do it "..(plr.DisplayName or plr.Name).." but failed as you can see :( | vxpe.xyz"
+		end
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 		table.insert(ignoredplayers, plr.UserId)
 	end
