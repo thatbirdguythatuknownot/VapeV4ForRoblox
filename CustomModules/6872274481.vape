@@ -5910,13 +5910,21 @@ chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvent
 			custommsg = custommsg:gsub("<name>", (plr.DisplayName or plr.Name))
 		end
 		local msg
-		if lplr:GetAttribute("Team") ~= "Spectators" then
+		if lplr.Team.Name ~= "Spectators" then
 			msg = custommsg or "ik "..(plr.DisplayName or plr.Name).." | vxpe.xyz"
 		else
 			msg = custommsg or "ok "..(plr.DisplayName or plr.Name).." | vxpe.xyz"
 		end
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 		table.insert(ignoredplayers, plr.UserId)
+	elseif (AutoToxicTeam["Enabled"] == false and lplr:GetAttribute("Team") ~= plr:GetAttribute("Team") or AutoToxicTeam["Enabled"]) and (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and (tab["Message"]:lower() == "l" or tab["Message"]:lower():find("ez") or tab["Message"]:lower():find("bozo"))) and plr ~= lplr and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
+		local msg
+		if lplr.Team.Name ~= "Spectators" then
+			msg = "ok and? "..(plr.DisplayName or plr.Name).."? | vxpe.xyz"
+		else
+			msg = "can't make a no life mad "..(plr.DisplayName or plr.Name).." | vxpe.xyz"
+		end
+		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 	end
 end)
 
