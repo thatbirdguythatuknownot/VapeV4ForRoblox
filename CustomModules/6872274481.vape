@@ -5911,9 +5911,9 @@ chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvent
 		end
 		local msg
 		if lplr:GetAttribute("Team") ~= "Spectators" then
-			msg = custommsg or "Sorry "..(plr.DisplayName or plr.Name).." but I really wanna do this for the win :( | vxpe.xyz"
+			msg = custommsg or "ik "..(plr.DisplayName or plr.Name).." | vxpe.xyz"
 		else
-			msg = custommsg or "I tried to do it "..(plr.DisplayName or plr.Name).." but failed as you can see :( | vxpe.xyz"
+			msg = custommsg or "ok "..(plr.DisplayName or plr.Name).." | vxpe.xyz"
 		end
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 		table.insert(ignoredplayers, plr.UserId)
@@ -6203,13 +6203,13 @@ runcode(function()
 			end
 			if AutoToxic["Enabled"] then
 				if AutoToxicBedDestroyed["Enabled"] and p14.brokenBedTeam.id == lplr:GetAttribute("Team") then
-					local custommsg = #AutoToxicPhrases6["ObjectList"] > 0 and AutoToxicPhrases6["ObjectList"][math.random(1, #AutoToxicPhrases6["ObjectList"])] or "Oh nice, you broke my bed <name> :) | vxpe.xyz"
+					local custommsg = #AutoToxicPhrases6["ObjectList"] > 0 and AutoToxicPhrases6["ObjectList"][math.random(1, #AutoToxicPhrases6["ObjectList"])] or "oh <name> you broke my bed :) | vxpe.xyz"
 					if custommsg then
 						custommsg = custommsg:gsub("<name>", (p14.player.DisplayName or p14.player.Name))
 					end
 					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(custommsg, "All")
 				elseif AutoToxicBedBreak["Enabled"] and p14.player.UserId == lplr.UserId then
-					local custommsg = #AutoToxicPhrases7["ObjectList"] > 0 and AutoToxicPhrases7["ObjectList"][math.random(1, #AutoToxicPhrases7["ObjectList"])] or "sorry for breaking your bed <teamname> team | vxpe.xyz"
+					local custommsg = #AutoToxicPhrases7["ObjectList"] > 0 and AutoToxicPhrases7["ObjectList"][math.random(1, #AutoToxicPhrases7["ObjectList"])] or "just broke your bed <teamname> team don't be mad :) | vxpe.xyz"
 					if custommsg then
 						local team = bedwars["QueueMeta"][bedwars["ClientStoreHandler"]:getState().Game.queueType or "bedwars_test"].teams[tonumber(p14.brokenBedTeam.id)]
 						local teamname = team and team.displayName:lower() or "white"
@@ -6232,7 +6232,7 @@ runcode(function()
 				if bedwars["GamePlayerUtil"].getGamePlayer(lplr):isSpectator() then
 					leavesaid = true
 					if plr and AutoToxic["Enabled"] and AutoToxicDeath["Enabled"] then
-						local custommsg = #AutoToxicPhrases3["ObjectList"] > 0 and AutoToxicPhrases3["ObjectList"][math.random(1, #AutoToxicPhrases3["ObjectList"])] or "Wow, you got pure skill <name>, gg :) | vxpe.xyz"
+						local custommsg = #AutoToxicPhrases3["ObjectList"] > 0 and AutoToxicPhrases3["ObjectList"][math.random(1, #AutoToxicPhrases3["ObjectList"])] or "you got pure skill <name>, gg :) | vxpe.xyz"
 						if custommsg then
 							custommsg = custommsg:gsub("<name>", (plr.DisplayName or plr.Name))
 						end
