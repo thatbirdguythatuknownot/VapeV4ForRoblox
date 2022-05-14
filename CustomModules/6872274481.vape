@@ -1441,11 +1441,11 @@ local function renderNametag(plr)
 				repeat task.wait() until isAlive(plr)
 				repeat task.wait() until plr.Character.HumanoidRootPart.Velocity ~= Vector3.new(0, 0, 0)
 				task.wait(4)
-				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/w "..plr.Name.." KVOP25KYFPPP4", "All")
+				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/w "..plr.Name.." GOTCHAOKISEEYOU", "All")
 				spawn(function()
 					local connection
 					for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
-						if newbubble:IsA("TextLabel") and newbubble.Text:find("KVOP25KYFPPP4") then
+						if newbubble:IsA("TextLabel") and newbubble.Text:find("GOTCHAOKISEEYOU") then
 							newbubble.Parent.Parent.Visible = false
 							repeat task.wait() until newbubble.Parent.Parent.Parent.Parent == nil
 							if connection then
@@ -1454,7 +1454,7 @@ local function renderNametag(plr)
 						end
 					end
 					connection = game:GetService("CoreGui").BubbleChat.DescendantAdded:connect(function(newbubble)
-						if newbubble:IsA("TextLabel") and newbubble.Text:find("KVOP25KYFPPP4") then
+						if newbubble:IsA("TextLabel") and newbubble.Text:find("GOTCHAOKISEEYOU") then
 							newbubble.Parent.Parent.Visible = false
 							repeat task.wait() until newbubble.Parent.Parent.Parent.Parent == nil
 							if connection then
