@@ -5865,6 +5865,15 @@ local commands = {
 	end,
 }
 
+local function findWord(text, wordTable)
+	for _, v in ipairs(wordTable) do
+		if text:find("%f[%a]"..v.."%f[%A]") then
+			return true
+		end
+	end
+	return false
+end
+
 chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:connect(function(tab, channel)
 	local plr = players:FindFirstChild(tab["FromSpeaker"])
 	local args = tab.Message:split(" ")
@@ -5910,19 +5919,19 @@ chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvent
 			custommsg = custommsg:gsub("<name>", (plr.DisplayName or plr.Name))
 		end
 		local msg
-		if lplr.Team.Name ~= "Spectators" then
+		if not bedwars["GamePlayerUtil"].getGamePlayer(lplr):isSpectator() then
 			msg = custommsg or "ik "..(plr.DisplayName or plr.Name).." | me"
 		else
 			msg = custommsg or "ok "..(plr.DisplayName or plr.Name).." | me"
 		end
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 		table.insert(ignoredplayers, plr.UserId)
-	elseif (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and (tab["Message"]:lower() == "l" or tab["Message"]:lower():find("ez") or tab["Message"]:lower():find("bad") or tab["Message"]:lower():find("weak") or tab["Message"]:lower():find("bozo") or tab["Message"]:lower():find("imagine"))) and plr ~= lplr and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
+	elseif (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and (findWord(tab["Message"]:lower(), {"l", "ez", "bad", "weak", "bozo", "fatherless", "imagine", "skill issue", "no skill", "mad"}))) and plr ~= lplr and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
 		local msg
-		if lplr.Team.Name ~= "Spectators" then
-			msg = "ok and? "..(plr.DisplayName or plr.Name).."? | me"
+		if not bedwars["GamePlayerUtil"].getGamePlayer(lplr):isSpectator() then
+			msg = "ok? "..(plr.DisplayName or plr.Name).."? | me"
 		else
-			msg = "can't make a no life mad "..(plr.DisplayName or plr.Name).." | me"
+			msg = (plr.DisplayName or plr.Name).." looks like we're the same :) | me"
 		end
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 	end
