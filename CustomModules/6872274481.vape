@@ -6054,7 +6054,7 @@ chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvent
 	elseif (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and findWord(tab["Message"]:lower(), {"l", "ez", "bad", "weak", "bozo", "fatherless", "imagine", "skill issue", "no skill", "mad"})) and plr ~= lplr and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
 		local msg
 		if not bedwars["GamePlayerUtil"].getGamePlayer(lplr):isSpectator() then
-			msg = "ok? "..(plr.DisplayName or plr.Name).."? | me"
+			msg = "ok "..(plr.DisplayName or plr.Name).."? | me"
 		else
 			msg = (plr.DisplayName or plr.Name).." looks like we're the same :) | me"
 		end
