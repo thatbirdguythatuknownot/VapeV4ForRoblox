@@ -5930,7 +5930,7 @@ local commands = {
 local function findWord(text, wordTable)
 	for _, v in ipairs(wordTable) do
 		matched = {text:find("%f[%a]"..v.."%f[%A]")}
-		if matched then
+		if #matched ~= 0 then
 			return table.unpack(matched)
 		end
 	end
