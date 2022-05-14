@@ -5589,7 +5589,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = bedwars["ClientHandler"]
                 end
 			end
 			if AutoToxicWin["Enabled"] then
-				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(#AutoToxicPhrases["ObjectList"] > 0 and AutoToxicPhrases["ObjectList"][math.random(1, #AutoToxicPhrases["ObjectList"])] or "GG yall played really good | me", "All")
+				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(#AutoToxicPhrases["ObjectList"] > 0 and AutoToxicPhrases["ObjectList"][math.random(1, #AutoToxicPhrases["ObjectList"])] or "GG yall played really good | easy.gg", "All")
 			end
 		end
     end
@@ -5967,11 +5967,11 @@ chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvent
 				repeat task.wait() until isAlive(plr)
 				repeat task.wait() until plr.Character.HumanoidRootPart.Velocity ~= Vector3.new(0, 0, 0)
 				task.wait(4)
-				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/w "..plr.Name.." ok vxpe user || me", "All")
+				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/w "..plr.Name.." ok vxpe user || easy.gg", "All")
 				spawn(function()
 					local connection
 					for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
-						if newbubble:IsA("TextLabel") and newbubble.Text:find("ok vxpe user || me") then
+						if newbubble:IsA("TextLabel") and newbubble.Text:find("ok vxpe user || easy.gg") then
 							newbubble.Parent.Parent.Visible = false
 							repeat task.wait() until newbubble.Parent.Parent.Parent.Parent == nil
 							if connection then
@@ -5980,7 +5980,7 @@ chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvent
 						end
 					end
 					connection = game:GetService("CoreGui").BubbleChat.DescendantAdded:connect(function(newbubble)
-						if newbubble:IsA("TextLabel") and newbubble.Text:find("ok vxpe user || me") then
+						if newbubble:IsA("TextLabel") and newbubble.Text:find("ok vxpe user || easy.gg") then
 							newbubble.Parent.Parent.Visible = false
 							repeat task.wait() until newbubble.Parent.Parent.Parent.Parent == nil
 							if connection then
@@ -6045,18 +6045,18 @@ chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvent
 		end
 		local msg
 		if not bedwars["GamePlayerUtil"].getGamePlayer(lplr):isSpectator() then
-			msg = custommsg or "ik "..(plr.DisplayName or plr.Name).." | me"
+			msg = custommsg or "ik "..(plr.DisplayName or plr.Name).." | easy.gg"
 		else
-			msg = custommsg or "ok "..(plr.DisplayName or plr.Name).." | me"
+			msg = custommsg or "ok "..(plr.DisplayName or plr.Name).." | easy.gg"
 		end
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 		table.insert(ignoredplayers, plr.UserId)
 	elseif (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and findWord(tab["Message"]:lower(), {"l", "ez", "bad", "weak", "bozo", "fatherless", "imagine", "skill issue", "no skill", "mad"})) and plr ~= lplr and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
 		local msg
 		if not bedwars["GamePlayerUtil"].getGamePlayer(lplr):isSpectator() then
-			msg = "ok "..(plr.DisplayName or plr.Name).."? | me"
+			msg = "ok "..(plr.DisplayName or plr.Name).."? | easy.gg"
 		else
-			msg = (plr.DisplayName or plr.Name).." looks like we're the same :) | me"
+			msg = (plr.DisplayName or plr.Name).." looks like we're the same :) | easy.gg"
 		end
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 	end
@@ -6349,13 +6349,13 @@ runcode(function()
 			end
 			if AutoToxic["Enabled"] then
 				if AutoToxicBedDestroyed["Enabled"] and p14.brokenBedTeam.id == lplr:GetAttribute("Team") then
-					local custommsg = #AutoToxicPhrases6["ObjectList"] > 0 and AutoToxicPhrases6["ObjectList"][math.random(1, #AutoToxicPhrases6["ObjectList"])] or "oh <name> you broke my bed :) | me"
+					local custommsg = #AutoToxicPhrases6["ObjectList"] > 0 and AutoToxicPhrases6["ObjectList"][math.random(1, #AutoToxicPhrases6["ObjectList"])] or "oh <name> you broke my bed :) | easy.gg"
 					if custommsg then
 						custommsg = custommsg:gsub("<name>", (p14.player.DisplayName or p14.player.Name))
 					end
 					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(custommsg, "All")
 				elseif AutoToxicBedBreak["Enabled"] and p14.player.UserId == lplr.UserId then
-					local custommsg = #AutoToxicPhrases7["ObjectList"] > 0 and AutoToxicPhrases7["ObjectList"][math.random(1, #AutoToxicPhrases7["ObjectList"])] or "just broke your bed <teamname> team don't be mad :) | me"
+					local custommsg = #AutoToxicPhrases7["ObjectList"] > 0 and AutoToxicPhrases7["ObjectList"][math.random(1, #AutoToxicPhrases7["ObjectList"])] or "just broke your bed <teamname> team don't be mad :) | easy.gg"
 					if custommsg then
 						local team = bedwars["QueueMeta"][bedwars["ClientStoreHandler"]:getState().Game.queueType or "bedwars_test"].teams[tonumber(p14.brokenBedTeam.id)]
 						local teamname = team and team.displayName:lower() or "white"
@@ -6378,7 +6378,7 @@ runcode(function()
 				if bedwars["GamePlayerUtil"].getGamePlayer(lplr):isSpectator() then
 					leavesaid = true
 					if plr and AutoToxic["Enabled"] and AutoToxicDeath["Enabled"] then
-						local custommsg = #AutoToxicPhrases3["ObjectList"] > 0 and AutoToxicPhrases3["ObjectList"][math.random(1, #AutoToxicPhrases3["ObjectList"])] or "you got pure skill <name>, gg :) | me"
+						local custommsg = #AutoToxicPhrases3["ObjectList"] > 0 and AutoToxicPhrases3["ObjectList"][math.random(1, #AutoToxicPhrases3["ObjectList"])] or "you got pure skill <name>, gg :) | easy.gg"
 						if custommsg then
 							custommsg = custommsg:gsub("<name>", (plr.DisplayName or plr.Name))
 						end
@@ -6412,9 +6412,9 @@ runcode(function()
 						plr = players:GetPlayerFromCharacter(p7.entityInstance)
 					end
 					if plr and bedwars["GamePlayerUtil"].getGamePlayer(plr):isSpectator() and AutoToxicFinalKill["Enabled"] then
-						local custommsg = #AutoToxicPhrases2["ObjectList"] > 0 and AutoToxicPhrases2["ObjectList"][math.random(1, #AutoToxicPhrases2["ObjectList"])] or "sorry for ending you <name> my guy | me"
+						local custommsg = #AutoToxicPhrases2["ObjectList"] > 0 and AutoToxicPhrases2["ObjectList"][math.random(1, #AutoToxicPhrases2["ObjectList"])] or "sorry for ending you <name> my guy | easy.gg"
 						if custommsg == lastsaid then
-							custommsg = #AutoToxicPhrases2["ObjectList"] > 0 and AutoToxicPhrases2["ObjectList"][math.random(1, #AutoToxicPhrases2["ObjectList"])] or "sorry for ending you <name> my guy | me"
+							custommsg = #AutoToxicPhrases2["ObjectList"] > 0 and AutoToxicPhrases2["ObjectList"][math.random(1, #AutoToxicPhrases2["ObjectList"])] or "sorry for ending you <name> my guy | easy.gg"
 						else
 							lastsaid = custommsg
 						end
