@@ -9564,6 +9564,7 @@ runcode(function()
 	local autohealallowed = true
 	local autohealbound = false
 	local autohealconnection2
+	local was_healed = true
 	autoheal = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
 		["Name"] = "AutoHeal",
 		["Function"] = function(callback)
@@ -9576,6 +9577,16 @@ runcode(function()
 						autohealconnection2:Disconnect()
 					end
 					autohealconnection2 = char:GetAttributeChangedSignal("Health"):connect(function()
+						if lplr.Character:GetAttribute("Health") < 30 and was_healed then
+							was_healed = false
+							game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO CHILL | me", "All")
+							local dieconnect; dieconnect = lplr.Character.Humanoid.Died:Connect(function()
+								dieconnect:Disconnect()
+								was_healed = true
+							end
+						elseif lplr.Character:GetAttribute("Health") > 29 and not was_healed then
+							was_healed = true
+						end
 						if entity.isAlive and autohealallowed then
 							local item = getItem("apple")
 							local shield = getItem("big_shield") or getItem("mini_shield")
