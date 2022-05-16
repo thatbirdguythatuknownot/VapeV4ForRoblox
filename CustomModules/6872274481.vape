@@ -9583,7 +9583,7 @@ runcode(function()
 							local dieconnect; dieconnect = lplr.Character.Humanoid.Died:Connect(function()
 								dieconnect:Disconnect()
 								was_healed = true
-							end
+							end)
 						elseif lplr.Character:GetAttribute("Health") > 29 and not was_healed then
 							was_healed = true
 						end
