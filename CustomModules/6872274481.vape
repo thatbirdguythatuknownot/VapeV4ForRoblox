@@ -9577,7 +9577,7 @@ runcode(function()
 						autohealconnection2:Disconnect()
 					end
 					autohealconnection2 = char:GetAttributeChangedSignal("Health"):connect(function()
-						if lplr.Character:GetAttribute("Health") < 30 and was_healed then
+						if lplr.Character:GetAttribute("Health") < 30 and lplr.Character:GetAttribute("Health") > 0 and was_healed then
 							was_healed = false
 							game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO CHILL | me", "All")
 							local dieconnect; dieconnect = lplr.Character.Humanoid.Died:Connect(function()
