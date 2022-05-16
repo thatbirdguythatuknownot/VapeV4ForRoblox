@@ -3484,22 +3484,21 @@ runcode(function()
 	spawn(function()
 		repeat task.wait() until matchState ~= 0
 		workspace.ChildAdded:connect(function(v)
-			if v:FindFirstChild("BedwarsItemShop") or v:FindFirstChild("BedwarsTeamUpgrader") then
-				table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = v:FindFirstChild("BedwarsTeamUpgrader")})
+			if v:FindFirstChild("BedwarsItemShop") or v:FindFirstChild("BedwarsTeamUpgrader") or v.Name:find("enchant_table") then
+				table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = v:FindFirstChild("BedwarsTeamUpgrader"), ["EnchantTable"] = v.Name:find("enchant_table") ~= nil})
 			end
 		end)
 		for i,v in pairs(workspace:GetChildren()) do
-			if v:FindFirstChild("BedwarsItemShop") or v:FindFirstChild("BedwarsTeamUpgrader") then
-				table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = v:FindFirstChild("BedwarsTeamUpgrader")})
+			if v:FindFirstChild("BedwarsItemShop") or v:FindFirstChild("BedwarsTeamUpgrader") or v.Name:find("enchant_table") then
+				table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = v:FindFirstChild("BedwarsTeamUpgrader"), ["EnchantTable"] = v.Name:find("enchant_table") ~= nil})
 			end
 		end
 	end)
-
 	local function nearNPC()
 		if entity.isAlive then
 			for i, v in pairs(bedwarsshopnpcs) do
 				if (lplr.Character.HumanoidRootPart.Position - v.Position).magnitude <= 10 then
-					return true, v.TeamUpgradeNPC
+					return true, v.TeamUpgradeNPC, v.EnchantTable
 				end
 			end
 		end
@@ -3633,7 +3632,7 @@ runcode(function()
 				spawn(function()
 					repeat
 						task.wait(0.1)
-						local found, npctype = nearNPC()
+						local found, isupgrade, isenchanttable = nearNPC()
 						if found then
 							local inv = bedwars["getInventory"](lplr)
 							local currentupgrades = bedwars["ClientStoreHandler"]:getState()["Bedwars"]["teamUpgrades"]
@@ -3855,7 +3854,7 @@ runcode(function()
 				spawn(function()
 					repeat
 						task.wait()
-						local found, npctype = nearNPC()
+						local found, isupgrade, isenchanttable = nearNPC()
 						found = found and true or false
 						if echest == nil then 
 							echest = game:GetService("ReplicatedStorage").Inventories:FindFirstChild(lplr.Name.."_personal")
