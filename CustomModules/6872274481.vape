@@ -5882,7 +5882,7 @@ chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvent
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 		table.insert(ignoredplayers, plr.UserId)
 	end
-	if (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and findWord(tab["Message"]:lower(), {"l", "ez", "bad", "weak", "bozo", "fatherless", "imagine", "skill issue", "no skill", "mad"})) and plr ~= lplr and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
+	if (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and findWord(tab["Message"]:lower(), {"l", "ez", "bad", "weak", "bozo", "fatherless", "imagine", "skill issue", "no skill", "mad", "trash"})) and plr ~= lplr and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
 		local msg
 		if not bedwars["GamePlayerUtil"].getGamePlayer(lplr):isSpectator() then
 			msg = "ok "..(plr.DisplayName or plr.Name).."? | easy.gg"
