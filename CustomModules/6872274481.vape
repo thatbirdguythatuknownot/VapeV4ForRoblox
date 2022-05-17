@@ -79,6 +79,8 @@ local anticheatfunny = false
 local anticheatfunnyyes = false
 local staffleave
 local tpstring
+local damageconnection
+local lastDamager = nil
 local networkownerfunc = isnetworkowner
 local uninjectflag = false
 local vapeusers = {}
@@ -4466,6 +4468,17 @@ end)
 	})
 end)
 ]]
+bedwars["ClientHandler"]:WaitFor("EntityDamageEvent"):andThen(function(p3)
+	damageconnection = p3:Connect(function(p4)
+		if p4.entityInstance == lplr.Character or p4.entityInstance == oldchar then
+			plr = {Name = ""}
+			if p4.fromEntity then
+				plr = players:GetPlayerFromCharacter(p4.fromEntity)
+			end
+			lastDamager = plr
+		end
+	end)
+end)
 GuiLibrary["RemoveObject"]("LongJumpOptionsButton")
 runcode(function()
 	local longjumpbound = false
@@ -9597,13 +9610,20 @@ runcode(function()
 					autohealconnection2 = char:GetAttributeChangedSignal("Health"):connect(function()
 						if lplr.Character and lplr.Character:GetAttribute("Health") < 30 and lplr.Character:GetAttribute("Health") > 0 and was_healed then
 							was_healed = false
-							game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO CHILL | easy.gg", "All")
+							repeat task.wait() until lastDamager
+							if (lastDamager.DisplayName or lastDamager.Name) ~= "" then
+								game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO CHILL "..(lastDamager.DisplayName or lastDamager.Name).." | easy.gg", "All")
+							else
+								game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO CHILL | easy.gg", "All")
+							end
 							dieconnect = lplr.Character.Humanoid.Died:Connect(function()
 								dieconnect:Disconnect()
 								was_healed = true
+								lastDamager = nil
 							end)
 						elseif lplr.Character and lplr.Character:GetAttribute("Health") > 29 and not was_healed then
 							was_healed = true
+							lastDamager = nil
 							if dieconnect then dieconnect:Disconnect() end
 						end
 						if entity.isAlive and autohealallowed then
