@@ -1318,9 +1318,9 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 			end
 		end)
 	end
-	print("H::::::::::::::::::::", textlabel2.Text:find("^/mutegroup "))
-	if textlabel2.Text:find("^/mutegroup ") and textlabel2:FindFirstChild("TextButton") and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
-		for name in textlabel2.Text:sub(12):gmatch("%S+") do
+	local start, length = textlabel2.Text:find("/mutegroup ")
+	if start and textlabel2:FindFirstChild("TextButton") and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
+		for name in textlabel2.Text:sub(start + length + 1):gmatch("%S+") do
 			game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/mute "..name, "All")
 			wait()
 		end
