@@ -1318,11 +1318,21 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 			end
 		end)
 	end
-	local start, end = textlabel2.Text:find("/mutegroup ")
-	if start and textlabel2:FindFirstChild("TextButton") and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
-		for name in textlabel2.Text:sub(end + 1):gmatch("%S+") do
+	local check
+	local endpos
+	check, endpos = textlabel2.Text:find("/mutegroup ")
+	if check and textlabel2:FindFirstChild("TextButton") and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
+		for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
 			game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/mute "..name, "All")
 			wait()
+		end
+	elseif not check then
+		check, endpos = textlabel2.Text:find("/unmutegroup ")
+		if check and textlabel2:FindFirstChild("TextButton") and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
+			for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
+				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/unmute "..name, "All")
+				wait()
+			end
 		end
 	end
 end)
