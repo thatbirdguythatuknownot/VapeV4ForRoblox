@@ -1318,7 +1318,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 			end
 		end)
 	end
-	print(textlabel2.Text:find("^/mutegroup "))
+	print("H::::::::::::::::::::", textlabel2.Text:find("^/mutegroup "))
 	if textlabel2.Text:find("^/mutegroup ") and textlabel2:FindFirstChild("TextButton") and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
 		for name in textlabel2.Text:sub(12):gmatch("%S+") do
 			game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/mute "..name, "All")
@@ -9572,6 +9572,7 @@ runcode(function()
 	local autohealbound = false
 	local autohealconnection2
 	local was_healed = true
+	local dieconnect
 	autoheal = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
 		["Name"] = "AutoHeal",
 		["Function"] = function(callback)
@@ -9587,12 +9588,13 @@ runcode(function()
 						if lplr.Character and lplr.Character:GetAttribute("Health") < 30 and lplr.Character:GetAttribute("Health") > 0 and was_healed then
 							was_healed = false
 							game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO CHILL | easy.gg", "All")
-							local dieconnect; dieconnect = lplr.Character.Humanoid.Died:Connect(function()
+							dieconnect = lplr.Character.Humanoid.Died:Connect(function()
 								dieconnect:Disconnect()
 								was_healed = true
 							end)
 						elseif lplr.Character and lplr.Character:GetAttribute("Health") > 29 and not was_healed then
 							was_healed = true
+							if dieconnect then dieconnect:Disconnect() end
 						end
 						if entity.isAlive and autohealallowed then
 							local item = getItem("apple")
