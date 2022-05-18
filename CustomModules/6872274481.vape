@@ -9612,7 +9612,7 @@ runcode(function()
 							was_healed = false
 							repeat task.wait() until lastDamager
 							if (lastDamager.DisplayName or lastDamager.Name) ~= "" then
-								game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO CHILL "..(lastDamager.DisplayName or lastDamager.Name).." | easy.gg", "All")
+								game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO "..(lastDamager.DisplayName or lastDamager.Name).." MY GUY CHILL | easy.gg", "All")
 							else
 								game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO CHILL | easy.gg", "All")
 							end
