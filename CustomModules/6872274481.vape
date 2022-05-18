@@ -144,7 +144,7 @@ end)
 local AnticheatBypassNumbers = {
 	TPSpeed = 0.1,
 	TPCombat = 0.3,
-	TPLerp = 0.35,
+	TPLerp = 0.4,
 	TPCheck = 15
 }
 
@@ -2607,6 +2607,7 @@ runcode(function()
 		["Name"] = "Horizontal",
 		["Min"] = 0,
 		["Max"] = 100,
+		["Percent"] = true,
 		["Function"] = function(val) 
 			if Velocity["Enabled"] then
 				bedwars["KnockbackTable"]["kbDirectionStrength"] = oldhori * (val / 100) 
@@ -2618,6 +2619,7 @@ runcode(function()
 		["Name"] = "Vertical",
 		["Min"] = 0,
 		["Max"] = 100,
+		["Percent"] = true,
 		["Function"] = function(val) 
 			if Velocity["Enabled"] then
 				bedwars["KnockbackTable"]["kbUpwardStrength"] = oldvert * (val / 100) 
@@ -2776,6 +2778,7 @@ runcode(function()
 	local antitransparent = {["Value"] = 50}
 	local anticolor = {["Hue"] = 1, ["Sat"] = 1, ["Value"] = 0.55}
 	local AntiVoid = {["Enabled"] = false}
+	local antivoiding = false
 	local lastvalidpos
 
 	local function isPointInMapOccupied(p)
@@ -2821,11 +2824,11 @@ runcode(function()
 						connectionstodisconnect[#connectionstodisconnect + 1] = antivoidpart.Touched:connect(function(touchedpart)
 							if touchedpart.Parent == lplr.Character and entity.isAlive then
 								if AnticheatBypass["Enabled"] then
-									if (not lagbackedaftertouch) and lastvalidpos and (not GuiLibrary["ObjectsThatCanBeSaved"]["FlyOptionsButton"]["Api"]["Enabled"]) then
-										lagbackedaftertouch = true
+									if (not antivoiding) and lastvalidpos and (not GuiLibrary["ObjectsThatCanBeSaved"]["FlyOptionsButton"]["Api"]["Enabled"]) then
+										antivoiding = true
 										local old = lplr.Character.HumanoidRootPart.CFrame
 										if isPointInMapOccupied(lastvalidpos.p) then
-											if (lastvalidpos.p - lplr.Character.HumanoidRootPart.CFrame.p).Magnitude <= 60 then
+											if (lastvalidpos.p - lplr.Character.HumanoidRootPart.CFrame.p).Magnitude <= 40 then
 												for i = 1, 5 do 
 													local new = old:lerp(lastvalidpos, 0.2 * i)
 													lplr.Character.HumanoidRootPart.Velocity = (new.p - lplr.Character.HumanoidRootPart.CFrame.p ).Unit * 20
@@ -2838,7 +2841,7 @@ runcode(function()
 													lplr.Character.HumanoidRootPart.Anchored = false
 												end
 											else
-												createwarning("AntiVoid", "Magnitude bigger then 60, failed.", 10)
+												createwarning("AntiVoid", "Magnitude bigger then 40, failed.", 10)
 												for i = 1, 2 do
 													task.wait(0.1)
 													lplr.Character.HumanoidRootPart.Velocity = Vector3.new(lplr.Character.HumanoidRootPart.Velocity.X, 70, lplr.Character.HumanoidRootPart.Velocity.Z)
@@ -2851,6 +2854,7 @@ runcode(function()
 												lplr.Character.HumanoidRootPart.Velocity = Vector3.new(lplr.Character.HumanoidRootPart.Velocity.X, 70, lplr.Character.HumanoidRootPart.Velocity.Z)
 											end
 										end
+										antivoiding = false
 									end
 								else
 									lplr.Character.HumanoidRootPart.Velocity = Vector3.new(0, (antivoidmethod["Value"] == "Dynamic" and math.clamp((math.abs(lplr.Character.HumanoidRootPart.Velocity.Y) + 2), 1, 50) or 50), 0)
@@ -3579,8 +3583,8 @@ runcode(function()
 	}
 
 	local buyfunctions = {
-		Armor = function(inv) 
-			if not AutoBuyArmor["Enabled"] then return end
+		Armor = function(inv, upgrades, shoptype) 
+			if (not AutoBuyArmor["Enabled"]) and shoptype == "item" then return end
 			local currentarmor = (inv.armor[5] ~= "empty" or inv.armor[5].itemType:find("chestplate") ~= nil) and inv.armor[5] or nil
 			local armorindex = (currentarmor and table.find(armors, currentarmor.itemType) or 0) + 1
 			if currentarmor ~= nil and table.find(armors, currentarmor.itemType) == nil then return end
@@ -3598,8 +3602,8 @@ runcode(function()
 				buyItem(highestbuyable)
 			end
 		end,
-		Sword = function(inv, upgrades)
-			if not AutoBuySword["Enabled"] then return end
+		Sword = function(inv, upgrades, shoptype)
+			if (not AutoBuySword["Enabled"]) and shoptype == "item" then return end
 			local currentsword = getItemNear("sword", inv.items)
 			local swordindex = (currentsword and table.find(swords, currentsword.itemType) or 0) + 1
 			if currentsword ~= nil and table.find(swords, currentsword.itemType) == nil then return end
@@ -3663,8 +3667,14 @@ runcode(function()
 									[4] = "diamond_dao",
 									[5] = "emerald_dao"
 								}
+							elseif kit == "ice_queen" then 
+								swords[5] = "ice_sword"
+							elseif kit == "ember" then 
+								swords[5] = "infernal_saber"
+							elseif kit == "lumen" then 
+								swords[5] = "light_sword"
 							end
-							for i,v in pairs(buyfunctions) do v(inv, currentupgrades) end
+							for i,v in pairs(buyfunctions) do v(inv, currentupgrades, isupgrade and "upgrade" or "item") end
 						end
 					until (not AutoBuy["Enabled"])
 				end)
@@ -3884,7 +3894,7 @@ runcode(function()
 								local chestitems = lplr.Character.InventoryFolder.Value:GetChildren()
 								if #chestitems > 0 then
 									for i3,v3 in pairs(chestitems) do
-										if v3:IsA("Accessory") and (v3.Name == "emerald" or v3.Name == "iron" or v3.Name == "diamond") then
+									if v3:IsA("Accessory") and ((isupgrade == nil and isenchanttable == nil and (v3.Name == "emerald" or v3.Name == "iron")) or v3.Name == "diamond") then
 											bedwars["ClientHandler"]:GetNamespace("Inventory"):Get("ChestGiveItem"):CallServer(echest, v3)
 											refreshbank()
 										end
@@ -4595,7 +4605,7 @@ runcode(function()
 										if funnytick <= tick() then break end
 										if entity.isAlive then
 											local ping = math.floor(tonumber(game:GetService("Stats"):FindFirstChild("PerformanceStats").Ping:GetValue()))
-											local acbypassnum = (combatcheck and AnticheatBypassCombatCheck["Enabled"] and AnticheatBypassNumbers.TPCombat or (AnticheatBypassNumbers.TPSpeed + (ping <= 40 and 0.05 or ping <= 70 and 0.03 or 0)))
+											local acbypassnum = (combatcheck and AnticheatBypassCombatCheck["Enabled"] and AnticheatBypassNumbers.TPCombat or (AnticheatBypassNumbers.TPSpeed))
 											for i = 1, 2 do 
 												task.wait(i % 2 == 0 and 0.01 or 0.02)
 												if entity.isAlive then 
@@ -4789,7 +4799,7 @@ end)
 		["Default"] = 20
 	})
 end)]]
-GuiLibrary["RemoveObject"]("KillauraOptionsButton")
+GuiLibrary["RemoveObject"]("TriggerBotOptionsButton")
 
 runcode(function()
 	local spiderspeed = {["Value"] = 0}
@@ -4930,6 +4940,9 @@ runcode(function()
 		end
 		if killaurahitdelay > tick() then 
 			return nil
+		end
+		if workspace:GetServerTimeNow() - plr.Character:GetAttribute("LastDamageTakenTime") <= 0.3 then
+		--	return nil
 		end
 		local sword = (equipped.Object and (equipped.Object.Name == "frying_pan" or equipped.Object.Name == "baguette") and {tool = equipped.Object} or getSword())
 		local selfpos = lplr.Character.HumanoidRootPart.Position + (killaurarange["Value"] > 14 and (lplr.Character.HumanoidRootPart.Position - root.Position).magnitude > 14 and (CFrame.lookAt(lplr.Character.HumanoidRootPart.Position, root.Position).lookVector * 4) or Vector3.new(0, 0, 0))
@@ -9132,7 +9145,8 @@ runcode(function()
 										check()
 										--task.wait(longjump["Enabled"] and 0.23 or 0.28)
 										local ping = math.floor(tonumber(game:GetService("Stats"):FindFirstChild("PerformanceStats").Ping:GetValue()))
-										task.wait(combatcheck and AnticheatBypassCombatCheck["Enabled"] and AnticheatBypassNumbers.TPCombat or (AnticheatBypassNumbers.TPSpeed + (ping <= 40 and 0.05 or ping <= 70 and 0.03 or 0)))
+										-- + (ping <= 40 and 0.05 or ping <= 70 and 0.03 or 0)
+										task.wait(combatcheck and AnticheatBypassCombatCheck["Enabled"] and AnticheatBypassNumbers.TPCombat or (AnticheatBypassNumbers.TPSpeed))
 										check()
 										if oldchar and oldchar:FindFirstChild("HumanoidRootPart") and clone and clone:FindFirstChild("HumanoidRootPart") then
 											--print(amountoftimes, (oldchar.HumanoidRootPart.CFrame.p - clone.HumanoidRootPart.CFrame.p).magnitude)
@@ -9471,6 +9485,7 @@ runcode(function()
 			["Function"] = function(val) 
 				AnticheatBypassNumbers.TPSpeed = val / 100
 			end,
+			["Double"] = 100,
 			["Min"] = 1,
 			["Max"] = 100,
 			["Default"] = AnticheatBypassNumbers.TPSpeed * 100,
@@ -9480,6 +9495,7 @@ runcode(function()
 			["Function"] = function(val) 
 				AnticheatBypassNumbers.TPLerp = val / 100
 			end,
+			["Double"] = 100,
 			["Min"] = 1,
 			["Max"] = 100,
 			["Default"] = AnticheatBypassNumbers.TPLerp * 100,
