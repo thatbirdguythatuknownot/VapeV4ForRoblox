@@ -1365,7 +1365,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 		end
 	end
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
-	while text and text:match("^%S+%-+$") do
+	while text and text.TextLabel.Text:match("^%S+%-+$") do
 		task.wait()
 	end
 	if not text then return end
