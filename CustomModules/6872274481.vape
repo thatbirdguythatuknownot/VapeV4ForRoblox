@@ -1366,16 +1366,16 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	local originalText = textlabel2.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("\"", "&quot;"):gsub("'", "&apos;"):gsub("&", "&amp;")
 	local startpos
+	local add = 0
 	startpos, endpos = findWord(modifiedText:lower(), toxicTable)
 	if not startpos then return end
-	print(startpos, endpos)
+	if not textlabel2:FindFirstChild("TextButton") then return end
 	while startpos do
-		word = modifiedText:sub(startpos, endpos)
+		word = modifiedText:sub(startpos+add, endpos+add)
 		modifiedText = modifiedText:gsub(word, "<b><i>*"..niceTable[word].."*</i></b>")
-		startpos, endpos = findWord(modifiedText:lower(), toxicTable)
+		add = endpos + 1
+		startpos, endpos = findWord(modifiedText:lower():sub(add), toxicTable)
 	end
-	textlabel2.RichText = true
-	textlabel2.Text = modifiedText
 	textlabel2.MouseEnter:Connect(function()
 		textlabel2.RichText = false
 		textlabel2.Text = originalText
@@ -1384,6 +1384,8 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 		textlabel2.RichText = true
 		textlabel2.Text = modifiedText
 	end)
+	textlabel2.RichText = true
+	textlabel2.Text = modifiedText
 end)
 
 teleportfunc = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
