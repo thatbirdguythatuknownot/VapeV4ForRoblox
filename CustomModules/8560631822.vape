@@ -34,7 +34,12 @@ end
 shared.CustomSaveVape = 6872274481
 if shared.VapeDeveloper then
 	if pcall(function() readfile("vape/CustomModules/6872274481.vape") end) then
-		loadstring(readfile("vape/CustomModules/6872274481.vape"))()
+		res, err = loadstring(readfile("vape/CustomModules/6872274481.vape"))
+		if not res then
+			error(err)
+		else
+			res()
+		end
 	end
 else
 	local publicrepo = checkpublicrepo("6872274481")
