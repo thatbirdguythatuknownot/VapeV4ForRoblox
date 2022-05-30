@@ -1374,7 +1374,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	end
 	textlabel2.RichText = true
 	textlabel2.Text = modifiedText
-	textlabel2.MouseHover:Connect(function()
+	textlabel2.MouseEnter:Connect(function()
 		textlabel2.RichText = false
 		textlabel2.Text = originalText
 	end)
