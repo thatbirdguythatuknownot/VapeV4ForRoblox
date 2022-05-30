@@ -1365,6 +1365,10 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 		end
 	end
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
+	while text and text:match("^%S+%-+$") do
+		task.wait()
+	end
+	if not text then return end
 	textlabel2 = text:WaitForChild("TextLabel")
 	local originalText = textlabel2.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
