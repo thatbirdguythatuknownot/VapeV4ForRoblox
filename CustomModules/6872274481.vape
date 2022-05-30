@@ -1330,7 +1330,6 @@ niceTable = {
 
 chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
 	local textlabel2 = text:WaitForChild("TextLabel")
-	print("::::::::"..textlabel2.Text)
 	if bedwars["IsVapePrivateIngame"]() then
 		if textlabel2.Text:find("KVOP25KYFPPP4") or textlabel2.Text:find("You are now chatting") or textlabel2.Text:find("You are now privately chatting") then
 			text.Size = UDim2.new(0, 0, 0, 0)
