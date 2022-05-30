@@ -1368,15 +1368,13 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	local originalText = textlabel2.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 	local startpos
-	local add = 0
 	startpos, endpos = findWord(modifiedText:lower(), toxicTable)
 	if not startpos then return end
 	if not textlabel2:FindFirstChild("TextButton") then return end
 	while startpos do
-		word = modifiedText:sub(startpos+add, endpos+add)
-		modifiedText = modifiedText:gsub(word, "<b><i>*"..niceTable[word].."*</i></b>")
-		add = endpos + 1
-		startpos, endpos = findWord(modifiedText:lower():sub(add), toxicTable)
+		word = modifiedText:sub(startpos, endpos)
+		modifiedText = modifiedText:gsub("%f[%a]"..word.."%f[%A]", "<b><i>*"..niceTable[word].."*</i></b>")
+		startpos, endpos = findWord(modifiedText:lower(), toxicTable)
 	end
 	textlabel2.MouseEnter:Connect(function()
 		textlabel2.RichText = false
