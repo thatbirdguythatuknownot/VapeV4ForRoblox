@@ -1386,6 +1386,11 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	end)
 	textlabel2.RichText = true
 	textlabel2.Text = modifiedText
+	wait(0.5)
+	if textlabel2.Text ~= modifiedText then
+		textlabel2.RichText = true
+		textlabel2.Text = modifiedText
+	end
 end)
 
 teleportfunc = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
