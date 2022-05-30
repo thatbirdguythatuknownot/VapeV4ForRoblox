@@ -1302,6 +1302,32 @@ GuiLibrary["SelfDestructEvent"].Event:connect(function()
 	end
 end)
 
+toxicTable = {"l", "ez", "bad", "weak", "bozo", "fatherless", "imagine", "skill issue", "no skill", "mad", "trash", "noob", "nub"}
+local function findWord(text, wordTable)
+	for _, v in ipairs(wordTable) do
+		matched = {text:find("%f[%a]"..v.."%f[%A]")}
+		if #matched ~= 0 then
+			return table.unpack(matched)
+		end
+	end
+	return nil
+end
+niceTable = {
+	["l"] = "good job",
+	["ez"] = "good job man",
+	["bad"] = "nice skills",
+	["weak"] = "very good",
+	["bozo"] = "my good man",
+	["fatherless"] = "nice",
+	["imagine"] = "imagine",
+	["skill issue"] = "very good skills",
+	["no skill"] = "very good skills",
+	["mad"] = "good",
+	["trash"] = "very good",
+	["noob"] = "pro",
+	["nub"] = "pro"
+}
+
 chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
 	local textlabel2 = text:WaitForChild("TextLabel")
 	if bedwars["IsVapePrivateIngame"]() then
@@ -1337,6 +1363,25 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 			end
 		end
 	end
+	local originalText = textlabel2.Text
+	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("\"", "&quot;"):gsub("'", "&apos;"):gsub("&", "&amp;")
+	local startpos
+	startpos, endpos = findWord(modifiedText, toxicTable)
+	while startpos do
+		word = modifiedText:sub(startpos, endpos)
+		modifiedText = modifiedText:gsub(word, "<b><i>*"..niceTable[word].."*</i></b>")
+		startpos, endpos = findWord(modifiedText, toxicTable)
+	end
+	textlabel2.RichText = true
+	textlabel2.Text = modifiedText
+	textlabel2.MouseHover:Connect(function()
+		textlabel2.RichText = false
+		textlabel2.Text = originalText
+	end)
+	textlabel2.MouseLeave:Connect(function()
+		textlabel2.RichText = true
+		textlabel2.Text = modifiedText
+	end)
 end)
 
 teleportfunc = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
@@ -5798,18 +5843,6 @@ local commands = {
 	end,
 }
 
-
-
-local function findWord(text, wordTable)
-	for _, v in ipairs(wordTable) do
-		matched = {text:find("%f[%a]"..v.."%f[%A]")}
-		if #matched ~= 0 then
-			return table.unpack(matched)
-		end
-	end
-	return nil
-end
-
 chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:connect(function(tab, channel)
 	local plr = players:FindFirstChild(tab["FromSpeaker"])
 	if plr and bedwars["CheckPlayerType"](lplr) ~= "DEFAULT" and tab.MessageType == "Whisper" and tab.Message:find("KVOP25KYFPPP4") and alreadysaidlist[plr.Name] == nil then
@@ -5925,7 +5958,7 @@ chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvent
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 		table.insert(ignoredplayers, plr.UserId)
 	end
-	if (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and findWord(tab["Message"]:lower(), {"l", "ez", "bad", "weak", "bozo", "fatherless", "imagine", "skill issue", "no skill", "mad", "trash"})) and plr ~= lplr and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
+	if (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and findWord(tab["Message"]:lower(), toxicTable)) and plr ~= lplr and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
 		local msg
 		if not bedwars["GamePlayerUtil"].getGamePlayer(lplr):isSpectator() then
 			msg = "ok "..(plr.DisplayName or plr.Name).."? | easy.gg"
@@ -6303,7 +6336,7 @@ runcode(function()
 	end)	
 
 	AutoToxic = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
-		["Name"] = "AutoToxic",
+		["Name"] = "AutoNice",
 		["Function"] = function() end
 	})
 	AutoToxicGG = AutoToxic.CreateToggle({
@@ -6346,34 +6379,34 @@ runcode(function()
 		["Function"] = function() end, 
 	})
 	AutoToxicPhrases = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList",
+		["Name"] = "NiceList",
 		["TempText"] = "phrase (win)",
 	})
 	AutoToxicPhrases2 = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList2",
+		["Name"] = "NiceList2",
 		["TempText"] = "phrase (kill) <name>",
 	})
 	AutoToxicPhrases3 = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList3",
+		["Name"] = "NiceList3",
 		["TempText"] = "phrase (death) <name>",
 	})
 	AutoToxicPhrases7 = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList7",
+		["Name"] = "NiceList7",
 		["TempText"] = "phrase (bed break) <teamname>",
 	})
 	AutoToxicPhrases7["Object"].AddBoxBKG.AddBox.TextSize = 12
 	AutoToxicPhrases6 = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList6",
+		["Name"] = "NiceList6",
 		["TempText"] = "phrase (bed destroyed) <name>",
 	})
 	AutoToxicPhrases6["Object"].AddBoxBKG.AddBox.TextSize = 12
 	AutoToxicPhrases4 = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList4",
+		["Name"] = "NiceList4",
 		["TempText"] = "phrase (text to respond with) <name>",
 	})
 	AutoToxicPhrases4["Object"].AddBoxBKG.AddBox.TextSize = 12
 	AutoToxicPhrases5 = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList5",
+		["Name"] = "NiceList5",
 		["TempText"] = "phrase (text to respond to)",
 	})
 	AutoToxicPhrases5["Object"].AddBoxBKG.AddBox.TextSize = 12
