@@ -1366,11 +1366,11 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	local originalText = textlabel2.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("\"", "&quot;"):gsub("'", "&apos;"):gsub("&", "&amp;")
 	local startpos
-	startpos, endpos = findWord(modifiedText, toxicTable)
+	startpos, endpos = findWord(modifiedText:lower(), toxicTable)
 	while startpos do
 		word = modifiedText:sub(startpos, endpos)
 		modifiedText = modifiedText:gsub(word, "<b><i>*"..niceTable[word].."*</i></b>")
-		startpos, endpos = findWord(modifiedText, toxicTable)
+		startpos, endpos = findWord(modifiedText:lower(), toxicTable)
 	end
 	textlabel2.RichText = true
 	textlabel2.Text = modifiedText
