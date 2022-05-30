@@ -1365,6 +1365,8 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 		end
 	end
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
+	if not textlabel2:FindFirstChild("TextButton") then return end
+	if textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]" then return end
 	while text and text.TextLabel.Text:match("^%s+%-+$") do
 		task.wait()
 	end
@@ -1375,7 +1377,6 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	local startpos
 	startpos, endpos = findWord(modifiedText:lower(), toxicTable)
 	if not startpos then return end
-	if not textlabel2:FindFirstChild("TextButton") then return end
 	while startpos do
 		word = modifiedText:sub(startpos, endpos)
 		modifiedText = modifiedText:gsub("%f[%a]"..word.."%f[%A]", "<b><i>*"..niceTable[word].."*</i></b>")
