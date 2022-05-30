@@ -1367,6 +1367,8 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("\"", "&quot;"):gsub("'", "&apos;"):gsub("&", "&amp;")
 	local startpos
 	startpos, endpos = findWord(modifiedText:lower(), toxicTable)
+	if not startpos then return end
+	print(startpos, endpos)
 	while startpos do
 		word = modifiedText:sub(startpos, endpos)
 		modifiedText = modifiedText:gsub(word, "<b><i>*"..niceTable[word].."*</i></b>")
