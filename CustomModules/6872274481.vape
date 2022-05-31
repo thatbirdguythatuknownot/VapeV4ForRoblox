@@ -1383,6 +1383,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	while startpos do
 		modifiedText = modifiedText:gsub("%f[%a]"..pattern.."%f[%A]", "<b><i>*"..niceTable[pattern].."*</i></b>")
 		startpos, endpos, pattern = findWord(modifiedText:lower(), toxicTable)
+		task.wait()
 	end
 	textlabel2.MouseEnter:Connect(function()
 		textlabel2.RichText = false
@@ -5975,14 +5976,8 @@ chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvent
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 		table.insert(ignoredplayers, plr.UserId)
 	end
-	if (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and findWord(tab["Message"]:lower(), toxicTable)) and plr ~= lplr and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
-		local msg
-		if not bedwars["GamePlayerUtil"].getGamePlayer(lplr):isSpectator() then
-			msg = "thanks "..(plr.DisplayName or plr.Name).." my guy | easy.gg"
-		else
-			msg = (plr.DisplayName or plr.Name).." looks like we're the same :) | easy.gg"
-		end
-		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
+	if (findWord(tab["Message"]:lower(), toxicTable)) and plr ~= lplr and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
+		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("thanks "..(plr.DisplayName or plr.Name).." my guy | easy.gg", "All")
 	end
 end)
 
