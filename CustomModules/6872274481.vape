@@ -1368,7 +1368,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	end
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	if not textlabel2:FindFirstChild("TextButton") then return end
-	if textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then return end
+	--if textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then return end
 	while text and text.TextLabel.Text:match("^%s+_+$") do
 		task.wait()
 	end
