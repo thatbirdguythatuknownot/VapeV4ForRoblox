@@ -1302,30 +1302,31 @@ GuiLibrary["SelfDestructEvent"].Event:connect(function()
 	end
 end)
 
-toxicTable = {"l", "ez", "bad", "weak", "bozo", "fatherless", "imagine", "skill issue", "no skill", "mad", "trash", "noob", "nub",
-	      "brainless"}
+toxicTable = {"l+", "ez+", "ba+d", "weak", "bozo", "fatherless", "imagine", "skill issue", "no skill", "ma+d",
+	      "trash", "noo+b", "nub", "brainless"}
 local function findWord(text, wordTable)
 	for _, v in ipairs(wordTable) do
 		matched = {text:find("%f[%a]"..v.."%f[%A]")}
 		if #matched ~= 0 then
+			matched[#matched+1] = v
 			return table.unpack(matched)
 		end
 	end
 	return nil
 end
 niceTable = {
-	["l"] = "good job",
-	["ez"] = "good job man",
-	["bad"] = "nice skills",
+	["l+"] = "good job",
+	["ez+"] = "good job man",
+	["ba+d"] = "nice skills",
 	["weak"] = "very good",
 	["bozo"] = "my good man",
 	["fatherless"] = "nice",
 	["imagine"] = "imagine",
 	["skill issue"] = "very good skills",
 	["no skill"] = "very good skills",
-	["mad"] = "good",
+	["ma+d"] = "good",
 	["trash"] = "very good",
-	["noob"] = "pro",
+	["noo+b"] = "pro",
 	["nub"] = "pro",
 	["brainless"] = "big brain"
 }
@@ -1376,12 +1377,12 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	local originalText = textlabel2.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 	local startpos
-	startpos, endpos = findWord(modifiedText:lower(), toxicTable)
+	local pattern
+	startpos, endpos, pattern = findWord(modifiedText:lower(), toxicTable)
 	if not startpos then return end
 	while startpos do
-		word = modifiedText:sub(startpos, endpos)
-		modifiedText = modifiedText:gsub("%f[%a]"..word.."%f[%A]", "<b><i>*"..niceTable[word].."*</i></b>")
-		startpos, endpos = findWord(modifiedText:lower(), toxicTable)
+		modifiedText = modifiedText:gsub("%f[%a]"..pattern.."%f[%A]", "<b><i>*"..niceTable[pattern].."*</i></b>")
+		startpos, endpos, pattern = findWord(modifiedText:lower(), toxicTable)
 	end
 	textlabel2.MouseEnter:Connect(function()
 		textlabel2.RichText = false
