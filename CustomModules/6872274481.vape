@@ -1326,7 +1326,8 @@ niceTable = {
 	["mad"] = "good",
 	["trash"] = "very good",
 	["noob"] = "pro",
-	["nub"] = "pro"
+	["nub"] = "pro",
+	["brainless"] = "big brain"
 }
 
 chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
