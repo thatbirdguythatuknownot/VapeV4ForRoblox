@@ -1308,7 +1308,7 @@ toxicTable =  {"[Ll]+", "[Ee][Zz]+", "[Bb][Aa]+[Dd]", "[Ww][Ee][Aa][Kk]", "[Bb][
 	       "[Bb][Rr][Aa][Ii][Nn][Ll][Ee][Ss][Ss]"}
 local function findWord(text, wordTable)
 	for _, v in ipairs(wordTable) do
-		matched = {text:find("%f[%a]"..v.."%f[%A]")}
+		matched = {text:find("%f[A-Za-z0-9_]"..v.."%f[^A-Za-z0-9_]")}
 		if #matched ~= 0 then
 			matched[#matched+1] = v
 			return table.unpack(matched)
@@ -1383,7 +1383,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	startpos, endpos, pattern = findWord(modifiedText, toxicTable)
 	if not startpos then return end
 	while startpos do
-		modifiedText = modifiedText:gsub("%f[%a]"..pattern.."%f[%A]", "<b><i>*"..niceTable[pattern].."*</i></b>")
+		modifiedText = modifiedText:gsub("%f[A-Za-z0-9_]"..pattern.."%f[^A-Za-z0-9_]", "<b><i>*"..niceTable[pattern].."*</i></b>")
 		startpos, endpos, pattern = findWord(modifiedText, toxicTable)
 		task.wait()
 	end
