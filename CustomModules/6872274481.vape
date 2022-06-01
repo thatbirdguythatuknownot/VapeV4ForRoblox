@@ -1442,14 +1442,17 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 			end
 		end
 	end
-	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	if not textlabel2:FindFirstChild("TextButton") then return end
 	--if textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then return end
-	while text and text.TextLabel.Text:match("^%s+_+$") do
-		task.wait()
+	if textlabel2.Text:match("^%s+_+$") then
+		for _,v in pairs(players:GetPlayers()) do
+			local scroller = v.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller
+			text = scroller[#scroller]
+			if text.TextLabel.Text:match("^%s+_+$") == nil and text.TextLabel.Text:match("^%s+") then
+				textlabel2 = text.TextLabel
+			end
+		end
 	end
-	if not text then return end
-	textlabel2 = text:WaitForChild("TextLabel")
 	local originalText = textlabel2.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 	local startpos
