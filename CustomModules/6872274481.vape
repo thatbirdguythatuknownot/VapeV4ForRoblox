@@ -1458,7 +1458,15 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	local startpos
 	local pattern
 	startpos, endpos, pattern = findWord(modifiedText, toxicTable)
-	if not startpos then return end
+	if not startpos then
+		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
+		textlabel2.Text = originalText
+		wait(.5)
+		if textlabel2.Text ~= originalText then
+			textlabel2.Text = originalText
+		end
+		return
+	end
 	while startpos do
 		modifiedText = modifiedText:gsub("%f[A-Za-z0-9_]"..pattern.."%f[^A-Za-z0-9_]", "<b><i>*"..niceTable[pattern].."*</i></b>")
 		startpos, endpos, pattern = findWord(modifiedText, toxicTable)
@@ -1472,6 +1480,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 		textlabel2.RichText = true
 		textlabel2.Text = modifiedText
 	end)
+	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	textlabel2.RichText = true
 	textlabel2.Text = modifiedText
 	wait(0.5)
