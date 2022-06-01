@@ -1448,8 +1448,8 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	--if textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then return end
 	if textlabel2.Text:match("^%s+_+$") then
 		for _,v in pairs(players:GetPlayers()) do
-			local scroller = v.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller
-			text = scroller[#scroller]
+			local chat = v.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller:GetChildren()
+			text = chat[#chat]
 			if text.TextLabel.Text:match("^%s+_+$") == nil and text.TextLabel.Text:match("^%s+") then
 				break
 			end
