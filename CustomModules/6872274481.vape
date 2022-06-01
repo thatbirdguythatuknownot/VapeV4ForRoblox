@@ -1451,11 +1451,11 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 			local scroller = v.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller
 			text = scroller[#scroller]
 			if text.TextLabel.Text:match("^%s+_+$") == nil and text.TextLabel.Text:match("^%s+") then
-				textlabel2 = text.TextLabel
+				break
 			end
 		end
 	end
-	local originalText = textlabel2.Text
+	local originalText = text.TextLabel.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 	local startpos
 	local pattern
