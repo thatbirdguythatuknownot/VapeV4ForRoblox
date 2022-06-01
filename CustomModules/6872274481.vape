@@ -1347,7 +1347,8 @@ toxicTable = {"[Ll]+", "[Ee][Zz]+", "[Bb][Aa]+[Dd]", "[Ww][Ee][Aa][Kk]", "[Bb][O
 	      "[Bb][Rr][Aa][Ii][Nn][Ll][Ee][Ss][Ss]", "[Ss][Uu][Cc][Kk]", "[Pp][Oo][Oo]+[Rr]", "[Pp][Oo][Oo]+[Rr][Ii][Ee]",
 	      "[Gg][Ee][Tt]%s+[Aa]%s+[Ll][Ii][Ff][Ee]", "[Nn][Oo]%s*[Ll][Ii][Ff][Ee]", "[Ll][Oo][Ss][Ee][Rr]+",
 	      "[Kk][Ii][Ll][Ll]%s+[Yy][Oo][Uu][Rr]", "[Hh][Aa][Cc][Kk]%s+[Tt][Oo]%s+[Ww][Ii][Nn]", "[Kk][Ii][Dd]+",
-	      "[Aa][Dd][Oo][Pp][Tt][Ee][Dd]", "[Cc][Oo][Mm][Mm][Ii][Tt]%s+[Nn][Oo][Tt]%s+[Aa][Ll][Ii][Vv][Ee]", "[Dd][Ii][Ee]"}
+	      "[Aa][Dd][Oo][Pp][Tt][Ee][Dd]", "[Cc][Oo][Mm][Mm][Ii][Tt]%s+[Nn][Oo][Tt]%s+[Aa][Ll][Ii][Vv][Ee]", "[Dd][Ii][Ee]",
+	      "[Ss][Hh][Uu][Tt]%s*[Uu][Pp]"}
 local function findWord(text, wordTable)
 	for _, v in ipairs(wordTable) do
 		matched = {text:find("%f[A-Za-z0-9_]"..v.."%f[^A-Za-z0-9_]")}
@@ -1384,7 +1385,8 @@ niceTable = {
 	["[Kk][Ii][Dd]+"] = "mature guy",
 	["[Aa][Dd][Oo][Pp][Tt][Ee][Dd]"] = "lucky to still have real parents",
 	["[Cc][Oo][Mm][Mm][Ii][Tt]%s+[Nn][Oo][Tt]%s+[Aa][Ll][Ii][Vv][Ee]"] = "nice skills",
-	["[Dd][Ii][Ee]"] = "nice skills"
+	["[Dd][Ii][Ee]"] = "nice skills",
+	["[Ss][Hh][Uu][Tt]%s*[Uu][Pp]"] = "ok"
 }
 
 chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
