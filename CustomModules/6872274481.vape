@@ -1305,7 +1305,7 @@ end)
 toxicTable =  {"[Ll]+", "[Ee][Zz]+", "[Bb][Aa]+[Dd]", "[Ww][Ee][Aa][Kk]", "[Bb][Oo][Zz][Oo]",
                "[Ff][Aa][Tt][Hh][Ee][Rr][Ll][Ee][Ss][Ss]", "[Ii][Mm][Aa][Gg][Ii][Nn][Ee]", "[Ss][Kk][Ii][Ll][Ll] [Ii][Ss][Ss][Uu][Ee]",
 	       "[Nn][Oo] [Ss][Kk][Ii][Ll][Ll]", "[Mm][Aa]+[Dd]", "[Tt][Rr][Aa][Ss][Hh]", "[Nn][Oo][Oo]+[Bb]", "[Nn][Uu][Bb]",
-	       "[Bb][Rr][Aa][Ii][Nn][Ll][Ee][Ss][Ss]", "[Ss][Uu][Cc][Kk]", "[Pp][Oo][Oo]+[Rr]"}
+	       "[Bb][Rr][Aa][Ii][Nn][Ll][Ee][Ss][Ss]", "[Ss][Uu][Cc][Kk]", "[Pp][Oo][Oo]+[Rr]", "[Pp][Oo][Oo]+[Rr][Ii][Ee]"}
 local function findWord(text, wordTable)
 	for _, v in ipairs(wordTable) do
 		matched = {text:find("%f[A-Za-z0-9_]"..v.."%f[^A-Za-z0-9_]")}
@@ -1332,7 +1332,8 @@ niceTable = {
 	["[Nn][Uu][Bb]"] = "pro",
 	["[Bb][Rr][Aa][Ii][Nn][Ll][Ee][Ss][Ss]"] = "big brain",
 	["[Ss][Uu][Cc][Kk]"] = "awesome",
-	["[Pp][Oo][Oo]+[Rr]"] "rich"
+	["[Pp][Oo][Oo]+[Rr]"] = "rich",
+	["[Pp][Oo][Oo]+[Rr][Ii][Ee]"] = "rich guy"
 }
 
 chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
