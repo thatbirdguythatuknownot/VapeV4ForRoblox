@@ -1348,7 +1348,7 @@ toxicTable = {"[Ll]+", "[Ee][Zz]+", "[Bb][Aa]+[Dd]", "[Ww][Ee][Aa][Kk]", "[Bb][O
 	      "[Gg][Ee][Tt]%s+[Aa]%s+[Ll][Ii][Ff][Ee]", "[Nn][Oo]%s*[Ll][Ii][Ff][Ee]", "[Ll][Oo][Ss][Ee][Rr]+",
 	      "[Kk][Ii][Ll][Ll]%s+[Yy][Oo][Uu][Rr]", "[Hh][Aa][Cc][Kk]%s+[Tt][Oo]%s+[Ww][Ii][Nn]", "[Kk][Ii][Dd]+",
 	      "[Aa][Dd][Oo][Pp][Tt][Ee][Dd]", "[Cc][Oo][Mm][Mm][Ii][Tt]%s+[Nn][Oo][Tt]%s+[Aa][Ll][Ii][Vv][Ee]", "[Dd][Ii][Ee]",
-	      "[Ss][Hh][Uu][Tt]%s*[Uu][Pp]"}
+	      "[Ss][Hh][Uu][Tt]%s*[Uu][Pp]", "[Ss][Hh][Aa][Mm][Ee]+"}
 local function findWord(text, wordTable)
 	for _, v in ipairs(wordTable) do
 		matched = {text:find("%f[A-Za-z0-9_]"..v.."%f[^A-Za-z0-9_]")}
@@ -1386,7 +1386,8 @@ niceTable = {
 	["[Aa][Dd][Oo][Pp][Tt][Ee][Dd]"] = "lucky to still have real parents",
 	["[Cc][Oo][Mm][Mm][Ii][Tt]%s+[Nn][Oo][Tt]%s+[Aa][Ll][Ii][Vv][Ee]"] = "nice skills",
 	["[Dd][Ii][Ee]"] = "nice skills",
-	["[Ss][Hh][Uu][Tt]%s*[Uu][Pp]"] = "ok"
+	["[Ss][Hh][Uu][Tt]%s*[Uu][Pp]"] = "ok",
+	["[Ss][Hh][Aa][Mm][Ee]+"] = "gigachad"
 }
 
 chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
@@ -1449,6 +1450,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	if textlabel2.Text:match("^%s+_+$") then
 		local checkchat = true
 		for _,v in pairs(players:GetPlayers()) do
+			if not v:FindFirstChild("PlayerGui") then return end
 			local chat = v.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller:GetChildren()
 			text = chat[#chat]
 			if text.TextLabel.Text:match("^%s+_+$") == nil and text.TextLabel.Text:match("^%s+") then
