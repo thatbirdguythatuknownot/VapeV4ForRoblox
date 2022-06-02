@@ -1433,9 +1433,11 @@ for _, v in pairs(players:GetPlayers()) do
 			if not startpos then
 				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 				textlabel2.Text = originalText
-				wait(.5)
-				if textlabel2.Text ~= originalText then
-					textlabel2.Text = originalText
+				textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
+					if textlabel2.Text ~= originalText then
+						textlabel2.RichText = false
+						textlabel2.Text = originalText
+					end
 				end
 				return
 			end
