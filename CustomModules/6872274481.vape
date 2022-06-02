@@ -1447,17 +1447,21 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	if not textlabel2:FindFirstChild("TextButton") then return end
 	--if textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then return end
 	if textlabel2.Text:match("^%s+_+$") then
+		local checkchat = true
 		for _,v in pairs(players:GetPlayers()) do
 			local chat = v.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller:GetChildren()
 			text = chat[#chat]
 			if text.TextLabel.Text:match("^%s+_+$") == nil and text.TextLabel.Text:match("^%s+") then
+				checkchat = false
 				break
 			end
 		end
-		while text and text.TextLabel.Text:match("^%s+_+$") do
-			task.wait()
+		if checkchat then
+			while text and text.TextLabel.Text:match("^%s+_+$") do
+				task.wait()
+			end
+			if not text then return end
 		end
-		if not text then return end
 	end
 	local originalText = text.TextLabel.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
