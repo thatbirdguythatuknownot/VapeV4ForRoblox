@@ -1454,6 +1454,10 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 				break
 			end
 		end
+		while text and text.TextLabel.Text:match("^%s+_+$") do
+			task.wait()
+		end
+		if not text then return end
 	end
 	local originalText = text.TextLabel.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
