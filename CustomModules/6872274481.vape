@@ -1421,7 +1421,7 @@ for _, v in pairs(players:GetPlayers()) do
 			repeat
 				text = chat[chatidx]
 				chatidx -= 1
-			until text.TextLabel.Text:match("^%s+") and text.TextLabel:FindFirstChild("TextButton") and text.TextLabel.TextButton.Text = "["..name.."]:"
+			until text.TextLabel.Text:match("^%s+") and text.TextLabel:FindFirstChild("TextButton") and text.TextLabel.TextButton.Text == "["..name.."]:"
 			textlabel2 = text.TextLabel
 			if not textlabel2:FindFirstChild("TextButton") then return end
 			--if textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then return end
