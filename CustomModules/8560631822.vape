@@ -39,7 +39,7 @@ if shared.VapeDeveloper then
 else
 	local publicrepo = checkpublicrepo("6872274481")
 	if publicrepo then
-		res, err = loadstring(readfile("vape/CustomModules/6872274481.vape"))
+		res, err = loadstring(publicrepo)
 		if not res then
 			error(err)
 		else
