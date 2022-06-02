@@ -1341,7 +1341,7 @@ GuiLibrary["SelfDestructEvent"].Event:connect(function()
 	end
 end)
 
-toxicTable = {"[Ll]+", "[Ee][Zz]+", "[Bb][Aa]+[Dd]", "[Ww][Ee][Aa][Kk]", "[Bb][Oo][Zz][Oo]",
+toxicTable = {"[Ll]+", "[Ee]+[Zz]+", "[Bb][Aa]+[Dd]", "[Ww][Ee][Aa][Kk]", "[Bb][Oo][Zz][Oo]",
               "[Ff][Aa][Tt][Hh][Ee][Rr][Ll][Ee][Ss][Ss]", "[Ii][Mm][Aa][Gg][Ii][Nn][Ee]", "[Ss][Kk][Ii][Ll][Ll]%s+[Ii][Ss][Ss][Uu][Ee]",
 	      "[Nn][Oo]%s+[Ss][Kk][Ii][Ll][Ll]", "[Mm][Aa]+[Dd]", "[Tt][Rr][Aa][Ss][Hh]", "[Nn][Oo][Oo]+[Bb]", "[Nn][Uu][Bb]",
 	      "[Bb][Rr][Aa][Ii][Nn][Ll][Ee][Ss][Ss]", "[Ss][Uu][Cc][Kk]", "[Pp][Oo][Oo]+[Rr]", "[Pp][Oo][Oo]+[Rr][Ii][Ee]",
@@ -1361,7 +1361,7 @@ local function findWord(text, wordTable)
 end
 niceTable = {
 	["[Ll]+"] = "good job",
-	["[Ee][Zz]+"] = "good job man",
+	["[Ee]+[Zz]+"] = "good job man",
 	["[Bb][Aa]+[Dd]"] = "nice skills",
 	["[Ww][Ee][Aa][Kk]"] = "very good",
 	["[Bb][Oo][Zz][Oo]"] = "my good man",
