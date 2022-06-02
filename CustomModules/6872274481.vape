@@ -1455,10 +1455,11 @@ for _, v in pairs(players:GetPlayers()) do
 			game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 			textlabel2.RichText = true
 			textlabel2.Text = modifiedText
-			wait(0.5)
-			if textlabel2.Text ~= modifiedText then
-				textlabel2.RichText = true
-				textlabel2.Text = modifiedText
+			textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
+				if textlabel2.Text ~= modifiedText and textlabel2.Text ~= originalText then
+					textlabel2.RichText = true
+					textlabel2.Text = modifiedText
+				end
 			end
 		end)
 	end
