@@ -1432,13 +1432,14 @@ for _, v in pairs(players:GetPlayers()) do
 			startpos, endpos, pattern = findWord(modifiedText, toxicTable)
 			if not startpos then
 				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
+				textlabel2.RichText = false
 				textlabel2.Text = originalText
 				textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
 					if textlabel2.Text ~= originalText then
 						textlabel2.RichText = false
 						textlabel2.Text = originalText
 					end
-				end
+				end)
 				return
 			end
 			while startpos do
@@ -1462,7 +1463,7 @@ for _, v in pairs(players:GetPlayers()) do
 					textlabel2.RichText = true
 					textlabel2.Text = modifiedText
 				end
-			end
+			end)
 		end)
 	end
 end
