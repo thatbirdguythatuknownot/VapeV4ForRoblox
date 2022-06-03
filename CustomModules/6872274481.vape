@@ -1341,14 +1341,15 @@ GuiLibrary["SelfDestructEvent"].Event:connect(function()
 	end
 end)
 
-toxicTable = {"[Ll]+", "[Ee]+[Zz]+", "[Bb][Aa]+[Dd]", "[Ww][Ee][Aa][Kk]", "[Bb][Oo][Zz][Oo]",
-              "[Ff][Aa][Tt][Hh][Ee][Rr][Ll][Ee][Ss][Ss]", "[Ii][Mm][Aa][Gg][Ii][Nn][Ee]", "[Ss][Kk][Ii][Ll][Ll]%s+[Ii][Ss][Ss][Uu][Ee]",
-	      "[Nn][Oo]%s+[Ss][Kk][Ii][Ll][Ll]", "[Mm][Aa]+[Dd]", "[Tt][Rr][Aa][Ss][Hh]", "[Nn][Oo][Oo]+[Bb]", "[Nn][Uu][Bb]",
-	      "[Bb][Rr][Aa][Ii][Nn][Ll][Ee][Ss][Ss]", "[Ss][Uu][Cc][Kk]", "[Pp][Oo][Oo]+[Rr]", "[Pp][Oo][Oo]+[Rr][Ii][Ee]",
-	      "[Gg][Ee][Tt]%s+[Aa]%s+[Ll][Ii][Ff][Ee]", "[Nn][Oo]%s*[Ll][Ii][Ff][Ee]", "[Ll][Oo][Ss][Ee][Rr]+",
-	      "[Kk][Ii][Ll][Ll]%s+[Yy][Oo][Uu][Rr]", "[Hh][Aa][Cc][Kk]%s+[Tt][Oo]%s+[Ww][Ii][Nn]", "[Kk][Ii][Dd]+",
-	      "[Aa][Dd][Oo][Pp][Tt][Ee][Dd]", "[Cc][Oo][Mm][Mm][Ii][Tt]%s+[Nn][Oo][Tt]%s+[Aa][Ll][Ii][Vv][Ee]", "[Dd][Ii][Ee]",
-	      "[Ss][Hh][Uu][Tt]%s*[Uu][Pp]", "[Ss][Hh][Aa][Mm][Ee]+"}
+local toxicTable = {"[Ll]+", "[Ee]+[Zz]+", "[Bb][Aa]+[Dd]", "[Ww][Ee][Aa][Kk]", "[Bb][Oo][Zz][Oo]",
+                    "[Ff][Aa][Tt][Hh][Ee][Rr][Ll][Ee][Ss][Ss]", "[Ii][Mm][Aa][Gg][Ii][Nn][Ee]", "[Ss][Kk][Ii][Ll][Ll]%s+[Ii][Ss][Ss][Uu][Ee]",
+	            "[Nn][Oo]%s+[Ss][Kk][Ii][Ll][Ll]", "[Mm][Aa]+[Dd]", "[Tt][Rr][Aa][Ss][Hh]", "[Nn][Oo][Oo]+[Bb]", "[Nn][Uu][Bb]",
+	            "[Bb][Rr][Aa][Ii][Nn][Ll][Ee][Ss][Ss]", "[Ss][Uu][Cc][Kk]", "[Pp][Oo][Oo]+[Rr]", "[Pp][Oo][Oo]+[Rr][Ii][Ee]",
+	            "[Gg][Ee][Tt]%s+[Aa]%s+[Ll][Ii][Ff][Ee]", "[Nn][Oo]%s*[Ll][Ii][Ff][Ee]", "[Ll][Oo][Ss]+[Ee][Rr]+",
+	            "[Kk][Ii][Ll][Ll]%s+[Yy][Oo][Uu][Rr]", "[Hh][Aa][Cc][Kk]%s+[Tt][Oo]%s+[Ww][Ii][Nn]", "[Kk][Ii][Dd]+",
+	            "[Aa][Dd][Oo][Pp][Tt][Ee][Dd]", "[Cc][Oo][Mm][Mm][Ii][Tt]%s+[Nn][Oo][Tt]%s+[Aa][Ll][Ii][Vv][Ee]", "[Dd][Ii][Ee]",
+	            "[Ss][Hh][Uu][Tt]%s*[Uu][Pp]", "[Ss][Hh][Aa][Mm][Ee]+", "[Ll][Oo][Zz]+[Ee][Rr]+", "[Rr][Uu][Nn]+[Ee][Rr]",
+	            "[Ss][Cc][Aa][Rr][Ee]+[Dd]+", "[Ss][Cc][Aa][Rr][Ee]+[Dd][Yy]+%s+[Cc][Aa]+[Tt]+"}
 local function findWord(text, wordTable)
 	for _, v in ipairs(wordTable) do
 		matched = {text:find("%f[A-Za-z0-9_]"..v.."%f[^A-Za-z0-9_]")}
@@ -1359,7 +1360,7 @@ local function findWord(text, wordTable)
 	end
 	return nil
 end
-niceTable = {
+local niceTable = {
 	["[Ll]+"] = "good job",
 	["[Ee]+[Zz]+"] = "good job man",
 	["[Bb][Aa]+[Dd]"] = "nice skills",
@@ -1379,7 +1380,7 @@ niceTable = {
 	["[Pp][Oo][Oo]+[Rr][Ii][Ee]"] = "rich guy",
 	["[Gg][Ee][Tt]%s+[Aa]%s+[Ll][Ii][Ff][Ee]"] = "i wish i had your life",
 	["[Nn][Oo]%s*[Ll][Ii][Ff][Ee]"] = "good life",
-	["[Ll][Oo][Ss][Ee][Rr]+"] = "winner",
+	["[Ll][Oo][Ss]+[Ee][Rr]+"] = "winner",
 	["[Kk][Ii][Ll][Ll]%s+[Yy][Oo][Uu][Rr]"] = "love your",
 	["[Hh][Aa][Cc][Kk]%s+[Tt][Oo]%s+[Ww][Ii][Nn]"] = "nice hacks",
 	["[Kk][Ii][Dd]+"] = "mature guy",
@@ -1387,7 +1388,11 @@ niceTable = {
 	["[Cc][Oo][Mm][Mm][Ii][Tt]%s+[Nn][Oo][Tt]%s+[Aa][Ll][Ii][Vv][Ee]"] = "nice skills",
 	["[Dd][Ii][Ee]"] = "nice skills",
 	["[Ss][Hh][Uu][Tt]%s*[Uu][Pp]"] = "ok",
-	["[Ss][Hh][Aa][Mm][Ee]+"] = "gigachad"
+	["[Ss][Hh][Aa][Mm][Ee]+"] = "gigachad",
+	["[Ll][Oo][Zz]+[Ee][Rr]+"] = "winner",
+	["[Rr][Uu][Nn]+[Ee][Rr]"] = "fighter",
+	["[Ss][Cc][Aa][Rr][Ee]+[Dd]+"] = "brave",
+	["[Ss][Cc][Aa][Rr][Ee]+[Dd][Yy]+%s+[Cc][Aa]+[Tt]+"] = "awesome fighter"
 }
 
 chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
