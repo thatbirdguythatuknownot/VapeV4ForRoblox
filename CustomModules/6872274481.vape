@@ -1414,7 +1414,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	end
 	if not text then return end
 	textlabel2 = text.TextLabel
-	if not textlabel2:match("^%s+") then return end
+	if not textlabel2.Text:match("^%s+") then return end
 	if not textlabel2:FindFirstChild("TextButton") then return end
 	local originalText = textlabel2.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
