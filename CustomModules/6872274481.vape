@@ -1409,70 +1409,52 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 			end
 		end
 	end
-end)
-
-for _, v in pairs(players:GetPlayers()) do
-	if v:IsA("Player") then
-		local name = v.DisplayName or v.Name
-		connectionstodisconnect[#connectionstodisconnect + 1] = v.Chatted:Connect(function(msg)
-			local chat = lplr.PlayerGui.Chat.Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller:GetChildren()
-			local chatlen = #chat
-			local chatidx = #chat
-			local text
-			repeat
-				text = chat[chatidx]
-				chatidx -= 1
-				task.wait()
-			until chatidx < chatlen - 2 or text.TextLabel.Text:match("^%s+") and text.TextLabel:FindFirstChild("TextButton") and text.TextLabel.TextButton.Text == "["..name.."]:"
-			textlabel2 = text.TextLabel
-			if not textlabel2:FindFirstChild("TextButton") then return end
-			local originalText
-			if textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
-				originalText = textlabel2.Text
-			else
-				originalText = textlabel2.Text:match("^%s+")..msg
-			end
-			local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
-			local startpos
-			local pattern
-			startpos, endpos, pattern = findWord(modifiedText, toxicTable)
-			if not startpos then
-				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
+	while text and text.TextLabel.Text:match("^%s+_+$") do
+		task.wait()
+	end
+	if not text then return end
+	textlabel2 = text.TextLabel
+	if not textlabel2:FindFirstChild("TextButton") then return end
+	local originalText = textlabel2.Text
+	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
+	local startpos
+	local pattern
+	startpos, endpos, pattern = findWord(modifiedText, toxicTable)
+	if not startpos then
+		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
+		textlabel2.RichText = false
+		textlabel2.Text = originalText
+		textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
+			if textlabel2.Text ~= originalText then
 				textlabel2.RichText = false
 				textlabel2.Text = originalText
-				textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
-					if textlabel2.Text ~= originalText then
-						textlabel2.RichText = false
-						textlabel2.Text = originalText
-					end
-				end)
-				return
 			end
-			while startpos do
-				modifiedText = modifiedText:gsub("%f[A-Za-z0-9_]"..pattern.."%f[^A-Za-z0-9_]", "<b><i>*"..niceTable[pattern].."*</i></b>")
-				startpos, endpos, pattern = findWord(modifiedText, toxicTable)
-				task.wait()
-			end
-			textlabel2.MouseEnter:Connect(function()
-				textlabel2.RichText = false
-				textlabel2.Text = originalText
-			end)
-			textlabel2.MouseLeave:Connect(function()
-				textlabel2.RichText = true
-				textlabel2.Text = modifiedText
-			end)
-			game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
+		end)
+		return
+	end
+	while startpos do
+		modifiedText = modifiedText:gsub("%f[A-Za-z0-9_]"..pattern.."%f[^A-Za-z0-9_]", "<b><i>*"..niceTable[pattern].."*</i></b>")
+		startpos, endpos, pattern = findWord(modifiedText, toxicTable)
+		task.wait()
+	end
+	textlabel2.MouseEnter:Connect(function()
+		textlabel2.RichText = false
+		textlabel2.Text = originalText
+	end)
+	textlabel2.MouseLeave:Connect(function()
+		textlabel2.RichText = true
+		textlabel2.Text = modifiedText
+	end)
+	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
+	textlabel2.RichText = true
+	textlabel2.Text = modifiedText
+	textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
+		if textlabel2.Text ~= modifiedText and textlabel2.Text ~= originalText then
 			textlabel2.RichText = true
 			textlabel2.Text = modifiedText
-			textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
-				if textlabel2.Text ~= modifiedText and textlabel2.Text ~= originalText then
-					textlabel2.RichText = true
-					textlabel2.Text = modifiedText
-				end
-			end)
-		end)
-	end
-end
+		end
+	end)
+end)
 
 teleportfunc = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
     if State == Enum.TeleportState.Started and bedwars["ClientStoreHandler"] then
