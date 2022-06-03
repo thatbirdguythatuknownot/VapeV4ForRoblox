@@ -1422,14 +1422,16 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	startpos, endpos, pattern = findWord(modifiedText, toxicTable)
 	if not startpos then
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
-		textlabel2.RichText = false
 		textlabel2.Text = originalText
 		textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
 			if textlabel2.Text ~= originalText then
-				textlabel2.RichText = false
 				textlabel2.Text = originalText
 			end
 		end)
+		wait(0.5)
+		if textlabel2.Text ~= originalText then
+			textlabel2.Text = originalText
+		end
 		return
 	end
 	while startpos do
@@ -1454,6 +1456,11 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 			textlabel2.Text = modifiedText
 		end
 	end)
+	wait(0.5)
+	if textlabel2.Text ~= modifiedText then
+		textlabel2.RichText = true
+		textlabel2.Text = modifiedText
+	end
 end)
 
 teleportfunc = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
