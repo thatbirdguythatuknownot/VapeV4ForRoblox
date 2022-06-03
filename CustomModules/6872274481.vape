@@ -1425,7 +1425,7 @@ for _, v in pairs(players:GetPlayers()) do
 			textlabel2 = text.TextLabel
 			if not textlabel2:FindFirstChild("TextButton") then return end
 			--if textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then return end
-			local originalText = msg
+			local originalText = text.TextLabel.Text:match("^%s+")..msg
 			local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 			local startpos
 			local pattern
