@@ -1416,6 +1416,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 			end
 		end
 	end
+	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	while text and text.TextLabel.Text:match("^%s+_+$") do
 		task.wait()
 	end
@@ -1424,24 +1425,11 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	if not textlabel2.Text:match("^%s+") then return end
 	if not textlabel2:FindFirstChild("TextButton") then return end
 	local originalText = textlabel2.Text
-	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 	local startpos
 	local pattern
 	startpos, endpos, pattern = findWord(modifiedText, toxicTable)
-	if not startpos then
-		textlabel2.Text = originalText
-		spawn(function()
-			wait(0.07)
-			textlabel2.Text = originalText
-		end)
-		textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
-			if textlabel2.Text ~= originalText then
-				textlabel2.Text = originalText
-			end
-		end)
-		return
-	end
+	if not startpos then return end
 	while startpos do
 		modifiedText = modifiedText:gsub("%f[A-Za-z0-9_]"..pattern.."%f[^A-Za-z0-9_]", "<b><i>*"..niceTable[pattern].."*</i></b>")
 		startpos, endpos, pattern = findWord(modifiedText, toxicTable)
