@@ -1424,22 +1424,22 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	if not textlabel2.Text:match("^%s+") then return end
 	if not textlabel2:FindFirstChild("TextButton") then return end
 	local originalText = textlabel2.Text
+	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 	local startpos
 	local pattern
 	startpos, endpos, pattern = findWord(modifiedText, toxicTable)
 	if not startpos then
-		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 		textlabel2.Text = originalText
+		spawn(function()
+			wait(0.1)
+			textlabel2.Text = originalText
+		end)
 		textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
 			if textlabel2.Text ~= originalText then
 				textlabel2.Text = originalText
 			end
 		end)
-		wait(0.5)
-		if textlabel2.Text ~= originalText then
-			textlabel2.Text = originalText
-		end
 		return
 	end
 	while startpos do
@@ -1455,20 +1455,21 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 		textlabel2.RichText = true
 		textlabel2.Text = modifiedText
 	end)
-	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	textlabel2.RichText = true
 	textlabel2.Text = modifiedText
+	spawn(function()
+		wait(0.1)
+		if textlabel2.Text ~= modifiedText then
+			textlabel2.RichText = true
+			textlabel2.Text = modifiedText
+		end
+	end)
 	textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
 		if textlabel2.Text ~= modifiedText and textlabel2.Text ~= originalText then
 			textlabel2.RichText = true
 			textlabel2.Text = modifiedText
 		end
 	end)
-	wait(0.5)
-	if textlabel2.Text ~= modifiedText then
-		textlabel2.RichText = true
-		textlabel2.Text = modifiedText
-	end
 end)
 
 teleportfunc = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
