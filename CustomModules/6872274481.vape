@@ -10346,6 +10346,7 @@ runcode(function()
 						autohealconnection2:Disconnect()
 					end
 					autohealconnection2 = char:GetAttributeChangedSignal("Health"):connect(function()
+						if not AutoToxic.Enabled then return end
 						if lplr.Character and lplr.Character:GetAttribute("Health") < 40 and lplr.Character:GetAttribute("Health") > 0 and was_healed then
 							was_healed = false
 							repeat task.wait() until lastDamager
