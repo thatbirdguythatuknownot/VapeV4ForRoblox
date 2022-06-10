@@ -1405,7 +1405,7 @@ local toxicTable = concatArray(
         "brainles+", "su+c+k+s?", "poo+r", "poo+rie+",
         "get%s+a%s+life", "no%s*life", "los+er+",
         "hack*s*%s+to%s+win+", "kid+", "ke+d+",
-        "adopte+d+", "commit%s+not%s+alive", "die+",
+        "adopte+d+", "commit%s+not%s+alive", "die+d*",
         "shut%s*up", "sham+e+", "loz+er+", "run+er",
         "scare+d+", "scare+dy+%s+ca+t+", "u+g+ly+", "su+x+",
         "co+pe+", "be+ta+", "se+the*", "ince+l+",
