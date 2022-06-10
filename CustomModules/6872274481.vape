@@ -6390,7 +6390,7 @@ runcode(function()
                 spawn(function()
                     players:ReportAbuse(plr, reportreason, "he said a bad word")
                 end)
-				if true --[[AutoReportNotify["Enabled"]]] then 
+				if true --[[ AutoReportNotify["Enabled"] ]] then 
 					local warning = createwarning("AutoReport", "Reported "..plr.Name.." for\n"..reportreason..' ('..reportedmatch..')', 15)
 					pcall(function()
 						warning:GetChildren()[5].Position = UDim2.new(0, 46, 0, 38)
