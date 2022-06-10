@@ -1450,7 +1450,8 @@ local toxicTable = concatArray(
         "co+pe+", "be+ta+", "se+the*", "ince+l+",
         "hax%s+to%s+win+", "virgin+", "cry+",
         "brainde+a*d+", "touch%s+gra+s+", "touch%s+s[ou]me?gra+s+",
-	"fa+t+", "e+w+", "let%s*yo+u*%s*win", "let%s*y?u+%s*win"
+	"fa+t+", "e+w+", "let%s*yo+u*%s*win", "let%s*y?u+%s*win",
+	"cri+ng+e+"
     }),
     wordsbegin({
         "kil+%s+yo+u*r", "kil+%s+y?u+r", "yo+u*r*%s*m[ou]+m+",
@@ -1471,6 +1472,7 @@ local niceTable = keysFrom(toxicTable, {
 	"nice hacks", "chad", "so good",
 	"big brain", "brb gonna touch grass", "brb gonna touch grass",
 	"fit", "nice", "you too good", "you too good",
+	"good stuff"
 
 	"love your", "love your", "my dad",
 	"my dad", "fair-fight"
