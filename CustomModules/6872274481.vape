@@ -1487,6 +1487,7 @@ local function findFromTable(text, tab)
 	return nil
 end
 
+local AntiToxic = {["Enabled"] = false}
 chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
 	local textlabel2 = text:WaitForChild("TextLabel")
 	local check
@@ -1506,6 +1507,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 			end
 		end
 	end
+	if not AntiToxic["Enabled"] then return end
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	while text and text.TextLabel.Text:match("^%s+_+$") do
 		task.wait()
@@ -1549,6 +1551,10 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 		end
 	end)
 end)
+AntiToxic = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
+	["Name"] = "AntiToxic",
+	["Function"] = function() end
+})
 
 teleportfunc = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
     if State == Enum.TeleportState.Started and bedwars["ClientStoreHandler"] then
