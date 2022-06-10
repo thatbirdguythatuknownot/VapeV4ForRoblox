@@ -3069,7 +3069,7 @@ runcode(function()
 	local antivoidmethod = {["Value"] = "Dynamic"}
 	local antivoidnew = {["Enabled"] = false}
 	local antivoidnewdelay = {["Value"] = 10}
-	local antitransparent = {["Value"] = 0}
+	local antitransparent = {["Value"] = 0.05}
 	local anticolor = {["Hue"] = 1, ["Sat"] = 1, ["Value"] = 0.55}
 	local AntiVoid = {["Enabled"] = false}
 	local antivoiding = false
