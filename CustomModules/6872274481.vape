@@ -6339,7 +6339,7 @@ runcode(function()
 		local plr = players:FindFirstChild(tab["FromSpeaker"])
 		local args = tab.Message:split(" ")
 		local client = clients.ChatStrings1[#args > 0 and args[#args] or tab.Message]
-		if plr and bedwars["CheckPlayerType"](lplr) ~= "DEFAULT" and tab.MessageType == "Whisper" and client ~= nil and alreadysaidlist[plr.Name] == nil then
+		if plr and tab.MessageType == "Whisper" and client ~= nil and alreadysaidlist[plr.Name] == nil then
 			alreadysaidlist[plr.Name] = true
 			spawn(function()
 				local connection
@@ -6388,7 +6388,7 @@ runcode(function()
                 spawn(function()
                     players:ReportAbuse(plr, reportreason, "he said a bad word")
                 end)
-				if AutoReportNotify["Enabled"] then 
+				if true --[[AutoReportNotify["Enabled"]]] then 
 					local warning = createwarning("AutoReport", "Reported "..plr.Name.." for\n"..reportreason..' ('..reportedmatch..')', 15)
 					pcall(function()
 						warning:GetChildren()[5].Position = UDim2.new(0, 46, 0, 38)
