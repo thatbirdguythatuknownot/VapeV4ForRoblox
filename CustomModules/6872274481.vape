@@ -1383,18 +1383,18 @@ local function iPattern(pattern, brackets)
     return table.concat(tmp)
 end
 
-local function words(table)
-	for i, v in ipairs(table) do
-		table[i] = "%f[A-Za-z0-9_]"..iPattern(v, true).."%f[^A-za-z0-9_]"
+local function words(tab)
+	for i, v in ipairs(tab) do
+		tab[i] = "%f[A-Za-z0-9_]"..iPattern(v, true).."%f[^A-za-z0-9_]"
 	end
-	return table
+	return tab
 end
 
-local function wordsbegin(table)
-	for i, v in ipairs(table) do
-		table[i] = "%f[A-Za-z0-9_]"..iPattern(v, true)
+local function wordsbegin(tab)
+	for i, v in ipairs(tab) do
+		tab[i] = "%f[A-Za-z0-9_]"..iPattern(v, true)
 	end
-	return table
+	return tab
 end
 
 local function concatArray(t1, ...)
@@ -1473,9 +1473,9 @@ local niceTable = keysFrom(toxicTable, {
 	"love your", "love your", "my dad",
 	"my dad"
 })
-local function findFromTable(text, table)
+local function findFromTable(text, tab)
 	text = text:lower()
-	for _, v in pairs(table) do
+	for _, v in pairs(tab) do
 		matched = {text:find(v)}
 		if #matched ~= 0 then
 			matched[#matched+1] = v
