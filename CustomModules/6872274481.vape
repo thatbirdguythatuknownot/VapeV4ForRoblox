@@ -6385,7 +6385,7 @@ runcode(function()
 			end
 		end
 		if AutoReport["Enabled"] and plr and plr ~= lplr and alreadyreported[plr] == nil and bedwars["CheckPlayerType"](plr) == "DEFAULT" then
-            local reportreason, reportmatch = findreport(tab.Message)
+            local reportreason, reportedmatch = findreport(tab.Message)
             if reportreason then 
                 spawn(function()
                     players:ReportAbuse(plr, reportreason, "he said a bad word")
