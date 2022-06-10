@@ -1449,7 +1449,8 @@ local toxicTable = concatArray(
         "scare+d+", "scare+dy+%s+ca+t+", "u+g+ly+", "su+x+",
         "co+pe+", "be+ta+", "se+the*", "ince+l+",
         "hax%s+to%s+win+", "virgin+", "cry+",
-        "brainde+a*d+", "touch%s+gra+s+", "touch%s+s[ou]me?gra+s+"
+        "brainde+a*d+", "touch%s+gra+s+", "touch%s+s[ou]me?gra+s+",
+	"fa+t+"
     }),
     wordsbegin({
         "kil+%s+your", "kil+%s+ur", "yo+u*r*%s*m[ou]+m+",
@@ -1469,6 +1470,7 @@ local niceTable = keysFrom(toxicTable, {
 	"celebrate", "sigma", "nice", "nice",
 	"nice hacks", "chad", "so good",
 	"big brain", "brb gonna touch grass", "brb gonna touch grass",
+	"fit",
 
 	"love your", "love your", "my dad",
 	"my dad"
@@ -6272,8 +6274,10 @@ runcode(function()
 		["gay"] = "Bullying",
 		["gae"] = "Bullying",
 		["gey"] = "Bullying",
-		["hacker"] = "Scamming",
+		["hack"] = "Scamming",
+		["report"] = "Bullying",
 		["fat"] = "Bullying",
+		["black"] = "Bullying",
 		["get a life"] = "Bullying",
 		["fatherless"] = "Bullying",
 		["disco"] = "Offsite Links",
@@ -6309,7 +6313,7 @@ runcode(function()
 		msg = msg:lower()
 		for i,v in pairs(reporttable) do 
 			if msg:find(i) then 
-				return v
+				return v, i
 			end
 		end
 		return nil
@@ -6373,13 +6377,16 @@ runcode(function()
 			end
 		end
 		if AutoReport["Enabled"] and plr and plr ~= lplr and alreadyreported[plr] == nil and bedwars["CheckPlayerType"](plr) == "DEFAULT" then
-            local reportreason = findreport(tab.Message)
+            local reportreason, reportmatch = findreport(tab.Message)
             if reportreason then 
                 spawn(function()
                     players:ReportAbuse(plr, reportreason, "he said a bad word")
                 end)
 				if AutoReportNotify["Enabled"] then 
-					createwarning("AutoReport", "reported "..plr.Name.." for "..reportreason, 15)
+					local warning = createwarning("AutoReport", "Reported "..plr.Name.." for\n"..reportreason..' ('..reportedmatch..')', 15)
+					pcall(function()
+						warning:GetChildren()[5].Position = UDim2.new(0, 46, 0, 38)
+					end)
 				end
                 alreadyreported[plr] = true
             end
