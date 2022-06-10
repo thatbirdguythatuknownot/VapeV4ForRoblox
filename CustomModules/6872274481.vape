@@ -1459,7 +1459,7 @@ local toxicTable = concatArray(
 )
 local niceTable = keysFrom(toxicTable, {
 	"good job", "good job man", "nice skills", "very good", "good man",
-	"very nice", "congrats on fulfilling your dreams being", "very good skills",
+	"very nice", "congrats on fulfilling your dreams", "very good skills",
 	"very good skills", "good", "very good", "pro", "pro",
 	"big brain", "awesome", "rich", "rich guy",
 	"i wish i had your life", "have a good life", "winner",
