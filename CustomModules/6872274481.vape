@@ -3666,33 +3666,37 @@ runcode(function()
 	task.spawn(function()
 		repeat task.wait() until matchState ~= 0
 		for i,v in pairs(collectionservice:GetTagged("BedwarsItemShop")) do
-			table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = true, ["EnchantTable"] = false})
+			table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = true, ["EnchantTable"] = false, ["IsVoidPortal"] = false})
 		end
 		for i,v in pairs(collectionservice:GetTagged("BedwarsTeamUpgrader")) do
-			table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = false, ["EnchantTable"] = false})
+			table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = false, ["EnchantTable"] = false, ["IsVoidPortal"] = false})
 		end
 		workspace.ChildAdded:connect(function(v)
 			if v.Name:find("enchant_table") then
-				table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = false, ["EnchantTable"] = true})
+				table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = false, ["EnchantTable"] = true, ["IsVoidPortal"] = false})
+			elseif v.Name:find("void_portal") then
+				table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = false, ["EnchantTable"] = false, ["IsVoidPortal"] = true})
 			end
 		end)
 		for i,v in pairs(workspace:GetChildren()) do
 			if v.Name:find("enchant_table") then
-				table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = false, ["EnchantTable"] = true})
+				table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = false, ["EnchantTable"] = true, ["IsVoidPortal"] = false})
+			elseif v.Name:find("void_portal") then
+				table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = false, ["EnchantTable"] = false, ["IsVoidPortal"] = true})
 			end
 		end
 	end)
 
 	local function nearNPC()
-		local npc, npccheck, enchantcheck = nil, false, false
+		local npc, npccheck, enchantcheck, voidcheck = nil, false, false, false
 		if entity.isAlive then
 			for i, v in pairs(bedwarsshopnpcs) do
 				if (entity.character.HumanoidRootPart.Position - v.Position).magnitude <= 10 then
-					npc, npccheck, enchantcheck = true, npccheck ~= true and v.TeamUpgradeNPC, enchantcheck ~= true and v.EnchantTable
+					npc, npccheck, enchantcheck, voidcheck = true, npccheck ~= true and v.TeamUpgradeNPC, enchantcheck ~= true and v.EnchantTable, voidcheck ~= true and v.IsVoidPortal
 				end
 			end
 		end
-		return npc, not npccheck, enchantcheck
+		return npc, not npccheck, enchantcheck, voidcheck
 	end
 
 	local function getShopItem(itemType)
@@ -3830,7 +3834,7 @@ runcode(function()
 				task.spawn(function()
 					repeat
 						task.wait()
-						local found, npctype, isenchant = nearNPC()
+						local found, npctype, isenchant, isvoid = nearNPC()
 						if found then
 							local inv = bedwars["getInventory"](lplr)
 							local currentupgrades = clientstorestate["Bedwars"]["teamUpgrades"]
@@ -3863,7 +3867,7 @@ runcode(function()
 										end
 									end
 								end
-								if not isenchant then
+								if not (isenchant or isvoid) then
 									for i,v in pairs(buyfunctions) do v(inv, currentupgrades, npctype and "upgrade" or "item") end
 								end
 								for i,v in pairs(AutoBuyCustom["ObjectList"]) do 
@@ -4098,7 +4102,7 @@ runcode(function()
 				task.spawn(function()
 					repeat
 						task.wait()
-						local found, npctype, isenchant = nearNPC()
+						local found, npctype, isenchant, isvoid = nearNPC()
 						if echest == nil then 
 							echest = repstorage.Inventories:FindFirstChild(lplr.Name.."_personal")
 						end
