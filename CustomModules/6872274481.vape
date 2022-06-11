@@ -3666,10 +3666,10 @@ runcode(function()
 	task.spawn(function()
 		repeat task.wait() until matchState ~= 0
 		for i,v in pairs(collectionservice:GetTagged("BedwarsItemShop")) do
-			table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = true, ["EnchantTable"] = nil})
+			table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = true, ["EnchantTable"] = false})
 		end
 		for i,v in pairs(collectionservice:GetTagged("BedwarsTeamUpgrader")) do
-			table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = false, ["EnchantTable"] = nil})
+			table.insert(bedwarsshopnpcs, {["Position"] = v.Position, ["TeamUpgradeNPC"] = false, ["EnchantTable"] = false})
 		end
 		workspace.ChildAdded:connect(function(v)
 			if v.Name:find("enchant_table") then
@@ -3692,7 +3692,7 @@ runcode(function()
 				end
 			end
 		end
-		return npc, not npccheck, not enchantcheck
+		return npc, not npccheck, enchantcheck
 	end
 
 	local function getShopItem(itemType)
