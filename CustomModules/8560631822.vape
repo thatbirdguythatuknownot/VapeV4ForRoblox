@@ -39,6 +39,11 @@ if shared.VapeDeveloper then
 else
 	local publicrepo = checkpublicrepo("6872274481")
 	if publicrepo then
-		loadstring(publicrepo)()
+		res, err = loadstring(publicrepo)
+		if not res then
+			error(err)
+		else
+			res()
+		end
 	end
 end
