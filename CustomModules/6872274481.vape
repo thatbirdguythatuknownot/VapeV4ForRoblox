@@ -4039,23 +4039,28 @@ runcode(function()
 				end)
 				autobankui.BackgroundTransparency = 1
 				autobankui.Parent = GuiLibrary["MainGui"]
-				local emerald = Instance.new("ImageLabel")
+				local voidcryst = Instance.new("ImageLabel")
+				voidcryst.Image = bedwars["getIcon"]({itemType = "void_crystal"}, true)
+				voidcryst.Size = UDim2.new(0, 40, 0, 40)
+				voidcryst.Name = "void_crystal"
+				voidcryst.Position = UDim2.new(0, 120, 0, 0)
+				voidcryst.BackgroundTransparency = 1
+				voidcryst.Parent = autobankui
+				local voidcrysttext = Instance.new("TextLabel")
+				voidcrysttext.TextSize = 20
+				voidcrysttext.BackgroundTransparency = 1
+				voidcrysttext.Size = UDim2.new(1, 0, 1, 0)
+				voidcrysttext.Font = Enum.Font.SourceSans
+				voidcrysttext.TextStrokeTransparency = 0.3
+				voidcrysttext.Name = "Amount"
+				voidcrysttext.Text = ""
+				voidcrysttext.TextColor3 = Color3.new(1, 1, 1)
+				voidcrysttext.Parent = voidcryst
+				local emerald = voidcryst:Clone()
 				emerald.Image = bedwars["getIcon"]({itemType = "emerald"}, true)
-				emerald.Size = UDim2.new(0, 40, 0, 40)
 				emerald.Name = "emerald"
 				emerald.Position = UDim2.new(0, 80, 0, 0)
-				emerald.BackgroundTransparency = 1
 				emerald.Parent = autobankui
-				local emeraldtext = Instance.new("TextLabel")
-				emeraldtext.TextSize = 20
-				emeraldtext.BackgroundTransparency = 1
-				emeraldtext.Size = UDim2.new(1, 0, 1, 0)
-				emeraldtext.Font = Enum.Font.SourceSans
-				emeraldtext.TextStrokeTransparency = 0.3
-				emeraldtext.Name = "Amount"
-				emeraldtext.Text = ""
-				emeraldtext.TextColor3 = Color3.new(1, 1, 1)
-				emeraldtext.Parent = emerald
 				local diamond = emerald:Clone()
 				diamond.Image = bedwars["getIcon"]({itemType = "diamond"}, true)
 				diamond.Position = UDim2.new(0, 40, 0, 0)
@@ -4066,11 +4071,6 @@ runcode(function()
 				iron.Position = UDim2.new(0, 0, 0, 0)
 				iron.Name = "iron"
 				iron.Parent = autobankui
-				local crystal = emerald:Clone()
-				crystal.Image = bedwars["getIcon"]({itemType = "void_crystal"}, true)
-				crystal.Position = UDim2.new(0, 120, 0, 0)
-				crystal.Name = "void_crystal"
-				crystal.Parent = autobankui
 				local echest = repstorage.Inventories:FindFirstChild(lplr.Name.."_personal")
 				if entity.isAlive and echest then
 					local chestitems = bedwars["getInventory"](lplr).items
