@@ -39,6 +39,11 @@ if shared.VapeDeveloper then
 else
 	local publicrepo = checkpublicrepo("6872274481")
 	if publicrepo then
-		loadstring(publicrepo)()
+		thing, err = loadstring(publicrepo)
+		if thing == nil then
+			error(err)
+			return
+		end
+		thing()
 	end
 end
