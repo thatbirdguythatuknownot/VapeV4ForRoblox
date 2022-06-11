@@ -25,6 +25,7 @@ local oldcloneroot
 local matchState = 0
 local kit = ""
 local antivoidypos = 0
+local findreport
 local kills = 0
 local beds = 0
 local lagbacks = 0
@@ -1320,11 +1321,11 @@ local toxicTable = concatArray(
         "hax%s+to%s+win+", "virgin+", "cry+",
         "brainde+a*d+", "touch%s+gra+s+", "touch%s+s[ou]me?gra+s+",
 	"fa+t+", "e+w+", "let%s*yo+u*%s*win", "let%s*y?u+%s*win",
-	"cri+ng+e+"
+	"cri+ng+e+", "use+le*s+"
     }),
     wordsbegin({
         "kil+%s+yo+u*r", "kil+%s+y?u+r", "yo+u*r*%s*m[ou]+m+",
-        "y?u+r*%s*m[ou]+m+", "clap+"
+        "y?u+r*%s*m[ou]+m+", "clap+", "try%s*ha*r+d+"
     })
 )
 local niceTable = keysFrom(toxicTable, {
@@ -1341,10 +1342,10 @@ local niceTable = keysFrom(toxicTable, {
 	"nice hacks", "chad", "so good",
 	"big brain", "brb gonna touch grass", "brb gonna touch grass",
 	"fit", "nice", "you too good", "you too good",
-	"good stuff",
+	"good stuff", "useful"
 
 	"love your", "love your", "my dad",
-	"my dad", "fair-fight"
+	"my dad", "fair-fight", "pro"
 })
 local function findFromTable(text, tab)
 	text = text:lower()
@@ -1462,6 +1463,44 @@ AntiToxic = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOp
 	["Name"] = "AntiToxic",
 	["Function"] = function() end
 })
+
+local AntiReport = {["Enabled"] = false}
+local chatbar = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatBarParentFrame.Frame.BoxFrame.Frame.ChatBar
+local bypass_autoreport = "**АUТO REPORТED**"
+local barconnection
+local barconnection2
+connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChangedSignal("Text"):Connect(function()
+	if barconnection then barconnection:Disconnect() end
+	if barconnection2 then barconnection2:Disconnect() end
+	local start
+	local end
+	local _
+	local text = chatbar.Text
+	if findreport and findreport(text) then
+		local text2 = text
+		 _, pat, start, end = findreport(text2)
+		 if start and end == nil then
+		 	text2 = bypass_autoreport
+		 elseif end then
+		 	while pat do
+				text2 = text2:gsub(pat, bypass_autoreport)
+				_, pat = findreport(text2)
+			end
+		end
+		text2 = text2:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
+		chatbar.Text = text2
+		chatbar.RichText = true
+		barconnection = chatbar.MouseEnter:Connect(function(x, y)
+			chatbar.RichText = false
+			chatbar.Text = text
+		end
+		barconnection2 = chatbar.MouseLeave:Connect(function(x, y)
+			chatbar.Text = text2
+			chatbar.RichText = true
+		end
+	end
+end
+		
 
 teleportfunc = lplr.OnTeleport:Connect(function(State)
     if State == Enum.TeleportState.Started then
@@ -5939,21 +5978,25 @@ runcode(function()
 	local alreadyreported = {}
 	local AutoReportList = {["ObjectList"] = {}}
 
-	local function findreport(msg)
+	findreport = function(msg)
+		local start
+		local end
 		local checkstr = msg:gsub("%W+", ""):lower()
 		for i,v in pairs(reporttable) do 
-			if checkstr:find(i) then 
-				return v, i
+			start, end = checkstr:find(i)
+			if start then 
+				return v, i, start, end
 			end
 		end
 		for i,v in pairs(reporttableexact) do 
 			if checkstr == i then 
-				return v, i
+				return v, i, 1
 			end
 		end
 		for i,v in pairs(AutoReportList["ObjectList"]) do 
-			if checkstr:find(v) then 
-				return "Bullying", v
+			start, end = checkstr:find(v)
+			if start then 
+				return "Bullying", v, start, end
 			end
 		end
 		return nil
