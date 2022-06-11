@@ -5909,7 +5909,6 @@ runcode(function()
 		["bad"] = "Bullying",
 		["trash"] = "Bullying",
 		["nolife"] = "Bullying",
-		["no life"] = "Bullying",
 		["loser"] = "Bullying",
 		["killyour"] = "Bullying",
 		["kys"] = "Bullying",
@@ -5927,6 +5926,7 @@ runcode(function()
 		["lobby"] = "Bullying",
 		["ban"] = "Bullying",
 		["cheat"] = "Scamming",
+		["auto"] = "Scamming",
 	}, keysFrom(toxicTable, repeatTable({"Bullying"}, #toxicTable)))
 
 	local reporttableexact = {
