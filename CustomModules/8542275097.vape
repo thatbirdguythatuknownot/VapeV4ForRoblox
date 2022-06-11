@@ -1472,7 +1472,7 @@ runcode(function()
 					end
 				end
 				if AutoToxicWin["Enabled"] then
-					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(#AutoToxicPhrases["ObjectList"] > 0 and AutoToxicPhrases["ObjectList"][math.random(1, #AutoToxicPhrases["ObjectList"])] or "EZ L TRASH KIDS", "All")
+					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(#AutoToxicPhrases["ObjectList"] > 0 and AutoToxicPhrases["ObjectList"][math.random(1, #AutoToxicPhrases["ObjectList"])] or "GG yall played really good", "All")
 				end
 			end
 		end
@@ -1480,7 +1480,7 @@ runcode(function()
 
 	chatconnection = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:connect(function(tab, channel)
 		local plr = players[tab["FromSpeaker"]]
-		if (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and (tab["Message"]:lower():find("hack") or tab["Message"]:lower():find("exploit") or tab["Message"]:lower():find("cheat"))) and plr ~= lplr and table.find(ignoredplayers, plr.UserId) == nil and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
+		if (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and (tab["Message"]:lower():find("hack") or tab["Message"]:lower():find("hax") or tab["Message"]:lower():find("exploit") or tab["Message"]:lower():find("cheater"))) and plr ~= lplr and table.find(ignoredplayers, plr.UserId) == nil and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
 			local custommsg = #AutoToxicPhrases4["ObjectList"] > 0 and AutoToxicPhrases4["ObjectList"][math.random(1, #AutoToxicPhrases4["ObjectList"])]
 			if custommsg == lastsaid2 then
 				custommsg = #AutoToxicPhrases4["ObjectList"] > 0 and AutoToxicPhrases4["ObjectList"][math.random(1, #AutoToxicPhrases4["ObjectList"])]
@@ -1490,7 +1490,7 @@ runcode(function()
 			if custommsg then
 				custommsg = custommsg:gsub("<name>", (plr.DisplayName or plr.Name))
 			end
-			local msg = custommsg or "waaaa waaaa "..(plr.DisplayName or plr.Name)
+			local msg = custommsg or "ok "..(plr.DisplayName or plr.Name)
 			game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 			table.insert(ignoredplayers, plr.UserId)
 		end
@@ -1502,7 +1502,7 @@ runcode(function()
 			if p7 == lplr and leavesaid == false then
 				leavesaid = true
 				if AutoToxic["Enabled"] and AutoToxicDeath["Enabled"] then
-					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(#AutoToxicPhrases3["ObjectList"] > 0 and AutoToxicPhrases3["ObjectList"][math.random(1, #AutoToxicPhrases3["ObjectList"])] or "My gaming chair expired midfight.", "All")
+					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(#AutoToxicPhrases3["ObjectList"] > 0 and AutoToxicPhrases3["ObjectList"][math.random(1, #AutoToxicPhrases3["ObjectList"])] or "You got pure skill.", "All")
 				end
 			end
 			if AutoToxic["Enabled"] then
@@ -1518,7 +1518,7 @@ runcode(function()
 						if custommsg then
 							custommsg = custommsg:gsub("<name>", (plr.DisplayName or plr.Name))
 						end
-						local msg = custommsg or "L "..(plr.DisplayName or plr.Name)
+						local msg = custommsg or "sorry my guy "..(plr.DisplayName or plr.Name)
 						game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 					end
 				end
