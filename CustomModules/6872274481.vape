@@ -5923,7 +5923,6 @@ runcode(function()
 		["download"] = "Offsite Links",
 		["youtube"] = "Offsite Links",
 		["die"] = "Bullying",
-		["lobby"] = "Bullying",
 		["ban"] = "Bullying",
 		["cheat"] = "Scamming",
 		["auto"] = "Scamming",
