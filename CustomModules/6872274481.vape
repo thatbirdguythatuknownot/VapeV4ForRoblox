@@ -1221,9 +1221,9 @@ local function iPatternSpace(pattern, brackets)
             tmp[#tmp+1] = char          -- add to tmp table
             i=i+1                       -- next char position
             char = pattern:sub(i,i)
-            tmp[#tmp+1] = char
+            tmp[#tmp] = tmp[#tmp]..char
             if char == 'b' then         -- '%bxy' - add next 2 chars
-                tmp[#tmp+1] = pattern:sub(i+1,i+2)
+                tmp[#tmp] = tmp[#tmp]..pattern:sub(i+1,i+2)
                 i=i+2
             end
         elseif char=='[' then           -- brackets
@@ -1232,19 +1232,21 @@ local function iPatternSpace(pattern, brackets)
             while i <= #pattern do
                 char = pattern:sub(i,i)
                 if char == '%' then     -- no '%bxy' inside brackets
-                    tmp[#tmp+1] = char
-                    tmp[#tmp+1] = pattern:sub(i+1,i+1)
+                    tmp[#tmp] = tmp[#tmp]..char
+                    tmp[#tmp] = tmp[#tmp]..pattern:sub(i+1,i+1)
                     i = i+1
                 elseif char:match("%a") then    -- letter
-                    tmp[#tmp+1] = not brackets and char or char:lower()..char:upper()
+                    tmp[#tmp] = tmp[#tmp]..(not brackets and char or char:lower()..char:upper())
                 else                            -- something else
-                    tmp[#tmp+1] = char
+                    tmp[#tmp] = tmp[#tmp]..char
                 end
                 if char==']' then break end -- close bracket
                 i = i+1
             end
         elseif char:match("%a") then    -- letter
             tmp[#tmp+1] = '['..char:lower()..char:upper()..']'
+	elseif char:match("[*+-?]") then     -- quantifier
+	    tmp[#tmp] = tmp[#tmp]..char
         else
             tmp[#tmp+1] = char          -- something else
         end
