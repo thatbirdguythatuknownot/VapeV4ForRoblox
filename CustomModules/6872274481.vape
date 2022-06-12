@@ -1211,7 +1211,7 @@ GuiLibrary["SelfDestructEvent"].Event:connect(function()
 	end
 end)
 
-local function iPattern(pattern, brackets)
+local function iPatternSpace(pattern, brackets)
     ('sanity check'):find(pattern)
     local tmp = {}
     local i=1
@@ -1250,19 +1250,19 @@ local function iPattern(pattern, brackets)
         end
         i=i+1
     end
-    return table.concat(tmp)
+    return table.concat(tmp, "%s*")
 end
 
 local function words(tab)
 	for i, v in ipairs(tab) do
-		tab[i] = "%f[A-Za-z0-9_]"..iPattern(v, true).."%f[^A-za-z0-9_]"
+		tab[i] = "%f[A-Za-z0-9_]"..iPatternSpace(v, true).."%f[^A-za-z0-9_]"
 	end
 	return tab
 end
 
 local function wordsbegin(tab)
 	for i, v in ipairs(tab) do
-		tab[i] = "%f[A-Za-z0-9_]"..iPattern(v, true)
+		tab[i] = "%f[A-Za-z0-9_]"..iPatternSpace(v, true)
 	end
 	return tab
 end
@@ -1308,40 +1308,40 @@ end
 
 local toxicTable = concatArray(
     words({
-        "l+", "e+z+", "ba+d", "weak+", "bozo+",
+        "ba+d", "weak+", "bozo+",
         "fathe+rle+s+",
         "ma+d", "trash", "noo+b+", "nu+b+",
-        "brainles+", "su+c+k+s?", "poo+r", "poo+rie+",
+        "brainles+", "su+c+k+[sz]?",
         "get%s+a%s+life", "no%s*life", "lo[sz]+er+",
         "hack*[sz]*%s+to%s+win+", "kid+", "ke+d+",
         "adopte+d+", "commit%s+not%s+alive", "die+d*",
         "shut%s*up", "sham+e+",
         "scare+d+", "scare+dy+%s+ca+t+", "u+g+ly+", "su+x+",
         "co+pe+", "be+ta+", "se+the*", "ince+l+",
-        "hax%s+to%s+win+", "virgin+", "cry+",
+        "hax%s+to%s+win+", "virgin+",
         "brainde+a*d+", "touch%s+gra+s+", "touch%s+s[ou]me?gra+s+",
 	"fa+t+", "e+w+", "let%s*yo+u*%s*win", "let%s*y?u+%s*win",
-	"cri+ng+e+", "use+le*[sz]+"
+	"cri+ng+e+", "use+le*[sz]+",
     }),
     wordsbegin({
         "kil+%s+yo+u*r", "kil+%s+y?u+r", "yo+u*r*%s*m[ou]+m+",
         "y?u+r*%s*m[ou]+m+", "clap+", "try%s*ha*r+d+", "du+m+",
 	"cance+r+", "run+er", "skill%s+is+u+e+", "ima*gi+n+",
-	"no%s+skill+"
+	"no%s+skill+", "poo+r", "l+", "e+z+", "cry+"
     })
 )
 local niceTable = keysFrom(toxicTable, {
-	"good job", "good job man", "nice skills", "very good", "good man",
+	"nice skills", "very good", "good man",
 	"very nice",
 	"good", "very good", "pro", "pro",
-	"big brain", "awesome", "rich", "rich guy",
+	"big brain", "awesome",
 	"i wish i had your life", "have a good life", "winner",
 	"nice hacks", "mature guy", "mature guy",
 	"lucky to still have real parents", "nice skills", "nice skills",
 	"keep going :)", "gigachad",
 	"brave", "brave fighter", "beautiful", "awesome",
 	"celebrate", "sigma", "nice", "nice",
-	"nice hacks", "chad", "so good",
+	"nice hacks", "chad",
 	"big brain", "brb gonna touch grass", "brb gonna touch grass",
 	"fit", "nice", "you too good", "you too good",
 	"good stuff", "useful",
@@ -1349,7 +1349,7 @@ local niceTable = keysFrom(toxicTable, {
 	"love your", "love your", "my dad",
 	"my dad", "fair-fight", "pro", "smart",
 	"pro", "fighter", "very good skills", "congrats on fulfilling your dreams",
-	"very good skills"
+	"very good skills", "rich", "good job", "good job man", "so good"
 })
 local function findFromTable(text, tab)
 	text = text:lower()
