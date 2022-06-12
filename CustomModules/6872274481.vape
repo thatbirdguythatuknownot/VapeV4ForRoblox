@@ -1501,11 +1501,11 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 		barconnection = chatbar.MouseEnter:Connect(function(x, y)
 			chatbar.RichText = false
 			chatbar.Text = text
-		end
+		end)
 		barconnection2 = chatbar.MouseLeave:Connect(function(x, y)
 			chatbar.Text = text2
 			chatbar.RichText = true
-		end
+		end)
 	end
 end
 		
