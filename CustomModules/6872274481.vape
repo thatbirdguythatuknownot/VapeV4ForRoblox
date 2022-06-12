@@ -1507,7 +1507,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 			chatbar.RichText = true
 		end)
 	end
-end
+end)
 		
 
 teleportfunc = lplr.OnTeleport:Connect(function(State)
