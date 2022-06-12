@@ -1497,13 +1497,16 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 		end
 		text2 = text2:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 		chatbar.Text = text2
+		chatbar.CursorPosition = chatbar.CursorPosition + 17
 		chatbar.RichText = true
 		barconnection = chatbar.MouseEnter:Connect(function(x, y)
 			chatbar.RichText = false
+			chatbar.CursorPosition = chatbar.CursorPosition - 17
 			chatbar.Text = text
 		end)
 		barconnection2 = chatbar.MouseLeave:Connect(function(x, y)
 			chatbar.Text = text2
+			chatbar.CursorPosition = chatbar.CursorPosition + 17
 			chatbar.RichText = true
 		end)
 	end
