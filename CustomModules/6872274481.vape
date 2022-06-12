@@ -1329,7 +1329,8 @@ local toxicTable = concatArray(
         "kil+%s+yo+u*r", "kil+%s+y?u+r", "yo+u*r*%s*m[ou]+m+",
         "y?u+r*%s*m[ou]+m+", "clap+", "try%s*ha*r+d+", "du+m+",
 	"cance+r+", "run+er", "skill%s+is+u+e+", "ima*gi+n+",
-	"no%s+skill+", "poo+r", "l+", "e+z+", "cry+"
+	"no%s+skill+", "poo+r", "l+", "e+z+", "cry+",
+	"no+w*o+n+e*li+k+e*s+y?[ou]+u*"
     })
 )
 local niceTable = keysFrom(toxicTable, {
@@ -1351,7 +1352,8 @@ local niceTable = keysFrom(toxicTable, {
 	"love your", "love your", "my dad",
 	"my dad", "fair-fight", "pro", "smart",
 	"pro", "fighter", "very good skills", "congrats on fulfilling your dreams",
-	"very good skills", "rich", "good job", "good job man", "so good"
+	"very good skills", "rich", "good job", "good job man", "so good",
+	"everyone loves you"
 })
 local function findFromTable(text, tab)
 	text = text:lower()
