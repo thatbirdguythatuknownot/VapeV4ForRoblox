@@ -1474,7 +1474,7 @@ AntiToxic = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOp
 
 local AntiReport = {["Enabled"] = false}
 local chatbar = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatBarParentFrame.Frame.BoxFrame.Frame.ChatBar
-local bypass_autoreport = "**АUТO REPORТED**"
+local bypass_autoreport = "<b><i>**АUТO REPORТED**</i></b>"
 local barconnection
 local barconnection2
 connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChangedSignal("Text"):Connect(function()
@@ -1485,7 +1485,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 	local _
 	local text = chatbar.Text
 	if findreport and findreport(text) then
-		local text2 = text
+		local text2 = text:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 		 _, pat, start, end_ = findreport(text2)
 		 if start and end_ == nil then
 		 	text2 = bypass_autoreport
@@ -1495,14 +1495,13 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 				_, pat = findreport(text2)
 			end
 		end
-		text2 = text2:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 		chatbar.Text = text2
 		chatbar.CursorPosition = chatbar.CursorPosition + 17
 		chatbar.RichText = true
 		barconnection = chatbar.MouseEnter:Connect(function(x, y)
-			chatbar.RichText = false
-			chatbar.CursorPosition = chatbar.CursorPosition - 17
 			chatbar.Text = text
+			chatbar.CursorPosition = chatbar.CursorPosition - 17
+			chatbar.RichText = false
 		end)
 		barconnection2 = chatbar.MouseLeave:Connect(function(x, y)
 			chatbar.Text = text2
@@ -1511,6 +1510,10 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 		end)
 	end
 end)
+AntiReport = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
+	["Name"] = "AntiReport"
+	["Function"] = function() end
+})
 		
 
 teleportfunc = lplr.OnTeleport:Connect(function(State)
