@@ -5988,12 +5988,12 @@ runcode(function()
 
 	findreport = function(msg)
 		local start
-		local end
+		local end_
 		local checkstr = msg:gsub("%W+", ""):lower()
 		for i,v in pairs(reporttable) do 
-			start, end = checkstr:find(i)
+			start, end_ = checkstr:find(i)
 			if start then 
-				return v, i, start, end
+				return v, i, start, end_
 			end
 		end
 		for i,v in pairs(reporttableexact) do 
@@ -6002,9 +6002,9 @@ runcode(function()
 			end
 		end
 		for i,v in pairs(AutoReportList["ObjectList"]) do 
-			start, end = checkstr:find(v)
+			start, end_ = checkstr:find(v)
 			if start then 
-				return "Bullying", v, start, end
+				return "Bullying", v, start, end_
 			end
 		end
 		return nil
