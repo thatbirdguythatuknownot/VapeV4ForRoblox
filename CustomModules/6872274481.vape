@@ -1477,7 +1477,12 @@ local chatbar = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatBarParentFrame.Fra
 local bypass_autoreport = "<b><i>**АUТO REPORТED**</i></b>"
 local barconnection
 local barconnection2
+local artificialchange
 connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChangedSignal("Text"):Connect(function()
+	if artificialchange then
+		artificialchange = false
+		return
+	end
 	if barconnection then barconnection:Disconnect() end
 	if barconnection2 then barconnection2:Disconnect() end
 	local start
@@ -1495,6 +1500,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 				_, pat = findreport(text2)
 			end
 		end
+		artificialchange = true
 		chatbar.Text = text2
 		chatbar.CursorPosition = chatbar.CursorPosition + 17
 		chatbar.RichText = true
