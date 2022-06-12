@@ -1481,15 +1481,15 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 	if barconnection then barconnection:Disconnect() end
 	if barconnection2 then barconnection2:Disconnect() end
 	local start
-	local end
+	local end_
 	local _
 	local text = chatbar.Text
 	if findreport and findreport(text) then
 		local text2 = text
-		 _, pat, start, end = findreport(text2)
-		 if start and end == nil then
+		 _, pat, start, end_ = findreport(text2)
+		 if start and end_ == nil then
 		 	text2 = bypass_autoreport
-		 elseif end then
+		 elseif end_ then
 		 	while pat do
 				text2 = text2:gsub(pat, bypass_autoreport)
 				_, pat = findreport(text2)
@@ -6133,7 +6133,11 @@ runcode(function()
 			table.insert(ignoredplayers, plr.UserId)
 		end
 		if (findFromTable(tab["Message"], toxicTable)) and plr ~= lplr and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
-			game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("thanks "..(plr.DisplayName or plr.Name).." my guy | easy.gg", "All")
+			if AntiToxic["Enabled"] then
+				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("thanks "..(plr.DisplayName or plr.Name).." my guy | easy.gg", "All")
+			else
+				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("uno reverse "..(plr.DisplayName or plr.Name).." my guy | easy.gg", "All")
+			end
 		end
 	end)
 end)
