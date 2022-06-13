@@ -1514,6 +1514,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 	local end_
 	local _
 	local text = chatbar.Text
+	local excepts = {}
 	if findreport and findreport(text) then
 		local text2 = text:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 		 _, pat, start, end_ = findreport(text2)
@@ -1521,8 +1522,9 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 		 	text2 = bypass_autoreport
 		 elseif end_ then
 		 	while pat do
+				excepts[#excepts+1] = pat
 				text2 = text2:gsub(pat, bypass_autoreport)
-				_, pat = findreport(text2)
+				_, pat = findreport(text2, excepts)
 			end
 		end
 		censorlabel.Text = text2
@@ -6029,22 +6031,37 @@ runcode(function()
 	local alreadyreported = {}
 	local AutoReportList = {["ObjectList"] = {}}
 
-	findreport = function(msg)
+	local function containsexact(x, tab)
+		for _, v in pairs(tab) do
+			if x == v then
+				return true
+			end
+		end
+		return false
+	end
+
+	findreport = function(msg, excepts)
+		if not excepts then
+			excepts = {}
+		end
 		local start
 		local end_
 		local checkstr = msg:gsub("%W+", ""):lower()
-		for i,v in pairs(reporttable) do 
+		for i,v in pairs(reporttable) do
+			if containsexact(i, excepts) then continue end
 			start, end_ = checkstr:find(i)
 			if start then 
 				return v, i, start, end_
 			end
 		end
-		for i,v in pairs(reporttableexact) do 
+		for i,v in pairs(reporttableexact) do
+			if containsexact(i, excepts) then continue end
 			if checkstr == i then 
 				return v, i, 1
 			end
 		end
-		for i,v in pairs(AutoReportList["ObjectList"]) do 
+		for i,v in pairs(AutoReportList["ObjectList"]) do
+			if containsexact(v, excepts) then continue end
 			start, end_ = checkstr:find(v)
 			if start then 
 				return "Bullying", v, start, end_
