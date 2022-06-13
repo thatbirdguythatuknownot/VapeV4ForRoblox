@@ -1445,6 +1445,10 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
 	if not startpos then return end
 	while startpos do
+		if niceTable[pattern] == nil then
+			print(pattern)
+			return
+		end
 		modifiedText = modifiedText:gsub(pattern, "<b><i>*"..niceTable[pattern].."*</i></b>")
 		startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
 		task.wait()
@@ -4238,38 +4242,6 @@ runcode(function()
 	})
 end)
 
-bedwars["ClientHandler"]:WaitFor("EntityDamageEvent"):andThen(function(p3)
-	local dieconnect
-	local was_healed = true
-	damageconnection = p3:Connect(function(p4)
-		if p4.entityInstance == lplr.Character or p4.entityInstance == oldchar then
-			plr = {Name = ""}
-			if p4.fromEntity then
-				plr = players:GetPlayerFromCharacter(p4.fromEntity)
-			end
-			lastDamager = plr
-			if not AutoToxic.Enabled then return end
-			if lplr.Character and lplr.Character:GetAttribute("Health") < 40 and lplr.Character:GetAttribute("Health") > 0 and was_healed then
-				was_healed = false
-				if (plr.DisplayName or plr.Name) ~= "" then
-					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO "..(lastDamager.DisplayName or lastDamager.Name).." MY GUY CHILL | easy.gg", "All")
-				else
-					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO CHILL | easy.gg", "All")
-				end
-				dieconnect = lplr.Character.Humanoid.Died:Connect(function()
-					dieconnect:Disconnect()
-					was_healed = true
-					lastDamager = nil
-				end)
-			elseif lplr.Character and lplr.Character:GetAttribute("Health") > 39 and not was_healed then
-				was_healed = true
-				lastDamager = nil
-				if dieconnect then dieconnect:Disconnect() end
-			end	
-		end
-	end)
-end)
-
 runcode(function()
 	local Schematica = {["Enabled"] = false}
 	local SchematicaBox = {["Value"] = ""}
@@ -5684,6 +5656,38 @@ connectionstodisconnect[#connectionstodisconnect + 1] = bedwars["ClientHandler"]
 			end
 		end
     end
+end)
+
+bedwars["ClientHandler"]:WaitFor("EntityDamageEvent"):andThen(function(p3)
+	local dieconnect
+	local was_healed = true
+	damageconnection = p3:Connect(function(p4)
+		if p4.entityInstance == lplr.Character or p4.entityInstance == oldchar then
+			plr = {Name = ""}
+			if p4.fromEntity then
+				plr = players:GetPlayerFromCharacter(p4.fromEntity)
+			end
+			lastDamager = plr
+			if not AutoToxic["Enabled"] then return end
+			if lplr.Character and lplr.Character:GetAttribute("Health") < 40 and lplr.Character:GetAttribute("Health") > 0 and was_healed then
+				was_healed = false
+				if (plr.DisplayName or plr.Name) ~= "" then
+					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO "..(lastDamager.DisplayName or lastDamager.Name).." MY GUY CHILL | easy.gg", "All")
+				else
+					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO CHILL | easy.gg", "All")
+				end
+				dieconnect = lplr.Character.Humanoid.Died:Connect(function()
+					dieconnect:Disconnect()
+					was_healed = true
+					lastDamager = nil
+				end)
+			elseif lplr.Character and lplr.Character:GetAttribute("Health") > 39 and not was_healed then
+				was_healed = true
+				lastDamager = nil
+				if dieconnect then dieconnect:Disconnect() end
+			end	
+		end
+	end)
 end)
 
 local priolist = {
