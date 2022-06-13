@@ -746,7 +746,7 @@ for _, v in pairs{
     "C", "Cf", "Cg", "Cs", "Ct", "Clb",
     "div_string", "div_table", "div_number", "div_function"
 } do
-    compilers[v] = load(([=[
+    compilers[v] = loadstring(([=[
     local compile, expose, type, LL = ...
     return function (pt, ccache)
         local matcher, this_aux = compile(pt.pattern, ccache), pt.aux
@@ -797,7 +797,7 @@ end
 for _, v in pairs{
     "Cb", "Cc", "Cp"
 } do
-    compilers[v] = load(([=[
+    compilers[v] = loadstring(([=[
     return function (pt, ccache)
         local this_aux = pt.aux
         return function (sbj, si, caps, ci, state)
@@ -886,7 +886,7 @@ compilers["string"] = function (pt, ccache)
     end
 end
 compilers["char"] = function (pt, ccache)
-    return load(([=[
+    return loadstring(([=[
         local s_byte, s_char = ...
         return function(sbj, si, caps, ci, state)
             local c, nsi = s_byte(sbj, si), si + 1
@@ -1043,7 +1043,7 @@ compilers["choice"] = function (pt, ccache)
             return false, si, ci
         end]=]
     }
-    return load(compiled, "Choice")(t_unpack(choices))
+    return loadstring(compiled, "Choice")(t_unpack(choices))
 end
 local sequence_tpl = [=[
             success, si, ci = XXXX(sbj, si, caps, ci, state)
@@ -1069,7 +1069,7 @@ compilers["sequence"] = function (pt, ccache)
             return true, si, ci
         end]=]
     }
-   return load(compiled, "Sequence")(t_unpack(sequence))
+   return loadstring(compiled, "Sequence")(t_unpack(sequence))
 end
 compilers["at most"] = function (pt, ccache)
     local matcher, n = compile(pt.pattern, ccache), pt.aux
@@ -1366,7 +1366,7 @@ local byteset_new, isboolset, isbyteset
 local byteset_mt = {}
 local
 function byteset_constructor (upper)
-    local set = setmetatable(load(t_concat{
+    local set = setmetatable(loadstring(t_concat{
         "return{ [0]=false",
         (", false"):rep(upper),
         " }"
@@ -2117,7 +2117,7 @@ function escape( str )
 end
 local
 function set_repr (set)
-    return s_char(load("return "..S_tostring(set))())
+    return s_char(loadstring("return "..S_tostring(set))())
 end
 local printers = {}
 local
@@ -2156,14 +2156,14 @@ for k, v in pairs{
         ," )"
         ]]
 } do
-    local err = load(([==[
+    local f, err = loadstring(([==[
         local k, map, t_concat, to_char, escape, set_repr = ...
         return function (pt, offset, prefix)
             print(t_concat{offset,prefix,XXXX})
         end
     ]==]):gsub("XXXX", v), k.." printer")
-    if not err then error("failed2164") end
-    printers[k] = err(k, map, t_concat, s_char, escape, set_repr)
+    if not f then error(err) end
+    printers[k] = f(k, map, t_concat, s_char, escape, set_repr)
 end
 for k, v in pairs{
     ["behind"] = [[ LL_pprint(pt.pattern, offset, "B ") ]],
