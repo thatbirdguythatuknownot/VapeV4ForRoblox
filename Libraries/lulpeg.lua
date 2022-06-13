@@ -22,7 +22,16 @@ local function require(...)
         loaded[lib] = packages[lib](lib)
         return loaded[lib]
     else
-        return require_(lib)
+        local succ
+        local err
+        succ, err = require_(lib)
+        if not succ then
+            succ, err = require_("src/"..lib)
+            if not succ then
+                error(err)
+            end
+        end
+        
     end
 end
 
