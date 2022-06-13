@@ -1479,16 +1479,27 @@ AntiToxic = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOp
 })
 
 local AntiReport = {["Enabled"] = false}
-local chatbar = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatBarParentFrame.Frame.BoxFrame.Frame.ChatBar
+local chatbarframe = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatBarParentFrame.Frame
+local chatbar = chatbarframe.BoxFrame.Frame.ChatBar
+local censorbar = chatbarframe:Clone()
+censorbar.Name = "WarningFrame"
+censorbar.Size = UDim2.new(1, 0, 1, 0)
+censorbar.BoxFrame.BackgroundTransparency = 1
+censorbar.BoxFrame.Frame.ChatBar:Destroy()
+censorbar.BoxFrame.Frame.MessageMode:Destroy()
+local censorlabel = censorbar.BoxFrame.Frame.TextLabel
+censorlabel.TextColor3 = Color3.fromRGB(255, 128, 0)
+censorbar.Parent = chatbarframe
+connectionstodisconnect[#connectionstodisconnect + 1] = chatbarframe:GetPropertyChangedSignal("BackgroundTransparency"):Connect(function()
+	censorbar.BackgroundTransparency = chatbarframe.BackgroundTransparency
+end)
+connectionstodisconnect[#connectionstodisconnect + 1] = chatbar.Parent.TextLabel:GetPropertyChangedSignal("TextTransparency"):Connect(function()
+	censorlabel.TextTransparency = chatbar.Parent.TextLabel.TextTransparency
+end)
 local bypass_autoreport = "<b><i>**АUТO REPORТED**</i></b>"
 local barconnection
 local barconnection2
-local artificialchange
 connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChangedSignal("Text"):Connect(function()
-	if artificialchange then
-		artificialchange = false
-		return
-	end
 	if barconnection then barconnection:Disconnect() end
 	if barconnection2 then barconnection2:Disconnect() end
 	local start
@@ -1506,21 +1517,15 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 				_, pat = findreport(text2)
 			end
 		end
-		artificialchange = true
-		chatbar.Text = text2
-		chatbar.CursorPosition = chatbar.CursorPosition + 17
-		chatbar.RichText = true
-		barconnection = chatbar.MouseEnter:Connect(function(x, y)
-			artificialchange = true
-			chatbar.Text = text
-			chatbar.CursorPosition = chatbar.CursorPosition - 17
-			chatbar.RichText = false
+		censorlabel.Text = text2
+		censorlabel.RichText = true
+		barconnection = censorlabel.MouseEnter:Connect(function(x, y)
+			censorlabel.Text = text
+			censorlabel.RichText = false
 		end)
-		barconnection2 = chatbar.MouseLeave:Connect(function(x, y)
-			artificialchange = true
-			chatbar.Text = text2
-			chatbar.CursorPosition = chatbar.CursorPosition + 17
-			chatbar.RichText = true
+		barconnection2 = censorlabel.MouseLeave:Connect(function(x, y)
+			censorlabel.Text = text2
+			censorlabel.RichText = true
 		end)
 	end
 end)
