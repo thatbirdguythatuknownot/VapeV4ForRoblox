@@ -1313,23 +1313,23 @@ local wordsTable = {
 	"fathe+rle+s+",
 	"ma+d", "trash", "noo+b+", "nu+b+",
 	"brainles+", "su+c+k+[sz]?",
-	"get%s+a%s+life", "no%s*life", "lo[sz]+er+",
-	"hack*[sz]*%s+to%s+win+", "kid+", "ke+d+",
-	"adopte+d+", "commit%s+not%s+alive", "die+d*",
-	"shut%s*up", "sham+e+",
-	"scare+d+", "scare+dy+%s+ca+t+", "u+g+ly+", "su+x+",
+	"getalife", "nolife", "lo[sz]+er+",
+	"hack*[sz]*towin+", "kid+", "ke+d+",
+	"adopte+d+", "commitnotalive", "die+d*",
+	"shutup", "sham+e+",
+	"scare+d+", "scare+dy+ca+t+", "u+g+ly+", "su+x+",
 	"co+pe+", "be+ta+", "se+the*", "ince+l+",
-	"hax%s+to%s+win+", "virgin+",
-	"brainde+a*d+", "touch%s+gra+s+", "touch%s+s[ou]me?gra+s+",
-	"fa+t+", "e+w+", "let%s*yo+u*%s*win", "let%s*y?u+%s*win",
+	"haxtowin+", "virgin+",
+	"brainde+a*d+", "touchgra+s+", "touchs[ou]+m+e*gra+s+",
+	"fa+t+", "e+w+", "letyo+u*win", "lety?u+win",
 	"cri+ng+e+", "use+le*[sz]+"
 }
 
 local wordsBeginTable = {
-	"kil+%s+yo+u*r", "kil+%s+y?u+r", "yo+u*r*%s*m[ou]+m+",
-	"y?u+r*%s*m[ou]+m+", "clap+", "try%s*ha*r+d+", "du+m+",
-	"cance+r+", "run+er", "skill%s+is+u+e+", "ima*gi+n+",
-	"no%s+skill+", "poo+r", "l+", "e+z+", "cry+",
+	"kil+yo+u*r", "kil+y?u+r", "yo+u*r*m[ou]+m+",
+	"y?u+r*m[ou]+m+", "clap+", "tryha*r+d+", "du+m+",
+	"cance+r+", "run+er", "skillis+u+e+", "ima*gi+n+",
+	"noskill+", "poo+r", "l+", "e+z+", "cry+",
 	"no+w*o+n+e*li+k+e*s+y?[ou]+u*", "id+i*o+t+"
 }
 
