@@ -3,7 +3,7 @@ local function GetURL(scripturl)
 	if shared.VapeDeveloper then
 		return readfile("vape/"..scripturl)
 	else
-		return game:HttpGet("https://raw.githubusercontent.com/thatbirdguythatuknownot/VapeV4ForRoblox/patch-4/"..scripturl, true)
+		return game:HttpGet("https://raw.githubusercontent.com/thatbirdguythatuknownot/VapeV4ForRoblox/patch-4/Libraries/"..scripturl, true)
 	end
 end
 
@@ -17,7 +17,11 @@ local function require(...)
         loaded[lib] = packages[lib](lib)
         return loaded[lib]
     else
-        return loadstring(GetURL(lib) or GetURL("src/"..lib))()
+        local succ
+        local err
+        succ, err = loadstring(GetURL(lib) or GetURL("src/"..lib))
+        if not succ then error(err) end
+        return err()
     end
 end
 
