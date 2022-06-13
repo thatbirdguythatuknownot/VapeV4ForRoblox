@@ -2156,12 +2156,14 @@ for k, v in pairs{
         ," )"
         ]]
 } do
-    printers[k] = load(([==[
+    local succ, err = load(([==[
         local k, map, t_concat, to_char, escape, set_repr = ...
         return function (pt, offset, prefix)
             print(t_concat{offset,prefix,XXXX})
         end
-    ]==]):gsub("XXXX", v), k.." printer")(k, map, t_concat, s_char, escape, set_repr)
+    ]==]):gsub("XXXX", v), k.." printer")
+    if not succ then error(err) end
+    printers[k] = err(k, map, t_concat, s_char, escape, set_repr)
 end
 for k, v in pairs{
     ["behind"] = [[ LL_pprint(pt.pattern, offset, "B ") ]],
