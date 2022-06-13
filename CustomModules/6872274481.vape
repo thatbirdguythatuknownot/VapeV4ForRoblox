@@ -1486,6 +1486,7 @@ local AntiReport = {["Enabled"] = false}
 local chatbarframe = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatBarParentFrame.Frame
 local chatbar = chatbarframe.BoxFrame.Frame.ChatBar
 local censorbar = chatbarframe:Clone()
+censorbar.Enabled = false
 censorbar.Name = "WarningFrame"
 censorbar.Size = UDim2.new(1, 0, 1, 0)
 censorbar.BoxFrame.BackgroundTransparency = 1
@@ -1493,6 +1494,7 @@ censorbar.BoxFrame.Frame.ChatBar:Destroy()
 censorbar.BoxFrame.Frame.MessageMode:Destroy()
 censorbar.Position = UDim2.new(0, 0, 1, 0)
 local censorlabel = censorbar.BoxFrame.Frame.TextLabel
+censorlabel.Text = ""
 censorlabel.TextColor3 = Color3.fromRGB(255, 128, 0)
 censorbar.Parent = chatbarframe
 connectionstodisconnect[#connectionstodisconnect + 1] = chatbarframe:GetPropertyChangedSignal("BackgroundTransparency"):Connect(function()
@@ -1540,9 +1542,14 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 end)
 AntiReport = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
 	["Name"] = "AntiReport",
-	["Function"] = function() end
+	["Function"] = function(val)
+		if AntiReport["Enabled"] then
+			censorbar.Enabled = true
+		else
+			censorbar.Enabled = false
+		end
+	end
 })
-		
 
 teleportfunc = lplr.OnTeleport:Connect(function(State)
     if State == Enum.TeleportState.Started then
