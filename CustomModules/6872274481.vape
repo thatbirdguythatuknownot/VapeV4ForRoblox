@@ -1501,7 +1501,7 @@ end)
 connectionstodisconnect[#connectionstodisconnect + 1] = chatbar.Parent.TextLabel:GetPropertyChangedSignal("TextTransparency"):Connect(function()
 	censorlabel.TextTransparency = chatbar.Parent.TextLabel.TextTransparency
 end)
-local bypass_autoreport = "<b><i>**АUТO REPORТED**</i></b>"
+local bypass_autoreport = "<b><i>**AUTO REPORTED**</i></b>"
 local barconnection
 local barconnection2
 connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChangedSignal("Text"):Connect(function()
