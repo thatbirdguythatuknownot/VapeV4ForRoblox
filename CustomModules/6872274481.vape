@@ -1487,6 +1487,7 @@ censorbar.Size = UDim2.new(1, 0, 1, 0)
 censorbar.BoxFrame.BackgroundTransparency = 1
 censorbar.BoxFrame.Frame.ChatBar:Destroy()
 censorbar.BoxFrame.Frame.MessageMode:Destroy()
+censorbar.Position = UDim2.new(0, 0, 1, 0)
 local censorlabel = censorbar.BoxFrame.Frame.TextLabel
 censorlabel.TextColor3 = Color3.fromRGB(255, 128, 0)
 censorbar.Parent = chatbarframe
@@ -1500,6 +1501,7 @@ local bypass_autoreport = "<b><i>**АUТO REPORТED**</i></b>"
 local barconnection
 local barconnection2
 connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChangedSignal("Text"):Connect(function()
+	if not AntiReport["Enabled"] then return end
 	if barconnection then barconnection:Disconnect() end
 	if barconnection2 then barconnection2:Disconnect() end
 	local start
@@ -1527,6 +1529,9 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 			censorlabel.Text = text2
 			censorlabel.RichText = true
 		end)
+	else
+		censorlabel.Text = text
+		censorlabel.RichText = false
 	end
 end)
 AntiReport = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
