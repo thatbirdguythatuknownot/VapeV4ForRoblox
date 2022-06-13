@@ -1264,7 +1264,7 @@ end
 
 local function words(tab)
 	for i, v in ipairs(tab) do
-		tab[i] = "&[A-Za-z0-9_]"..iPatternSpace(v, true).."![A-Za-z0-9_]"
+		tab[i] = "{:word:"..iPatternSpace(v, true).."/[A-Za-z0-9_]^0([^A-Za-z0-9_])^1=word:}![A-Za-z0-9_]"
 	end
 	return tab
 end
@@ -5982,7 +5982,7 @@ local commands = {
 
 local AutoReport = {["Enabled"] = false}
 runcode(function()
-	local reporttable = concatDictionary({
+	local reporttable = {
 		["gay"] = "Bullying",
 		["gae"] = "Bullying",
 		["gey"] = "Bullying",
@@ -6024,7 +6024,8 @@ runcode(function()
 		["cheat"] = "Scamming",
 		["auto"] = "Scamming",
 		["hax"] = "Scamming",
-	}, keysFrom(toxicTable, repeatTable({"Bullying"}, #toxicTable)))
+	}
+	local regexreporttable = keysFrom(toxicTable, repeatTable({"Bullying"}, #toxicTable))
 
 	local reporttableexact = {
 		["L"] = "Bullying",
@@ -6032,6 +6033,7 @@ runcode(function()
 
 	local alreadyreported = {}
 	local AutoReportList = {["ObjectList"] = {}}
+	local RegexAutoReportList = {["ObjectList"] = {}}
 
 	local function containsexact(x, tab)
 		for _, v in pairs(tab) do
@@ -6049,11 +6051,12 @@ runcode(function()
 		local start
 		local end_
 		local succ
-		for i,v in pairs(reporttable) do
+		for i,v in pairs(regexreporttable) do
 			if containsexact(i, excepts) then continue end
 			succ, start, end_ = pcall(re.find, msg, i)
 			if not succ then
-				start, end_ = msg:find(i)
+				print("ERROR: "..start)
+				continue
 			end
 			if start then
 				return v, i, start, end_
@@ -6065,11 +6068,12 @@ runcode(function()
 				return v, i, 1
 			end
 		end
-		for i,v in pairs(AutoReportList["ObjectList"]) do
+		for i,v in pairs(RegexAutoReportList["ObjectList"]) do
 			if containsexact(v, excepts) then continue end
 			succ, start, end_ = pcall(re.find, msg, i)
 			if not succ then
-				start, end_ = msg:find(v)
+				print("ERROR: "..start)
+				continue
 			end
 			if start then 
 				return "Bullying", v, start, end_
@@ -6078,20 +6082,14 @@ runcode(function()
 		local checkstr = msg:gsub("%W+", ""):lower()
 		for i,v in pairs(reporttable) do
 			if containsexact(i, excepts) then continue end
-			succ, start, end_ = pcall(re.find, checkstr, i)
-			if not succ then
-				start, end_ = checkstr:find(i)
-			end
+			start, end_ = checkstr:find(i)
 			if start then
 				return v, i, start, end_
 			end
 		end
 		for i,v in pairs(AutoReportList["ObjectList"]) do
 			if containsexact(v, excepts) then continue end
-			succ, start, end_ = pcall(re.find, checkstr, i)
-			if not succ then
-				start, end_ = checkstr:find(v)
-			end
+			start, end_ = checkstr:find(v)
 			if start then 
 				return "Bullying", v, start, end_
 			end
@@ -6111,6 +6109,10 @@ runcode(function()
 	AutoReportList = AutoReport.CreateTextList({
 		["Name"] = "Report Words",
 		["TempText"] = "phrase (to report)"
+	})
+	RegexAutoReportList = AutoReport.CreateTextList({
+		["Name"] = "Report Words (with Lua LPEG Regex syntax)",
+		["TempText"] = "pattern (to report)"
 	})
 
 	chatconnection = repstorage.DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:connect(function(tab, channel)
