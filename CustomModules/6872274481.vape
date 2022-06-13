@@ -6053,7 +6053,7 @@ runcode(function()
 		local checkstr = msg:gsub("%W+", ""):lower()
 		for i,v in pairs(reporttable) do
 			if containsexact(i, excepts) then continue end
-			succ, start, end_ = re.find(checkstr, i)
+			succ, start, end_ = pcall(re.find, checkstr, i)
 			if not succ then
 				start, end_ = checkstr:find(i)
 			end
@@ -6069,7 +6069,7 @@ runcode(function()
 		end
 		for i,v in pairs(AutoReportList["ObjectList"]) do
 			if containsexact(v, excepts) then continue end
-			succ, start, end_ = re.find(checkstr, v)
+			succ, start, end_ = pcall(re.find, checkstr, i)
 			if not succ then
 				start, end_ = checkstr:find(v)
 			end
