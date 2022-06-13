@@ -1271,7 +1271,7 @@ end
 
 local function wordsbegin(tab)
 	for i, v in ipairs(tab) do
-		tab[i] = "&[A-Za-z0-9_]"..iPatternSpace(v, true)
+		tab[i] = "{:word:"..iPatternSpace(v, true).."/[A-Za-z0-9_]^0([^A-Za-z0-9_])^1=word:}"
 	end
 	return tab
 end
