@@ -1525,7 +1525,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 	end
 end)
 AntiReport = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
-	["Name"] = "AntiReport"
+	["Name"] = "AntiReport",
 	["Function"] = function() end
 })
 		
