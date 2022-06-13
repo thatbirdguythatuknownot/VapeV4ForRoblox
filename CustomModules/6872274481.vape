@@ -1308,31 +1308,37 @@ local function keysFrom(t1, t2)
 	return t
 end
 
-local toxicTable = concatArray(
-    words({
-        "ba+d", "weak+", "bozo+",
-        "fathe+rle+s+",
-        "ma+d", "trash", "noo+b+", "nu+b+",
-        "brainles+", "su+c+k+[sz]?",
-        "get%s+a%s+life", "no%s*life", "lo[sz]+er+",
-        "hack*[sz]*%s+to%s+win+", "kid+", "ke+d+",
-        "adopte+d+", "commit%s+not%s+alive", "die+d*",
-        "shut%s*up", "sham+e+",
-        "scare+d+", "scare+dy+%s+ca+t+", "u+g+ly+", "su+x+",
-        "co+pe+", "be+ta+", "se+the*", "ince+l+",
-        "hax%s+to%s+win+", "virgin+",
-        "brainde+a*d+", "touch%s+gra+s+", "touch%s+s[ou]me?gra+s+",
+local wordsTable = {
+	"ba+d", "weak+", "bozo+",
+	"fathe+rle+s+",
+	"ma+d", "trash", "noo+b+", "nu+b+",
+	"brainles+", "su+c+k+[sz]?",
+	"get%s+a%s+life", "no%s*life", "lo[sz]+er+",
+	"hack*[sz]*%s+to%s+win+", "kid+", "ke+d+",
+	"adopte+d+", "commit%s+not%s+alive", "die+d*",
+	"shut%s*up", "sham+e+",
+	"scare+d+", "scare+dy+%s+ca+t+", "u+g+ly+", "su+x+",
+	"co+pe+", "be+ta+", "se+the*", "ince+l+",
+	"hax%s+to%s+win+", "virgin+",
+	"brainde+a*d+", "touch%s+gra+s+", "touch%s+s[ou]me?gra+s+",
 	"fa+t+", "e+w+", "let%s*yo+u*%s*win", "let%s*y?u+%s*win",
-	"cri+ng+e+", "use+le*[sz]+",
-    }),
-    wordsbegin({
-        "kil+%s+yo+u*r", "kil+%s+y?u+r", "yo+u*r*%s*m[ou]+m+",
-        "y?u+r*%s*m[ou]+m+", "clap+", "try%s*ha*r+d+", "du+m+",
+	"cri+ng+e+", "use+le*[sz]+"
+}
+
+local wordsBeginTable = {
+	"kil+%s+yo+u*r", "kil+%s+y?u+r", "yo+u*r*%s*m[ou]+m+",
+	"y?u+r*%s*m[ou]+m+", "clap+", "try%s*ha*r+d+", "du+m+",
 	"cance+r+", "run+er", "skill%s+is+u+e+", "ima*gi+n+",
 	"no%s+skill+", "poo+r", "l+", "e+z+", "cry+",
 	"no+w*o+n+e*li+k+e*s+y?[ou]+u*", "id+i*o+t+"
-    })
+}
+
+
+local toxicTable = concatArray(
+    words(wordsTable),
+    wordsbegin(wordsBeginTable)
 )
+local toxicTable2 = concatArray(wordsTable, wordsBeginTable)
 local niceTable = keysFrom(toxicTable, {
 	"nice skills", "very good", "good man",
 	"very nice",
@@ -5993,7 +5999,7 @@ runcode(function()
 		["cheat"] = "Scamming",
 		["auto"] = "Scamming",
 		["hax"] = "Scamming",
-	}, keysFrom(toxicTable, repeatTable({"Bullying"}, #toxicTable)))
+	}, keysFrom(toxicTable2, repeatTable({"Bullying"}, #toxicTable)))
 
 	local reporttableexact = {
 		["L"] = "Bullying",
