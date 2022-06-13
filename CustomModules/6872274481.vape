@@ -1345,7 +1345,6 @@ local toxicTable = concatArray(
     words(wordsTable),
     wordsbegin(wordsBeginTable)
 )
-local toxicTable2 = concatArray(wordsTable, wordsBeginTable)
 local niceTable = keysFrom(toxicTable, {
 	"nice skills", "very good", "good man",
 	"very nice",
@@ -6025,7 +6024,7 @@ runcode(function()
 		["cheat"] = "Scamming",
 		["auto"] = "Scamming",
 		["hax"] = "Scamming",
-	}, keysFrom(toxicTable2, repeatTable({"Bullying"}, #toxicTable)))
+	}, keysFrom(toxicTable, repeatTable({"Bullying"}, #toxicTable)))
 
 	local reporttableexact = {
 		["L"] = "Bullying",
@@ -6050,7 +6049,6 @@ runcode(function()
 		local start
 		local end_
 		local succ
-		local checkstr = msg:gsub("%W+", ""):lower()
 		for i,v in pairs(reporttable) do
 			if containsexact(i, excepts) then continue end
 			succ, start, end_ = pcall(re.find, checkstr, i)
@@ -6065,6 +6063,27 @@ runcode(function()
 			if containsexact(i, excepts) then continue end
 			if checkstr == i then 
 				return v, i, 1
+			end
+		end
+		for i,v in pairs(AutoReportList["ObjectList"]) do
+			if containsexact(v, excepts) then continue end
+			succ, start, end_ = pcall(re.find, checkstr, i)
+			if not succ then
+				start, end_ = checkstr:find(v)
+			end
+			if start then 
+				return "Bullying", v, start, end_
+			end
+		end
+		local checkstr = msg:gsub("%W+", ""):lower()
+		for i,v in pairs(reporttable) do
+			if containsexact(i, excepts) then continue end
+			succ, start, end_ = pcall(re.find, checkstr, i)
+			if not succ then
+				start, end_ = checkstr:find(i)
+			end
+			if start then
+				return v, i, start, end_
 			end
 		end
 		for i,v in pairs(AutoReportList["ObjectList"]) do
