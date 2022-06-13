@@ -6051,9 +6051,9 @@ runcode(function()
 		local succ
 		for i,v in pairs(reporttable) do
 			if containsexact(i, excepts) then continue end
-			succ, start, end_ = pcall(re.find, checkstr, i)
+			succ, start, end_ = pcall(re.find, msg, i)
 			if not succ then
-				start, end_ = checkstr:find(i)
+				start, end_ = msg:find(i)
 			end
 			if start then
 				return v, i, start, end_
@@ -6061,15 +6061,15 @@ runcode(function()
 		end
 		for i,v in pairs(reporttableexact) do
 			if containsexact(i, excepts) then continue end
-			if checkstr == i then 
+			if msg == i then 
 				return v, i, 1
 			end
 		end
 		for i,v in pairs(AutoReportList["ObjectList"]) do
 			if containsexact(v, excepts) then continue end
-			succ, start, end_ = pcall(re.find, checkstr, i)
+			succ, start, end_ = pcall(re.find, msg, i)
 			if not succ then
-				start, end_ = checkstr:find(v)
+				start, end_ = msg:find(v)
 			end
 			if start then 
 				return "Bullying", v, start, end_
