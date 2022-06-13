@@ -1,3 +1,24 @@
+local function GetURL(scripturl)
+	if shared.VapeDeveloper then
+		return readfile("vape/"..scripturl)
+	else
+		return game:HttpGet("https://raw.githubusercontent.com/thatbirdguythatuknownot/VapeV4ForRoblox/patch-4/"..scripturl, true)
+	end
+end
+
+local function require(...)
+    local lib = ...
+
+    -- is it a private file?
+    if loaded[lib] then
+        return loaded[lib]
+    elseif packages[lib] then
+        loaded[lib] = packages[lib](lib)
+        return loaded[lib]
+    else
+        return loadstring(GetURL(lib) or GetURL("src/"..lib))()
+    end
+end
 
 -- API.lua
 
@@ -8,7 +29,7 @@ local assert, error, ipairs, pairs, pcall, print
     = assert, error, ipairs, pairs, pcall, print
     , require, select, tonumber, tostring, type
 
-local t, u = require"table", require"util"
+local t, u = table, require"util"
 
 --[[DBG]] local debug = require"debug"
 

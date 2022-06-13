@@ -12,6 +12,14 @@
 local _ENV,       loaded, packages, release, require_
     = _ENV or _G, {},     {},       true,    require
 
+local function GetURL(scripturl)
+	if shared.VapeDeveloper then
+		return readfile("vape/"..scripturl)
+	else
+		return game:HttpGet("https://raw.githubusercontent.com/thatbirdguythatuknownot/VapeV4ForRoblox/patch-4/"..scripturl, true)
+	end
+end
+
 local function require(...)
     local lib = ...
 
@@ -22,16 +30,7 @@ local function require(...)
         loaded[lib] = packages[lib](lib)
         return loaded[lib]
     else
-        local succ
-        local err
-        succ, err = pcall(require_, lib)
-        if not succ then
-            succ, err = pcall(require_, "src/"..lib)
-            if not succ then
-                error(err)
-            end
-        end
-        return err
+        return loadstring(GetURL(lib) or GetURL("src/"..lib))()
     end
 end
 
@@ -43,7 +42,7 @@ local assert, error, ipairs, pairs, pcall, print
     , require, select, tonumber, tostring, type
     = assert, error, ipairs, pairs, pcall, print
     , require, select, tonumber, tostring, type
-local t, u = require"table", require"util"
+local t, u = table, require"util"
 local _ENV = u.noglobals() ---------------------------------------------------
 local t_concat = t.concat
 local   checkstring,   copy,   fold,   load,   map_fold,   map_foldr,   setify, t_pack, t_unpack
@@ -369,7 +368,7 @@ end
 do local _ENV = _ENV
 packages['charsets'] = function (...)
 
-local s, t, u = require"string", require"table", require"util"
+local s, t, u = string, table, require"util"
 local _ENV = u.noglobals() ----------------------------------------------------
 local copy = u.copy
 local s_char, s_sub, s_byte, t_concat, t_insert
@@ -638,7 +637,7 @@ do local _ENV = _ENV
 packages['compiler'] = function (...)
 local assert, error, pairs, print, rawset, select, setmetatable, tostring, type
     = assert, error, pairs, print, rawset, select, setmetatable, tostring, type
-local s, t, u = require"string", require"table", require"util"
+local s, t, u = string, table, require"util"
 local _ENV = u.noglobals() ----------------------------------------------------
 local s_byte, s_sub, t_concat, t_insert, t_remove, t_unpack
     = s.byte, s.sub, t.concat, t.insert, t.remove, u.unpack
@@ -1168,7 +1167,7 @@ packages['constructors'] = function (...)
 local getmetatable, ipairs, newproxy, print, setmetatable
     = getmetatable, ipairs, newproxy, print, setmetatable
 local t, u, compat
-    = require"table", require"util", require"compat"
+    = table, require"util", require"compat"
 local t_concat = t.concat
 local   copy,   getuniqueid,   id,   map
     ,   weakkey,   weakval
@@ -1348,7 +1347,7 @@ do local _ENV = _ENV
 packages['datastructures'] = function (...)
 local getmetatable, pairs, setmetatable, type
     = getmetatable, pairs, setmetatable, type
-local m, t , u = require"math", require"table", require"util"
+local m, t , u = math, table, require"util"
 local compat = require"compat"
 local ffi if compat.luajit then
     ffi = require"ffi"
@@ -1565,7 +1564,7 @@ packages['evaluator'] = function (...)
 
 local select, tonumber, tostring, type
     = select, tonumber, tostring, type
-local s, t, u = require"string", require"table", require"util"
+local s, t, u = string, table, require"util"
 local s_sub, t_concat
     = s.sub, t.concat
 local t_unpack
@@ -2084,7 +2083,7 @@ packages['printers'] = function (...)
 return function(Builder, LL)
 local ipairs, pairs, print, tostring, type
     = ipairs, pairs, print, tostring, type
-local s, t, u = require"string", require"table", require"util"
+local s, t, u = string, table, require"util"
 local S_tostring = Builder.set.tostring
 local _ENV = u.noglobals() ----------------------------------------------------
 local s_char, s_sub, t_concat
@@ -2522,7 +2521,7 @@ local getmetatable, setmetatable, load, loadstring, next
     = getmetatable, setmetatable, load, loadstring, next
     , pairs, pcall, print, rawget, rawset, select, tostring
     , type, unpack
-local m, s, t = require"math", require"string", require"table"
+local m, s, t = math, string, table
 local m_max, s_match, s_gsub, t_concat, t_insert
     = m.max, s.match, s.gsub, t.concat, t.insert
 local compat = require"compat"

@@ -1,9 +1,31 @@
+local function GetURL(scripturl)
+	if shared.VapeDeveloper then
+		return readfile("vape/"..scripturl)
+	else
+		return game:HttpGet("https://raw.githubusercontent.com/thatbirdguythatuknownot/VapeV4ForRoblox/patch-4/"..scripturl, true)
+	end
+end
+
+local function require(...)
+    local lib = ...
+
+    -- is it a private file?
+    if loaded[lib] then
+        return loaded[lib]
+    elseif packages[lib] then
+        loaded[lib] = packages[lib](lib)
+        return loaded[lib]
+    else
+        return loadstring(GetURL(lib) or GetURL("src/"..lib))()
+    end
+end
+
 local assert, error, pairs, print, rawset, select, setmetatable, tostring, type
     = assert, error, pairs, print, rawset, select, setmetatable, tostring, type
 
 --[[DBG]] local debug, print = debug, print
 
-local s, t, u = require"string", require"table", require"util"
+local s, t, u = string, table, require"util"
 
 
 
