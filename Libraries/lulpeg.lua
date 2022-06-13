@@ -2218,7 +2218,7 @@ for k, v in pairs{
         end
     ]]
 } do
-    printers[k] = load(([[
+    printers[k] = loadstring(([[
         local map, LL_pprint, pkind, s, u, flatten = ...
         return function (pt, offset, prefix)
             XXXX
