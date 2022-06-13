@@ -2156,13 +2156,13 @@ for k, v in pairs{
         ," )"
         ]]
 } do
-    local succ, err = load(([==[
+    local err = load(([==[
         local k, map, t_concat, to_char, escape, set_repr = ...
         return function (pt, offset, prefix)
             print(t_concat{offset,prefix,XXXX})
         end
     ]==]):gsub("XXXX", v), k.." printer")
-    if not succ then error(err) end
+    if not err then error("failed2164") end
     printers[k] = err(k, map, t_concat, s_char, escape, set_repr)
 end
 for k, v in pairs{
