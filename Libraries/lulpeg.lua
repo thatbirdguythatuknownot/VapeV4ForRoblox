@@ -24,14 +24,14 @@ local function require(...)
     else
         local succ
         local err
-        succ, err = require_(lib)
+        succ, err = pcall(require_, lib)
         if not succ then
-            succ, err = require_("src/"..lib)
+            succ, err = pcall(require_, "src/"..lib)
             if not succ then
                 error(err)
             end
         end
-        
+        return err
     end
 end
 
