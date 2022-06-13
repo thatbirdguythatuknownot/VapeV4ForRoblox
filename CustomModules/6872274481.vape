@@ -105,6 +105,7 @@ local function GetURL(scripturl)
 end
 local shalib = loadstring(GetURL("Libraries/sha.lua"))()
 local entity = loadstring(GetURL("Libraries/entityHandler.lua"))()
+local re = loadstring(GetURL("Libraries/lulpeg.lua"))().re
 local whitelisted = {
 	players = {
 		"edbf7c4bd824bb17954c0fee8f108b6263a23d58e1dc500157513409cd9c55433ad43ea5c8bb121602fcd0eb0137d64805aaa8c597521298f5b53d69fa82014b", 
@@ -1243,10 +1244,16 @@ local function iPatternSpace(pattern, brackets)
                 if char==']' then break end -- close bracket
                 i = i+1
             end
-        elseif char:match("%a") then    -- letter
+	elseif char=='(' then      -- parentheses
+	    pat = iPatternSpace(pattern,brackets)
+	    tmp[#tmp] = '('..pat..')'
+	    i = i + #pat + 2
+	elseif char==')' then
+	    break
+        elseif char:match("[A-Za-z0-9_]") then    -- word characters
             tmp[#tmp+1] = '['..char:lower()..char:upper()..']'
 	elseif char:match("[*+-?]") then     -- quantifier
-	    tmp[#tmp] = tmp[#tmp]..char
+	    tmp[#tmp] = "(%s*"..tmp[#tmp]..")"..char
         else
             tmp[#tmp+1] = char          -- something else
         end
@@ -1257,14 +1264,14 @@ end
 
 local function words(tab)
 	for i, v in ipairs(tab) do
-		tab[i] = "%f[A-Za-z0-9_]"..iPatternSpace(v, true).."%f[^A-za-z0-9_]"
+		tab[i] = "&[A-Za-z0-9_]"..iPatternSpace(v, true).."&[^A-za-z0-9_]"
 	end
 	return tab
 end
 
 local function wordsbegin(tab)
 	for i, v in ipairs(tab) do
-		tab[i] = "%f[A-Za-z0-9_]"..iPatternSpace(v, true)
+		tab[i] = "&[A-Za-z0-9_]"..iPatternSpace(v, true)
 	end
 	return tab
 end
@@ -1364,7 +1371,7 @@ local niceTable = keysFrom(toxicTable, {
 local function findFromTable(text, tab)
 	text = text:lower()
 	for _, v in pairs(tab) do
-		matched = {text:find(v)}
+		matched = {re.find(text, v)}
 		if #matched ~= 0 then
 			matched[#matched+1] = v
 			return table.unpack(matched)
@@ -1449,7 +1456,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 			print(pattern)
 			return
 		end
-		modifiedText = modifiedText:gsub(pattern, "<b><i>*"..niceTable[pattern].."*</i></b>")
+		modifiedText = re.gsub(modifiedText, pattern, "<b><i>*"..niceTable[pattern].."*</i></b>")
 		startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
 		task.wait()
 	end
@@ -1523,7 +1530,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 		 elseif end_ then
 		 	while pat do
 				excepts[#excepts+1] = pat
-				text2 = text2:gsub(pat, bypass_autoreport)
+				text2 = re.gsub(text2, pat, bypass_autoreport)
 				_, pat = findreport(text2, excepts)
 			end
 		end
@@ -6042,11 +6049,15 @@ runcode(function()
 		end
 		local start
 		local end_
+		local succ
 		local checkstr = msg:gsub("%W+", ""):lower()
 		for i,v in pairs(reporttable) do
 			if containsexact(i, excepts) then continue end
-			start, end_ = checkstr:find(i)
-			if start then 
+			succ, start, end_ = re.find(checkstr, i)
+			if not succ then
+				start, end_ = checkstr:find(i)
+			end
+			if start then
 				return v, i, start, end_
 			end
 		end
@@ -6058,7 +6069,10 @@ runcode(function()
 		end
 		for i,v in pairs(AutoReportList["ObjectList"]) do
 			if containsexact(v, excepts) then continue end
-			start, end_ = checkstr:find(v)
+			succ, start, end_ = re.find(checkstr, v)
+			if not succ then
+				start, end_ = checkstr:find(v)
+			end
 			if start then 
 				return "Bullying", v, start, end_
 			end
