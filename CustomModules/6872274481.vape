@@ -1264,7 +1264,7 @@ end
 
 local function words(tab)
 	for i, v in ipairs(tab) do
-		tab[i] = "&[A-Za-z0-9_]"..iPatternSpace(v, true).."&[^A-za-z0-9_]"
+		tab[i] = "&[A-Za-z0-9_]"..iPatternSpace(v, true).."&[^A-za-z0-9_]?"
 	end
 	return tab
 end
