@@ -1328,7 +1328,7 @@ end
 
 local wordsTable = {
 	"ba+d", "weak+", "bozo+",
-	"fathe+rle+s+",
+	"fathe+rle+s+", "l+", "e+z+",
 	"ma+d", "trash", "noo+b+", "nu+b+",
 	"brainles+", "su+c+k+[sz]?",
 	"getalife", "nolife", "lo[sz]+er+",
@@ -1347,7 +1347,7 @@ local wordsBeginTable = {
 	"kil+yo+u*r", "kil+y?u+r", "yo+u*r*m[ou]+m+",
 	"y?u+r*m[ou]+m+", "clap+", "tryha*r+d+", "du+m+",
 	"cance+r+", "run+er", "skillis+u+e+", "ima*gi+n+",
-	"noskill+", "poo+r", "l+", "e+z+", "cry+",
+	"noskill+", "poo+r", "cry+",
 	"no+w*o+n+e*li+k+e*s+y?[ou]+u*", "id+i*o+t+"
 }
 
@@ -1358,7 +1358,7 @@ local toxicTable = concatArray(
 )
 local niceTable = keysFrom(toxicTable, {
 	"nice skills", "very good", "good man",
-	"very nice",
+	"very nice", "good job", "good job man",
 	"good", "very good", "pro", "pro",
 	"big brain", "awesome",
 	"i wish i had your life", "have a good life", "winner",
@@ -1375,7 +1375,7 @@ local niceTable = keysFrom(toxicTable, {
 	"love your", "love your", "my dad",
 	"my dad", "fair-fight", "pro", "smart",
 	"pro", "fighter", "very good skills", "congrats on fulfilling your dreams",
-	"very good skills", "rich", "good job", "good job man", "so good",
+	"very good skills", "rich", "so good",
 	"everyone loves you", "lol"
 })
 local function findFromTable(text, tab)
@@ -6047,7 +6047,6 @@ runcode(function()
 		["download"] = "Offsite Links",
 		["youtube"] = "Offsite Links",
 		["die"] = "Bullying",
-		["lobby"] = "Bullying",
 		["ban"] = "Bullying",
 		["cheat"] = "Scamming",
 		["auto"] = "Scamming",
@@ -6083,7 +6082,7 @@ runcode(function()
 			if containsexact(i, excepts) then continue end
 			succ, start, end_ = pcall(re.find, msg, i)
 			if not succ then
-				print("ERROR: "..start)
+				print("from pattern ("..i..") ERROR: "..start)
 				continue
 			end
 			if start then
@@ -6098,9 +6097,9 @@ runcode(function()
 		end
 		for i,v in pairs(RegexAutoReportList["ObjectList"]) do
 			if containsexact(v, excepts) then continue end
-			succ, start, end_ = pcall(re.find, msg, i)
+			succ, start, end_ = pcall(re.find, msg, v)
 			if not succ then
-				print("ERROR: "..start)
+				print("from pattern ("..v..") ERROR: "..start)
 				continue
 			end
 			if start then 
