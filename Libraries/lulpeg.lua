@@ -19,7 +19,11 @@ GetURL = function(scripturl)
 	if shared.VapeDeveloper then
 		return readfile("vape/"..scripturl)
 	else
-		return game:HttpGet("https://raw.githubusercontent.com/thatbirdguythatuknownot/VapeV4ForRoblox/patch-4/Libraries/"..scripturl..".lua", true)
+		local succ
+        local err
+        succ, err = pcall(function() return game:HttpGet("https://raw.githubusercontent.com/thatbirdguythatuknownot/VapeV4ForRoblox/patch-5/Libraries/"..scripturl..".lua", true) end)
+        if not succ then return nil end
+        return err
 	end
 end
 
