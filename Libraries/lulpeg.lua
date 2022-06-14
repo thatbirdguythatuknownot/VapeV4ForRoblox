@@ -764,6 +764,7 @@ end
 function LL.dmatch(...)
     return _match(true, ...)
 end
+local load = load or loadstring
 for _, v in pairs{
     "C", "Cf", "Cg", "Cs", "Ct", "Clb",
     "div_string", "div_table", "div_number", "div_function"
