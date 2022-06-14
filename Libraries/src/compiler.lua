@@ -23,7 +23,7 @@ require = function(...)
         local err
         succ, err = loadstring(GetURL(lib) or GetURL("src/"..lib))
         if not succ then error(err) end
-        return err()
+        return succ()
     end
 end
 else
