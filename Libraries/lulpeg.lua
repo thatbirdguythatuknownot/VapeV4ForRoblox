@@ -72,7 +72,7 @@ local t, u = table, require"util"
 local _ENV = u.noglobals() ---------------------------------------------------
 local t_concat = t.concat
 local   checkstring,   copy,   fold,   load,   map_fold,   map_foldr,   setify, t_pack, t_unpack
-    = u.checkstring, u.copy, u.fold, u.load, u.map_fold, u.map_foldr, u.setify, u.pack, u.unpack
+    = u.checkstring, u.copy, u.fold, u.load or loadstring, u.map_fold, u.map_foldr, u.setify, u.pack, u.unpack
 local
 function charset_error(index, charset)
     error("Character at position ".. index + 1
@@ -668,7 +668,7 @@ local _ENV = u.noglobals() ----------------------------------------------------
 local s_byte, s_sub, t_concat, t_insert, t_remove, t_unpack
     = s.byte, s.sub, t.concat, t.insert, t.remove, u.unpack
 local   load,   map,   map_all, t_pack
-    = u.load, u.map, u.map_all, u.pack
+    = u.load or loadstring, u.map, u.map_all, u.pack
 local expose = u.expose
 return function(Builder, LL)
 local evaluate, LL_ispattern =  LL.evaluate, LL.ispattern
@@ -1381,7 +1381,7 @@ local ffi if compat.luajit then
 end
 local _ENV = u.noglobals() ----------------------------------------------------
 local   extend,   load, u_max
-    = u.extend, u.load, u.max
+    = u.extend, u.load or loadstring, u.max
 local m_max, t_concat, t_insert, t_sort
     = m.max, t.concat, t.insert, t.sort
 local structfor = {}
@@ -2116,7 +2116,7 @@ local _ENV = u.noglobals() ----------------------------------------------------
 local s_char, s_sub, t_concat
     = s.char, s.sub, t.concat
 local   expose,   load,   map
-    = u.expose, u.load, u.map
+    = u.expose, u.load or loadstring, u.map
 local escape_index = {
     ["\f"] = "\\f",
     ["\n"] = "\\n",
@@ -2597,7 +2597,7 @@ if compat.lua51 then
      return fun
    end
 else
-    util.load = load
+    util.load = load or loadstring
 end
 if compat.luajit and compat.jit then
     function util.max (ary)
