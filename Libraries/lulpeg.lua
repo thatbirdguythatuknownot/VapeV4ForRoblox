@@ -2149,6 +2149,7 @@ function LL.pprint (pt0)
     print"--- /pprint\n"
     return pt0
 end
+local load = loadstring
 for k, v in pairs{
     string       = [[ "P( \""..escape(pt.as_is).."\" )"       ]],
     char         = [[ "P( \""..escape(to_char(pt.aux)).."\" )"]],
