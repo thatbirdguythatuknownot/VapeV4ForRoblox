@@ -6146,7 +6146,7 @@ runcode(function()
 	chatconnection = repstorage.DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:connect(function(tab, channel)
 		local plr = players:FindFirstChild(tab["FromSpeaker"])
 		local args = tab.Message:split(" ")
-		local client = clients.ChatStrings1[#args > 0 and args[#args] or tab.Message]then
+		local client = clients.ChatStrings1[#args > 0 and args[#args] or tab.Message]
 		if plr and tab.MessageType == "Whisper" and client ~= nil and alreadysaidlist[plr.Name] == nil then
 			alreadysaidlist[plr.Name] = true
 			local playerlist = game:GetService("CoreGui"):FindFirstChild("PlayerList")
