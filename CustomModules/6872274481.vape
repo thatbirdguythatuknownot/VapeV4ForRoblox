@@ -6087,7 +6087,7 @@ runcode(function()
 			if containsexact(i, excepts) then continue end
 			succ, start = pcall(re.match, msg, i)
 			if not succ then
-				print("from pattern ("..i..") ERROR: "..start)
+				print("ERROR: "..start)
 				continue
 			end
 			if start then
@@ -6104,7 +6104,7 @@ runcode(function()
 			if containsexact(v, excepts) then continue end
 			succ, start = pcall(re.match, msg, v)
 			if not succ then
-				print("from pattern ("..v..") ERROR: "..start)
+				print("ERROR: "..start)
 				continue
 			end
 			if start then 
