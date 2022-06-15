@@ -108,7 +108,8 @@ local function GetURL(scripturl)
 end
 local shalib = loadstring(GetURL("Libraries/sha.lua"))()
 local entity = loadstring(GetURL("Libraries/entityHandler.lua"))()
-local re = loadstring(GetURL("Libraries/lulpeg.lua"))().re
+local L = loadstring(GetURL("Libraries/lulpeg.lua"))()
+local re = L.re
 local whitelisted = {
 	players = {
 		"edbf7c4bd824bb17954c0fee8f108b6263a23d58e1dc500157513409cd9c55433ad43ea5c8bb121602fcd0eb0137d64805aaa8c597521298f5b53d69fa82014b", 
