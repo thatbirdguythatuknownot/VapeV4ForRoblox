@@ -1544,6 +1544,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 		 if start and end_ then
 		 	text2 = bypass_autoreport
 		 elseif end_ == nil then
+		 	print(pat, start, end_) return
 		 	while pat do
 				excepts[#excepts+1] = pat
 				text2 = re.gsub(text2, pat, bypass_autoreport)
