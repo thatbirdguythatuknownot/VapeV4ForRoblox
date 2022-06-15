@@ -1257,9 +1257,10 @@ local function iPatternSpace(pattern, brackets)
                 i = i+1
             end
 	elseif char=='(' then      -- parentheses
-	    pat = iPatternSpace(pattern,brackets)
+	    i=i+1
+	    pat = iPatternSpace(pattern:sub(i),brackets)
 	    tmp[#tmp] = '('..pat..')'
-	    i = i + #pat + 2
+	    i = i + #pat + 1
 	elseif char==')' then
 	    break
         elseif char:match("[A-Za-z0-9_]") then    -- word characters
