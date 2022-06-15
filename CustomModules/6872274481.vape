@@ -1381,7 +1381,7 @@ local niceTable = keysFrom(toxicTable, {
 local function findFromTable(text, tab)
 	text = text:lower()
 	for _, v in pairs(tab) do
-		matched = {re.find(text, v)}
+		matched = {re.match(text, v)}
 		if #matched ~= 0 then
 			matched[#matched+1] = v
 			return table.unpack(matched)
@@ -1535,9 +1535,9 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 	if findreport and findreport(text) then
 		local text2 = text:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 		 _, pat, start, end_ = findreport(text2)
-		 if start and end_ == nil then
+		 if start and end_ then
 		 	text2 = bypass_autoreport
-		 elseif end_ then
+		 elseif end_ == nil then
 		 	while pat do
 				excepts[#excepts+1] = pat
 				text2 = re.gsub(text2, pat, bypass_autoreport)
@@ -6076,49 +6076,48 @@ runcode(function()
 			excepts = {}
 		end
 		local start
-		local end_
 		local succ
 		for i,v in pairs(regexreporttable) do
 			if containsexact(i, excepts) then continue end
-			succ, start, end_ = pcall(re.find, msg, i)
+			succ, start = pcall(re.match, msg, i)
 			if not succ then
 				print("from pattern ("..i..") ERROR: "..start)
 				continue
 			end
 			if start then
-				return v, i, start, end_
+				return v, i, start
 			end
 		end
 		for i,v in pairs(reporttableexact) do
 			if containsexact(i, excepts) then continue end
 			if msg == i then 
-				return v, i, 1
+				return v, i, 1, 0
 			end
 		end
 		for i,v in pairs(RegexAutoReportList["ObjectList"]) do
 			if containsexact(v, excepts) then continue end
-			succ, start, end_ = pcall(re.find, msg, v)
+			succ, start = pcall(re.match, msg, v)
 			if not succ then
 				print("from pattern ("..v..") ERROR: "..start)
 				continue
 			end
 			if start then 
-				return "Bullying", v, start, end_
+				return "Bullying", v, start
 			end
 		end
 		local checkstr = msg:gsub("%W+", ""):lower()
 		for i,v in pairs(reporttable) do
 			if containsexact(i, excepts) then continue end
-			start, end_ = checkstr:find(i)
+			start = checkstr:find(i)
 			if start then
-				return v, i, start, end_
+				return v, i, start
 			end
 		end
 		for i,v in pairs(AutoReportList["ObjectList"]) do
 			if containsexact(v, excepts) then continue end
-			start, end_ = checkstr:find(v)
+			start = checkstr:find(v)
 			if start then 
-				return "Bullying", v, start, end_
+				return "Bullying", v, start
 			end
 		end
 		return nil
