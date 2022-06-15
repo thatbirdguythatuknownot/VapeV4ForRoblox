@@ -1278,7 +1278,7 @@ end
 local function words(tab)
 	for i, v in ipairs(tab) do
 		tab[i] = L.P{
-			re.compile(iPatternSpace(v, true)) + re.compile("/[A-Za-z0-9_]^0[^A-Za-z0-9_]^1")*L.V(1)
+			re.compile(iPatternSpace(v, true)) + re.compile("[A-Za-z0-9_]^0[^A-Za-z0-9_]^1")*L.V(1)
 		} * re.compile"![A-Za-z0-9_]"
 	end
 	return tab
@@ -1287,7 +1287,7 @@ end
 local function wordsbegin(tab)
 	for i, v in ipairs(tab) do
 		tab[i] = L.P{
-			re.compile(iPatternSpace(v, true)) + re.compile("/[A-Za-z0-9_]^0[^A-Za-z0-9_]^1")*L.V(1)
+			re.compile(iPatternSpace(v, true)) + re.compile("[A-Za-z0-9_]^0[^A-Za-z0-9_]^1")*L.V(1)
 		}
 	end
 	return tab
