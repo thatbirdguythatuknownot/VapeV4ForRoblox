@@ -1357,11 +1357,10 @@ local wordsBeginTable = {
 	"no+w*o+n+e*li+k+e*s+y?[ou]+u*", "id+i*o+t+"
 }
 
-
-local toxicTable = concatArray(
-    words(wordsTable),
-    wordsbegin(wordsBeginTable)
-)
+local words_table = words(wordsTable)
+local wordsbegin_table = wordsbegin(wordsBeginTable)
+local toxicTable = concatArray(words_table, wordsbegin_table)
+local normalized = concatArray(keysFrom(words_table, wordsTable), keysFrom(wordsbegin_table, wordsBeginTable))
 local niceTable = keysFrom(toxicTable, {
 	"nice skills", "very good", "good man",
 	"very nice", "good job",
@@ -6219,7 +6218,7 @@ runcode(function()
 						players:ReportAbuse(plr, reportreason, "he said a bad word")
 					end)
 					if true --[[ AutoReportNotify["Enabled"] ]] then 
-						local warning = createwarning("AutoReport", "Reported "..plr.Name.." for\n"..reportreason..' ('..reportedmatch..')', 15)
+						local warning = createwarning("AutoReport", "Reported "..plr.Name.." for\n"..reportreason..' ('..(if type(reportedmatch) == "string" then reportedmatch else normalized[reportedmatch])..')', 15)
 						pcall(function()
 							warning:GetChildren()[5].Position = UDim2.new(0, 46, 0, 38)
 						end)
