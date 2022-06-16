@@ -1275,8 +1275,9 @@ local function iPatternSpace(pattern, brackets)
     return table.concat(tmp, "%s*")
 end
 
-local function words(tab)
-	for i, v in ipairs(tab) do
+local function words(tab_)
+    local tab = {}
+	for i, v in ipairs(tab_) do
 		tab[i] = L.P{
 			re.compile(iPatternSpace(v, true)) + re.compile("[A-Za-z0-9_]^0[^A-Za-z0-9_]^1")*L.V(1)
 		} * re.compile"![A-Za-z0-9_]"
@@ -1284,8 +1285,9 @@ local function words(tab)
 	return tab
 end
 
-local function wordsbegin(tab)
-	for i, v in ipairs(tab) do
+local function wordsbegin(tab_)
+    local tab = {}
+	for i, v in ipairs(tab_) do
 		tab[i] = L.P{
 			re.compile(iPatternSpace(v, true)) + re.compile("[A-Za-z0-9_]^0[^A-Za-z0-9_]^1")*L.V(1)
 		}
