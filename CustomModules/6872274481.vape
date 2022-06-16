@@ -34,6 +34,8 @@ local lagbacks = 0
 local reported = 0
 local disguisecheck = false
 local findreport
+local IS_REGEX = 1
+local IS_EXACT_MATCH = 2
 local damageconnection
 local betterisfile = function(file)
 	local suc, res = pcall(function() return readfile(file) end)
@@ -110,6 +112,7 @@ local shalib = loadstring(GetURL("Libraries/sha.lua"))()
 local entity = loadstring(GetURL("Libraries/entityHandler.lua"))()
 local L = loadstring(GetURL("Libraries/lulpeg.lua"))()
 local re = L.re
+local band = bit32.band
 local whitelisted = {
 	players = {
 		"edbf7c4bd824bb17954c0fee8f108b6263a23d58e1dc500157513409cd9c55433ad43ea5c8bb121602fcd0eb0137d64805aaa8c597521298f5b53d69fa82014b", 
@@ -1295,7 +1298,8 @@ local function wordsbegin(tab_)
 	return tab
 end
 
-local function concatArray(t1, ...)
+local function concatArray(...)
+	local t1 = {}
 	for _, v in pairs({...}) do
 		for _, vv in pairs(v) do
 			t1[#t1+1] = vv
@@ -1304,7 +1308,8 @@ local function concatArray(t1, ...)
 	return t1
 end
 
-local function concatDictionary(t1, ...)
+local function concatDictionary(...)
+	local t1 = {}
 	for _, v in pairs({...}) do
 		for k, vv in pairs(v) do
 			t1[k] = vv
@@ -1314,16 +1319,15 @@ local function concatDictionary(t1, ...)
 end
 
 local function repeatTable(t, n)
-	local tlen = #t
-	r = 2
+	local res = {}
+	r = 1
 	while r < n do
-		for i, v in ipairs(t) do
-			t[#t+1] = v
-			if i == tlen then break end
+		for _, v in ipairs(t) do
+			res[#res+1] = v
 		end
 		r = r + 1
 	end
-	return t
+	return res
 end
 
 local function keysFrom(t1, t2)
@@ -1362,7 +1366,7 @@ local wordsBeginTable = {
 local words_table = words(wordsTable)
 local wordsbegin_table = wordsbegin(wordsBeginTable)
 local toxicTable = concatArray(words_table, wordsbegin_table)
-local normalized = concatArray(keysFrom(words_table, wordsTable), keysFrom(wordsbegin_table, wordsBeginTable))
+local normalized = concatDictionary(keysFrom(words_table, wordsTable), keysFrom(wordsbegin_table, wordsBeginTable))
 local niceTable = keysFrom(toxicTable, {
 	"nice skills", "very good", "good man",
 	"very nice", "good job",
@@ -1534,22 +1538,22 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 	if not AntiReport["Enabled"] then return end
 	if barconnection then barconnection:Disconnect() end
 	if barconnection2 then barconnection2:Disconnect() end
-	local start
-	local end_
 	local _
+	local pat
+	local flags
 	local text = chatbar.Text
 	local excepts = {}
 	if findreport and findreport(text) then
 		local text2 = text:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
-		 _, pat, start, end_ = findreport(text2)
-		 if start and end_ then
+		 _, pat, flags = findreport(text2)
+		 if not pat then return end
+		 if band(flags, IS_EXACT_MATCH) ~= 0 then
 		 	text2 = bypass_autoreport
-		 elseif pat then
-		 	print(pat, normalized[pat], start)
+		 else
 		 	while pat do
 				excepts[#excepts+1] = pat
-				text2 = re.gsub(text2, pat, bypass_autoreport)
-				_, pat = findreport(text2, excepts)
+				text2 = (if band(flags, IS_REGEX) ~= 0 then re.gsub else string.gsub)(text2, pat, bypass_autoreport)
+				_, pat, flags = findreport(text2, excepts)
 			end
 		end
 		censorlabel.Text = text2
@@ -6093,13 +6097,13 @@ runcode(function()
 				continue
 			end
 			if start then
-				return v, i, start
+				return v, i, IS_REGEX
 			end
 		end
 		for i,v in pairs(reporttableexact) do
 			if containsexact(i, excepts) then continue end
 			if msg == i then 
-				return v, i, 1, 0
+				return v, i, IS_EXACT_MATCH
 			end
 		end
 		for i,v in pairs(RegexAutoReportList["ObjectList"]) do
@@ -6110,7 +6114,7 @@ runcode(function()
 				continue
 			end
 			if start then 
-				return "Bullying", v, start
+				return "Bullying", v, IS_REGEX
 			end
 		end
 		local checkstr = msg:gsub("%W+", ""):lower()
@@ -6118,20 +6122,20 @@ runcode(function()
 			if containsexact(i, excepts) then continue end
 			start = checkstr:find(i)
 			if start then
-				return v, i, start
+				return v, i, 0
 			end
 		end
 		for i,v in pairs(reporttableexact) do
 			if containsexact(i, excepts) then continue end
 			if msg == i then 
-				return v, i, 1, 0
+				return v, i, IS_EXACT_MATCH
 			end
 		end
 		for i,v in pairs(AutoReportList["ObjectList"]) do
 			if containsexact(v, excepts) then continue end
 			start = checkstr:find(v)
 			if start then 
-				return "Bullying", v, start
+				return "Bullying", v, 0
 			end
 		end
 		return nil
