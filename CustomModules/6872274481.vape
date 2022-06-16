@@ -1543,7 +1543,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChang
 		 if start and end_ then
 		 	text2 = bypass_autoreport
 		 elseif pat then
-		 	print(pat, start)
+		 	print(pat, normalized[pat], start)
 		 	while pat do
 				excepts[#excepts+1] = pat
 				text2 = re.gsub(text2, pat, bypass_autoreport)
@@ -6087,7 +6087,7 @@ runcode(function()
 			if containsexact(i, excepts) then continue end
 			succ, start = pcall(re.match, msg, i)
 			if not succ then
-				print("ERROR: "..start)
+				print("A ERROR: "..start)
 				continue
 			end
 			if start then
@@ -6104,7 +6104,7 @@ runcode(function()
 			if containsexact(v, excepts) then continue end
 			succ, start = pcall(re.match, msg, v)
 			if not succ then
-				print("ERROR: "..start)
+				print("B ERROR: "..start)
 				continue
 			end
 			if start then 
@@ -6218,7 +6218,7 @@ runcode(function()
 						players:ReportAbuse(plr, reportreason, "he said a bad word")
 					end)
 					if true --[[ AutoReportNotify["Enabled"] ]] then 
-						local warning = createwarning("AutoReport", "Reported "..plr.Name.." for\n"..reportreason..' ('..(if type(reportedmatch) == "string" then reportedmatch else normalized[reportedmatch])..')', 15)
+						local warning = createwarning("AutoReport", "Reported "..plr.Name.." for\n"..reportreason..' ('..(if type(reportedmatch) == "string" then reportedmatch else (normalized[reportedmatch] or "..."))..')', 15)
 						pcall(function()
 							warning:GetChildren()[5].Position = UDim2.new(0, 46, 0, 38)
 						end)
