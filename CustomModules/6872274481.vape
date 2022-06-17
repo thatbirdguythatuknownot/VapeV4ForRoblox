@@ -1553,6 +1553,7 @@ runcode(function()
 			 else
 				while pat do
 					excepts[#excepts+1] = pat
+					print(normalized[pat])
 					text2 = (if band(flags, IS_REGEX) ~= 0 then re.gsub else string.gsub)(text2, pat, bypass_autoreport)
 					_, pat, flags = findreport(text2, excepts)
 				end
