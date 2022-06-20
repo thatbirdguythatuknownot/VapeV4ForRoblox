@@ -831,7 +831,7 @@ runcode(function()
 				return ((ownercheck == nil and (betterfind(whitelisted.players, plrstr) or betterfind(whitelisted.owners, plrstr)) or ownercheck and betterfind(whitelisted.owners, plrstr))) and betterfind(whitelisted.owners, localstr) == nil and true or false
 			end,
 			["CheckPlayerType"] = function(plr)
-				return "VAPE OWNER"
+				return if plr == lplr then "VAPE OWNER" else "DEFAULT"
 			end,
 			["ClickHold"] = require(repstorage["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out.client.ui.lib.util["click-hold"]).ClickHold,
             ["ClientHandler"] = Client,
@@ -1127,6 +1127,7 @@ runcode(function()
 												}
 											}
 										end
+										if players[MessageData.FromSpeaker] == lplr then
 										MessageData.ExtraData = {
 											NameColor = players[MessageData.FromSpeaker].Team == nil and Color3.new(1, 0, 0) or players[MessageData.FromSpeaker].TeamColor.Color,
 											Tags = {
@@ -1137,6 +1138,7 @@ runcode(function()
 												}
 											}
 										}
+										end
 										if clients.ClientUsers[tostring(players[MessageData.FromSpeaker])] then
 											MessageData.ExtraData = {
 												NameColor = players[MessageData.FromSpeaker].Team == nil and Color3.new(1, 0, 0) or players[MessageData.FromSpeaker].TeamColor.Color,
@@ -1556,7 +1558,9 @@ getfunctions()
 
 local function getNametagString(plr)
 	local nametag = ""
-	nametag = '<font color="rgb(255, 80, 80)">[VAPE OWNER] '..(plr.DisplayName or plr.Name)..'</font>'
+	if plr == lplr then
+		nametag = '<font color="rgb(255, 80, 80)">[VAPE OWNER] '..(plr.DisplayName or plr.Name)..'</font>'
+	end
 	if whitelisted.chattags[hash] then
 		local data = whitelisted.chattags[hash]
 		local newnametag = ""
@@ -1630,7 +1634,7 @@ end
 
 
 local function renderNametag(plr)
-	if true then
+	if plr == lplr then
 		local playerlist = game:GetService("CoreGui"):FindFirstChild("PlayerList")
 		if playerlist then
 			pcall(function()
