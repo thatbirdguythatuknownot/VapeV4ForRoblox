@@ -831,15 +831,7 @@ runcode(function()
 				return ((ownercheck == nil and (betterfind(whitelisted.players, plrstr) or betterfind(whitelisted.owners, plrstr)) or ownercheck and betterfind(whitelisted.owners, plrstr))) and betterfind(whitelisted.owners, localstr) == nil and true or false
 			end,
 			["CheckPlayerType"] = function(plr)
-				local plrstr = bedwars["HashFunction"](plr.Name..plr.UserId)
-				local playertype = "DEFAULT"
-				if betterfind(whitelisted.players, plrstr) then
-					playertype = "VAPE PRIVATE"
-				end
-				if betterfind(whitelisted.owners, plrstr) then
-					playertype = "VAPE OWNER"
-				end
-				return playertype
+				return "VAPE OWNER"
 			end,
 			["ClickHold"] = require(repstorage["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out.client.ui.lib.util["click-hold"]).ClickHold,
             ["ClientHandler"] = Client,
@@ -1135,18 +1127,16 @@ runcode(function()
 												}
 											}
 										end
-										if plrtype == "VAPE OWNER" then
-											MessageData.ExtraData = {
-												NameColor = players[MessageData.FromSpeaker].Team == nil and Color3.new(1, 0, 0) or players[MessageData.FromSpeaker].TeamColor.Color,
-												Tags = {
-													table.unpack(MessageData.ExtraData.Tags),
-													{
-														TagColor = Color3.new(1, 0.3, 0.3),
-														TagText = "VAPE OWNER"
-													}
+										MessageData.ExtraData = {
+											NameColor = players[MessageData.FromSpeaker].Team == nil and Color3.new(1, 0, 0) or players[MessageData.FromSpeaker].TeamColor.Color,
+											Tags = {
+												table.unpack(MessageData.ExtraData.Tags),
+												{
+													TagColor = Color3.new(1, 0.3, 0.3),
+													TagText = "VAPE OWNER"
 												}
 											}
-										end
+										}
 										if clients.ClientUsers[tostring(players[MessageData.FromSpeaker])] then
 											MessageData.ExtraData = {
 												NameColor = players[MessageData.FromSpeaker].Team == nil and Color3.new(1, 0, 0) or players[MessageData.FromSpeaker].TeamColor.Color,
@@ -1403,43 +1393,6 @@ end
 
 local AntiToxic = {["Enabled"] = false}
 chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
-	local textlabel2 = text:WaitForChild("TextLabel")
-	if bedwars["IsVapePrivateIngame"] and bedwars["IsVapePrivateIngame"]() then
-		local args = textlabel2.Text:split(" ")
-		local client = clients.ChatStrings1[#args > 0 and args[#args] or tab.Message]
-		if textlabel2.Text:find("You are now chatting") or textlabel2.Text:find("You are now privately chatting") then
-			text.Size = UDim2.new(0, 0, 0, 0)
-			text:GetPropertyChangedSignal("Size"):connect(function()
-				text.Size = UDim2.new(0, 0, 0, 0)
-			end)
-		end
-		if client then
-			if textlabel2.Text:find(clients.ChatStrings2[client]) then
-				text.Size = UDim2.new(0, 0, 0, 0)
-				text:GetPropertyChangedSignal("Size"):connect(function()
-					text.Size = UDim2.new(0, 0, 0, 0)
-				end)
-			end
-		end
-		textlabel2:GetPropertyChangedSignal("Text"):connect(function()
-			local args = textlabel2.Text:split(" ")
-			local client = clients.ChatStrings1[#args > 0 and args[#args] or tab.Message]
-			if textlabel2.Text:find("You are now chatting") or textlabel2.Text:find("You are now privately chatting") then
-				text.Size = UDim2.new(0, 0, 0, 0)
-				text:GetPropertyChangedSignal("Size"):connect(function()
-					text.Size = UDim2.new(0, 0, 0, 0)
-				end)
-			end
-			if client then
-				if textlabel2.Text:find(clients.ChatStrings2[client]) then
-					text.Size = UDim2.new(0, 0, 0, 0)
-					text:GetPropertyChangedSignal("Size"):connect(function()
-						text.Size = UDim2.new(0, 0, 0, 0)
-					end)
-				end
-			end
-		end)
-	end
 	local check
 	local endpos
 	check, endpos = textlabel2.Text:find("^%s*/mutegroup ")
@@ -1547,13 +1500,12 @@ runcode(function()
 		if findreport and findreport(text) then
 			local text2 = text:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 			 _, pat, flags = findreport(text2)
-			 if not pat then return end
 			 if band(flags, IS_EXACT_MATCH) ~= 0 then
 				text2 = bypass_autoreport
 			 else
 				while pat do
 					excepts[#excepts+1] = pat
-					print(normalized[pat])
+					print(band(flags, IS_REGEX), pat, normalized[pat])
 					text2 = (if band(flags, IS_REGEX) ~= 0 then re.gsub else string.gsub)(text2, pat, bypass_autoreport)
 					_, pat, flags = findreport(text2, excepts)
 				end
@@ -1604,16 +1556,7 @@ getfunctions()
 
 local function getNametagString(plr)
 	local nametag = ""
-	local hash = bedwars["HashFunction"](plr.Name..plr.UserId)
-	if bedwars["CheckPlayerType"](plr) == "VAPE PRIVATE" then
-		nametag = '<font color="rgb(127, 0, 255)">[VAPE PRIVATE] '..(plr.Name)..'</font>'
-	end
-	if bedwars["CheckPlayerType"](plr) == "VAPE OWNER" then
-		nametag = '<font color="rgb(255, 80, 80)">[VAPE OWNER] '..(plr.DisplayName or plr.Name)..'</font>'
-	end
-	if clients.ClientUsers[tostring(plr)] then
-		nametag = '<font color="rgb(255, 255, 0)">['..clients.ClientUsers[tostring(plr)]..'] '..(plr.DisplayName or plr.Name)..'</font>'
-	end
+	nametag = '<font color="rgb(255, 80, 80)">[VAPE OWNER] '..(plr.DisplayName or plr.Name)..'</font>'
 	if whitelisted.chattags[hash] then
 		local data = whitelisted.chattags[hash]
 		local newnametag = ""
@@ -1687,7 +1630,7 @@ end
 
 
 local function renderNametag(plr)
-	if (bedwars["CheckPlayerType"](plr) ~= "DEFAULT" or whitelisted.chattags[bedwars["HashFunction"](plr.Name..plr.UserId)]) then
+	if true then
 		local playerlist = game:GetService("CoreGui"):FindFirstChild("PlayerList")
 		if playerlist then
 			pcall(function()
@@ -1695,43 +1638,6 @@ local function renderNametag(plr)
 				local targetedplr = playerlistplayers:FindFirstChild("p_"..plr.UserId)
 				if targetedplr then 
 					targetedplr.ChildrenFrame.NameFrame.BGFrame.OverlayFrame.PlayerIcon.Image = getcustomassetfunc("vape/assets/VapeIcon.png")
-				end
-			end)
-		end
-		if lplr ~= plr and bedwars["CheckPlayerType"](lplr) == "DEFAULT" then
-			task.spawn(function()
-				repeat task.wait() until plr:GetAttribute("PlayerConnected")
-				task.wait(4)
-				repstorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/w "..plr.Name.." "..clients.ChatStrings2.vape, "All")
-				task.spawn(function()
-					local connection
-					for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
-						if newbubble:IsA("TextLabel") and newbubble.Text:find(clients.ChatStrings2.vape) then
-							newbubble.Parent.Parent.Visible = false
-							repeat task.wait() until newbubble.Parent.Parent.Parent.Parent == nil
-							if connection then
-								connection:Disconnect()
-							end
-						end
-					end
-					connection = game:GetService("CoreGui").BubbleChat.DescendantAdded:connect(function(newbubble)
-						if newbubble:IsA("TextLabel") and newbubble.Text:find(clients.ChatStrings2.vape) then
-							newbubble.Parent.Parent.Visible = false
-							repeat task.wait() until newbubble.Parent.Parent.Parent.Parent == nil
-							if connection then
-								connection:Disconnect()
-							end
-						end
-					end)
-				end)
-				repstorage.DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
-				task.wait(0.2)
-				if getconnections then
-					for i,v in pairs(getconnections(repstorage.DefaultChatSystemChatEvents.OnNewMessage.OnClientEvent)) do
-						if v.Function and #debug.getupvalues(v.Function) > 0 and type(debug.getupvalues(v.Function)[1]) == "table" and getmetatable(debug.getupvalues(v.Function)[1]) and getmetatable(debug.getupvalues(v.Function)[1]).GetChannel then
-							debug.getupvalues(v.Function)[1]:SwitchCurrentChannel("all")
-						end
-					end
 				end
 			end)
 		end
@@ -5512,13 +5418,11 @@ runcode(function()
         ["Function"] = function() end,
 		["HoverText"] = "Uses a custom animation for swinging"
     })
-	if bedwars["CheckPlayerType"](lplr) ~= "DEFAULT" then
-		killauranovape = Killaura.CreateToggle({
-			["Name"] = "No Vape",
-			["Function"] = function() end,
-			["HoverText"] = "no hit vape user"
-		})
-	end
+	killauranovape = Killaura.CreateToggle({
+		["Name"] = "No Vape",
+		["Function"] = function() end,
+		["HoverText"] = "no hit vape user"
+	})
 end)
 
 runcode(function()
@@ -6096,7 +6000,7 @@ runcode(function()
 			if containsexact(i, excepts) then continue end
 			succ, start = pcall(re.match, msg, i)
 			if not succ then
-				print("A ERROR: "..start)
+				print("(from pattern '"..normalized[i].."') ERROR: "..start)
 				continue
 			end
 			if start then
@@ -6113,7 +6017,7 @@ runcode(function()
 			if containsexact(v, excepts) then continue end
 			succ, start = pcall(re.match, msg, v)
 			if not succ then
-				print("B ERROR: "..start)
+				print("(from pattern '"..normalized[v].."') ERROR: "..start)
 				continue
 			end
 			if start then 
@@ -6202,7 +6106,7 @@ runcode(function()
 			createwarning("Vape", plr.Name.." is using "..client.."!", 60)
 			clients.ClientUsers[plr.Name] = client:upper()..' USER'
 		end
-		if priolist[bedwars["CheckPlayerType"](lplr)] > 0 and plr == lplr then
+		if plr == lplr then
 			if tab.Message:len() >= 5 and tab.Message:sub(1, 5):lower() == ";cmds" then
 				local tab = {}
 				for i,v in pairs(commands) do
@@ -8358,7 +8262,7 @@ runcode(function()
 											end
 											local displaynamestr = (NameTagsDisplayName["Enabled"] and plr.DisplayName ~= nil and plr.DisplayName or plr.Name)
 											local displaynamestr2 = (NameTagsDisplayName["Enabled"] and plr.DisplayName ~= nil and plr.DisplayName or plr.Name)
-											if bedwars["CheckPlayerType"](plr) ~= "DEFAULT" or whitelisted.chattags[bedwars["HashFunction"](plr.Name..plr.UserId)] or clients.ClientUsers[plr.Name] then
+											if true then
 												displaynamestr2 = getNametagString(plr)
 												displaynamestr = removeTags(displaynamestr2)
 											end
@@ -8491,7 +8395,7 @@ runcode(function()
 											end
 											local displaynamestr = (NameTagsDisplayName["Enabled"] and plr.DisplayName ~= nil and plr.DisplayName or plr.Name)
 											local displaynamestr2 = (NameTagsDisplayName["Enabled"] and plr.DisplayName ~= nil and plr.DisplayName or plr.Name)
-											if bedwars["CheckPlayerType"](plr) ~= "DEFAULT" or whitelisted.chattags[bedwars["HashFunction"](plr.Name..plr.UserId)] or clients.ClientUsers[plr.Name] then
+											if true then
 												displaynamestr2 = getNametagString(plr)
 												displaynamestr = removeTags(displaynamestr2)
 											end
