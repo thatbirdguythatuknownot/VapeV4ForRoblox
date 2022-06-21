@@ -1603,6 +1603,7 @@ else
 		loadstring(readfile("vape/CustomModules/"..game.PlaceId..".vape"))()
 	else
 		local publicrepo = checkpublicrepo(game.PlaceId)
+		print(game.PlaceId)
 		if publicrepo then
 			local func, err = loadstring(publicrepo)()
 			if not func then error(err) end
