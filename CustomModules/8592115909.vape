@@ -39,8 +39,8 @@ if shared.VapeDeveloper then
 else
 	local publicrepo = checkpublicrepo("8542275097")
 	if publicrepo then
-        local func, err = loadstring(publicrepo)
-        if not func then error(err) end
-        func()
+		local func, err = loadstring(publicrepo)()
+		if not func then error(err) end
+		func()
 	end
 end

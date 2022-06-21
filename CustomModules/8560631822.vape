@@ -36,8 +36,8 @@ if pcall(function() readfile("vape/CustomModules/6872274481.vape") end) then
 else
 	local publicrepo = checkpublicrepo("6872274481")
 	if publicrepo then
-        local func, err = loadstring(publicrepo)
-        if not func then error(err) end
-        func()
+		local func, err = loadstring(publicrepo)()
+		if not func then error(err) end
+		func()
 	end
 end
