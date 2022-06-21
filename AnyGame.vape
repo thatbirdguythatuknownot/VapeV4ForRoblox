@@ -27,7 +27,7 @@ local function GetURL(scripturl)
 		end
 		return readfile("vape/"..scripturl)
 	else
-		local res = game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/"..scripturl, true)
+		local res = game:HttpGet("https://raw.githubusercontent.com/thatbirdguythatuknownot/VapeV4ForRoblox/patch-6/"..scripturl, true)
 		assert(res ~= "404: Not Found", "File not found")
 		return res
 	end
@@ -51,45 +51,30 @@ local queueteleport = syn and syn.queue_on_teleport or queue_on_teleport or flux
 local getasset = getsynasset or getcustomasset or function(location) return "rbxasset://"..location end
 local entity = loadstring(GetURL("Libraries/entityHandler.lua"))()
 
-local RunLoops = {RenderStepTable = {}, StepTable = {}, HeartTable = {}}
-do
-	function RunLoops:BindToRenderStep(name, num, func)
-		if RunLoops.RenderStepTable[name] == nil then
-			RunLoops.RenderStepTable[name] = game:GetService("RunService").RenderStepped:connect(func)
-		end
-	end
+local RenderStepTable = {}
+local StepTable = {}
 
-	function RunLoops:UnbindFromRenderStep(name)
-		if RunLoops.RenderStepTable[name] then
-			RunLoops.RenderStepTable[name]:Disconnect()
-			RunLoops.RenderStepTable[name] = nil
-		end
+local function BindToRenderStep(name, num, func)
+	if RenderStepTable[name] == nil then
+		RenderStepTable[name] = game:GetService("RunService").RenderStepped:connect(func)
 	end
-
-	function RunLoops:BindToStepped(name, num, func)
-		if RunLoops.StepTable[name] == nil then
-			RunLoops.StepTable[name] = game:GetService("RunService").Stepped:connect(func)
-		end
+end
+local function UnbindFromRenderStep(name)
+	if RenderStepTable[name] then
+		RenderStepTable[name]:Disconnect()
+		RenderStepTable[name] = nil
 	end
+end
 
-	function RunLoops:UnbindFromStepped(name)
-		if RunLoops.StepTable[name] then
-			RunLoops.StepTable[name]:Disconnect()
-			RunLoops.StepTable[name] = nil
-		end
+local function BindToStepped(name, num, func)
+	if StepTable[name] == nil then
+		StepTable[name] = game:GetService("RunService").Stepped:connect(func)
 	end
-
-	function RunLoops:BindToHeartbeat(name, num, func)
-		if RunLoops.HeartTable[name] == nil then
-			RunLoops.HeartTable[name] = game:GetService("RunService").Heartbeat:connect(func)
-		end
-	end
-
-	function RunLoops:UnbindFromHeartbeat(name)
-		if RunLoops.HeartTable[name] then
-			RunLoops.HeartTable[name]:Disconnect()
-			RunLoops.HeartTable[name] = nil
-		end
+end
+local function UnbindFromStepped(name)
+	if StepTable[name] then
+		StepTable[name]:Disconnect()
+		StepTable[name] = nil
 	end
 end
 
@@ -134,7 +119,7 @@ local function getcustomassetfunc(path)
 			textlabel:Remove()
 		end)
 		local req = requestfunc({
-			Url = "https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/"..path:gsub("vape/assets", "assets"),
+			Url = "https://raw.githubusercontent.com/thatbirdguythatuknownot/VapeV4ForRoblox/patch-6/"..path:gsub("vape/assets", "assets"),
 			Method = "GET"
 		})
 		writefile(path, req.Body)
@@ -326,7 +311,7 @@ GuiLibrary["ObjectsThatCanBeSaved"]["GUIWindow"]["Api"].CreateCustomToggle({
 	["Function"] = function(callback)
 		Radar.SetVisible(callback) 
 		if callback then
-			RunLoops:BindToRenderStep("Radar", 1, function() 
+			BindToRenderStep("Radar", 1, function() 
 				local v278 = (CFrame.new(0, 0, 0):inverse() * cam.CFrame).p * 0.2 * Vector3.new(1, 1, 1);
 				local v279, v280, v281 = cam.CFrame:ToOrientation();
 				local u90 = v280 * 180 / math.pi;
@@ -362,7 +347,7 @@ GuiLibrary["ObjectsThatCanBeSaved"]["GUIWindow"]["Api"].CreateCustomToggle({
 				end
 			end)
 		else
-			RunLoops:UnbindFromRenderStep("Radar")
+			UnbindFromRenderStep("Radar")
 			RadarMainFrame:ClearAllChildren()
 		end
 	end, 
@@ -835,7 +820,7 @@ runcode(function()
 		["Function"] = function(callback)
 			if callback then
 				if mousefunctions then
-					RunLoops:BindToStepped("TriggerBot", 1, function()
+					BindToStepped("TriggerBot", 1, function()
 						local plr = gettriggerbotplr()
 						if plr then
 							if (isrbxactive or iswindowactive)() and shoottime <= tick() then
@@ -869,7 +854,7 @@ runcode(function()
 				end
 			else 
 				if mousefunctions then 
-					RunLoops:UnbindFromStepped("TriggerBot")
+					UnbindFromStepped("TriggerBot")
 					if pressed then
 						mouse1release()
 					end
@@ -888,7 +873,7 @@ autoclicker = GuiLibrary["ObjectsThatCanBeSaved"]["CombatWindow"]["Api"].CreateO
 	["Name"] = "AutoClicker", 
 	["Function"] = function(callback)
 		if callback then
-			RunLoops:BindToRenderStep("AutoClicker", 1, function() 
+			BindToRenderStep("AutoClicker", 1, function() 
 				if entity.isAlive and autoclickertick <= tick() then
 					if autoclickermode["Value"] == "Sword" then
 						local tool = lplr and lplr.Character and lplr.Character:FindFirstChildWhichIsA("Tool")
@@ -912,7 +897,7 @@ autoclicker = GuiLibrary["ObjectsThatCanBeSaved"]["CombatWindow"]["Api"].CreateO
 				end
 			end)
 		else
-			RunLoops:UnbindFromRenderStep("AutoClicker")
+			UnbindFromRenderStep("AutoClicker")
 		end
 	end
 })
@@ -935,7 +920,7 @@ local Reach = GuiLibrary["ObjectsThatCanBeSaved"]["CombatWindow"]["Api"].CreateO
 	["Name"] = "Reach", 
 	["Function"] = function(callback)
 		if callback then
-			RunLoops:BindToRenderStep("Reach", 1, function() 
+			BindToRenderStep("Reach", 1, function() 
 				local tool = lplr and lplr.Character and lplr.Character:FindFirstChildWhichIsA("Tool")
 				if tool and entity.isAlive then
 					local touch = findTouchInterest(tool)
@@ -951,7 +936,7 @@ local Reach = GuiLibrary["ObjectsThatCanBeSaved"]["CombatWindow"]["Api"].CreateO
 				end
 			end)
 		else
-			RunLoops:UnbindFromRenderStep("Reach")
+			UnbindFromRenderStep("Reach")
 			for i2,v2 in pairs(lplr.Character:GetChildren()) do
 				if v2:IsA("Tool") and rawget(oldsize, v2.Name) then
 					local touch = findTouchInterest(v2)
@@ -1025,7 +1010,7 @@ runcode(function()
 		["Name"] = "MouseTP", 
 		["Function"] = function(callback) 
 			if callback then
-				RunLoops:BindToHeartbeat("MouseTP", 1, function()
+				BindToStepped("MouseTP", 1, function()
 					if entity.isAlive and ClickTPVelocity["Enabled"] and ClickTPMethod["Value"] == "SlowTP" then 
 						entity.character.HumanoidRootPart.Velocity = Vector3.new()
 					end
@@ -1060,7 +1045,7 @@ runcode(function()
 					end
 				end
 			else
-				RunLoops:UnbindFromHeartbeat("MouseTP")
+				UnbindFromStepped("MouseTP")
 			end
 		end, 
 		["HoverText"] = "Teleports to where your mouse is."
@@ -1190,7 +1175,7 @@ runcode(function()
 				if flymethod["Value"] == "Jump" and entity.isAlive then
 					entity.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 				end
-				RunLoops:BindToHeartbeat("Fly", 1, function(delta) 
+				BindToStepped("Fly", 1, function(time, delta) 
 					if entity.isAlive then
 						entity.character.Humanoid.PlatformStand = flyplatformstanding["Enabled"]
 						if flyalivecheck == false then
@@ -1250,7 +1235,7 @@ runcode(function()
 				flyalivecheck = false
 				flypress:Disconnect()
 				flyendpress:Disconnect()
-				RunLoops:UnbindFromHeartbeat("Fly")
+				UnbindFromStepped("Fly")
 				if entity.isAlive then
 					entity.character.Humanoid.PlatformStand = false
 				end
@@ -1331,7 +1316,7 @@ local Hitbox =  GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].Crea
 	["Name"] = "HitBoxes", 
 	["Function"] = function(callback)
 		if callback then
-			RunLoops:BindToRenderStep("HitBoxes", 1, function() 
+			BindToRenderStep("HitBoxes", 1, function() 
 				for i,plr in pairs(entity.entityList) do
 					if plr.Targetable then
 						if hitboxoption["Value"] == "HumanoidRootPart" then
@@ -1343,7 +1328,7 @@ local Hitbox =  GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].Crea
 				end
 			end)
 		else
-			RunLoops:UnbindFromRenderStep("HitBoxes") 
+			UnbindFromRenderStep("HitBoxes") 
 			for i,plr in pairs(players:GetChildren()) do
 				local aliveplr = isAlive(plr)
 				if aliveplr then
@@ -1390,7 +1375,7 @@ Killaura = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOpt
 	["Name"] = "Killaura", 
 	["Function"] = function(callback)
 		if callback then
-			RunLoops:BindToRenderStep("Killaura", 1, function() 
+			BindToRenderStep("Killaura", 1, function() 
 				killauranear = false
 				if entity.isAlive then
 					local tool = lplr.Character:FindFirstChildWhichIsA("Tool")
@@ -1429,7 +1414,7 @@ Killaura = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOpt
 				end
 			end)
 		else
-			RunLoops:UnbindFromRenderStep("Killaura")
+			UnbindFromRenderStep("Killaura")
 			killauranear = false
 		end
 	end,
@@ -1479,7 +1464,7 @@ longjump = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOpt
 					entity.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 				end
 			end
-			RunLoops:BindToRenderStep("LongJump", 1, function() 
+			BindToRenderStep("LongJump", 1, function() 
 				if entity.isAlive then
 					if (entity.character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall or entity.character.Humanoid:GetState() == Enum.HumanoidStateType.Jumping) and entity.character.Humanoid.MoveDirection ~= Vector3.new() then
 						local velo = entity.character.Humanoid.MoveDirection * longjumpboost["Value"]
@@ -1496,7 +1481,7 @@ longjump = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOpt
 				end
 			end)
 		else
-			RunLoops:UnbindFromRenderStep("LongJump")
+			UnbindFromRenderStep("LongJump")
 			longjumpfall = false
 		end
 	end
@@ -1542,7 +1527,7 @@ HighJump = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOpt
 				HighJump["ToggleButton"](false)
 			else
 				highjumpbound = true
-				RunLoops:BindToRenderStep("HighJump", 1, function()
+				BindToRenderStep("HighJump", 1, function()
 					if HighJumpTick <= tick() and entity.isAlive and (entity.character.Humanoid:GetState() == Enum.HumanoidStateType.Running or entity.character.Humanoid:GetState() == Enum.HumanoidStateType.RunningNoPhysics) and uis:IsKeyDown(Enum.KeyCode.Space) then
 						HighJumpTick = tick() + (HighJumpDelay["Value"] / 10)
 						entity.character.HumanoidRootPart.Velocity = Vector3.new(0, HighJumpBoost["Value"], 0)
@@ -1551,7 +1536,7 @@ HighJump = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOpt
 			end
 		else
 			if highjumpbound then
-				RunLoops:UnbindFromRenderStep("HighJump")
+				UnbindFromRenderStep("HighJump")
 			end
 		end
 	end,
@@ -1588,7 +1573,7 @@ phase = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOption
 	["Name"] = "Phase", 
 	["Function"] = function(callback)
 		if callback then
-			RunLoops:BindToStepped("Phase", 1, function() -- has to be ran on stepped idk why
+			BindToStepped("Phase", 1, function()
 				if entity.isAlive then
 					if phasemode["Value"] == "Normal" then
 						for i, part in pairs(lplr.Character:GetDescendants()) do
@@ -1619,7 +1604,7 @@ phase = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOption
 				end
 			end)
 		else
-			RunLoops:UnbindFromStepped("Phase")
+			UnbindFromStepped("Phase")
 			for i,v in pairs(phaseparts) do
 				if i then
 					i.CanCollide = true
@@ -1656,7 +1641,7 @@ runcode(function()
 		["Name"] = "Spider",
 		["Function"] = function(callback)
 			if callback then
-				RunLoops:BindToHeartbeat("Spider", 1, function()
+				BindToStepped("Spider", 1, function()
 					if entity.isAlive then
 						local chars = {cam}
 						for i,v in pairs(players:GetChildren()) do
@@ -1684,7 +1669,7 @@ runcode(function()
 					end
 				end)
 			else
-				RunLoops:UnbindFromHeartbeat("Spider")
+				UnbindFromStepped("Spider")
 			end
 		end,
 		["HoverText"] = "Lets you climb up walls"
@@ -1755,7 +1740,7 @@ runcode(function()
 						d = false
 					end
 				end)
-				RunLoops:BindToHeartbeat("Speed", 1, function(delta)
+				BindToStepped("Speed", 1, function(time, delta)
 					if entity.isAlive then
 						local jumpcheck = killauranear and Killaura["Enabled"]
 						local movevec = (speedmovemethod["Value"] == "Manual" and (not (w or s or a or d)) and Vector3.new() or entity.character.Humanoid.MoveDirection).Unit
@@ -1814,7 +1799,7 @@ runcode(function()
 					entity.character.Humanoid.WalkSpeed = oldwalkspeed
 					oldwalkspeed = nil
 				end
-				RunLoops:UnbindFromHeartbeat("Speed")
+				UnbindFromStepped("Speed")
 			end
 		end,
 		["ExtraText"] = function() return speedmethod["Value"] end
@@ -1889,7 +1874,7 @@ runcode(function()
 		["Name"] = "SpinBot",
 		["Function"] = function(callback)
 			if callback then
-				RunLoops:BindToRenderStep("SpinBot", 1, function()
+				BindToRenderStep("SpinBot", 1, function()
 					if entity.isAlive then
 						if (bodyspin == nil or bodyspin ~= nil and bodyspin.Parent ~= entity.character.HumanoidRootPart) then
 							bodyspin = Instance.new("BodyAngularVelocity")
@@ -1905,7 +1890,7 @@ runcode(function()
 				if bodyspin then
 					bodyspin:Remove()
 				end
-				RunLoops:UnbindFromRenderStep("SpinBot")
+				UnbindFromRenderStep("SpinBot")
 			end
 		end,
 		["HoverText"] = "Makes your character spin around in circles (does not work in first person)"
@@ -1985,7 +1970,7 @@ local Arrows = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].Create
 	["Name"] = "Arrows", 
 	["Function"] = function(callback) 
 		if callback then
-			RunLoops:BindToRenderStep("Arrows", 500, function()
+			BindToRenderStep("Arrows", 500, function()
 				for i,plr in pairs(players:GetChildren()) do
 					local thing
 					if ArrowsFolder:FindFirstChild(plr.Name) then
@@ -2018,7 +2003,7 @@ local Arrows = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].Create
 				end
 			end)
 		else
-			RunLoops:UnbindFromRenderStep("Arrows") 
+			UnbindFromRenderStep("Arrows") 
 			ArrowsFolder:ClearAllChildren()
 		end
 	end, 
@@ -2081,7 +2066,7 @@ runcode(function()
 		["Name"] = "ESP", 
 		["Function"] = function(callback) 
 			if callback then
-				RunLoops:BindToRenderStep("ESP", 500, function()
+				BindToRenderStep("ESP", 500, function()
 					for i,plr in pairs(players:GetChildren()) do
 						local thing
 						if ESPDrawing["Enabled"] then 
@@ -2454,7 +2439,7 @@ runcode(function()
 					end
 				end)
 			else
-				RunLoops:UnbindFromRenderStep("ESP") 
+				UnbindFromRenderStep("ESP") 
 				ESPFolder:ClearAllChildren()
 				for i,v in pairs(espfolderdrawing) do 
 					pcall(function()
@@ -2590,7 +2575,7 @@ runcode(function()
 		["Name"] = "Chams", 
 		["Function"] = function(callback) 
 			if callback then
-				RunLoops:BindToRenderStep("Chams", 500, function()
+				BindToRenderStep("Chams", 500, function()
 					for i,plr in pairs(players:GetChildren()) do
 						local thing
 						if ChamsFolder:FindFirstChild(plr.Name) then
@@ -2617,7 +2602,7 @@ runcode(function()
 					end
 				end)
 			else
-				RunLoops:UnbindFromRenderStep("Chams")
+				UnbindFromRenderStep("Chams")
 				ChamsFolder:ClearAllChildren()
 			end
 		end,
@@ -2719,14 +2704,14 @@ local Health = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].Create
 	["Function"] = function(callback) 
 		if callback then
 			HealthText.Visible = true
-			RunLoops:BindToRenderStep("Health", 1, function()
+			BindToRenderStep("Health", 1, function()
 				if entity.isAlive then
 					HealthText.Text = tostring(math.round(entity.character.Humanoid.Health)).."❤"
 				end
 			end)
 		else
 			HealthText.Visible = false
-			RunLoops:UnbindFromRenderStep("Health")
+			UnbindFromRenderStep("Health")
 		end
 	end,
 	["HoverText"] = "Displays your health in the center of your screen."
@@ -2772,7 +2757,7 @@ runcode(function()
 		["Name"] = "NameTags", 
 		["Function"] = function(callback) 
 			if callback then
-				RunLoops:BindToRenderStep("NameTags", 500, function()
+				BindToRenderStep("NameTags", 500, function()
 					for i,plr in pairs(players:GetChildren()) do
 						local thing
 						if NameTagsDrawing["Enabled"] then
@@ -2871,7 +2856,7 @@ runcode(function()
 					end
 				end)
 			else
-				RunLoops:UnbindFromRenderStep("NameTags")
+				UnbindFromRenderStep("NameTags")
 				NameTagsFolder:ClearAllChildren()
 				for i,v in pairs(nametagsfolderdrawing) do 
 					pcall(function()
@@ -3085,7 +3070,7 @@ runcode(function()
 		["Name"] = "Tracers", 
 		["Function"] = function(callback) 
 			if callback then
-				RunLoops:BindToRenderStep("Tracers", 500, function()
+				BindToRenderStep("Tracers", 500, function()
 					for i,plr in pairs(players:GetChildren()) do
 							local thing
 							if TracersDrawing["Enabled"] then
@@ -3161,7 +3146,7 @@ runcode(function()
 						end
 				end)
 			else
-				RunLoops:UnbindFromRenderStep("Tracers") 
+				UnbindFromRenderStep("Tracers") 
 				TracersFolder:ClearAllChildren()
 				for i,v in pairs(tracersdrawingtab) do 
 					pcall(function()
@@ -3432,7 +3417,7 @@ local Freecam = GuiLibrary["ObjectsThatCanBeSaved"]["WorldWindow"]["Api"].Create
 			panSpring:Reset(Vector2.new())
 
 			PlayerState.Push()
-			RunLoops:BindToRenderStep("Freecam", Enum.RenderPriority.Camera.Value, function(dt)
+			BindToRenderStep("Freecam", Enum.RenderPriority.Camera.Value, function(dt)
 				local vel = velSpring:Update(dt, Input.Vel(dt))
 				local pan = panSpring:Update(dt, Input.Pan(dt))
 
@@ -3451,7 +3436,7 @@ local Freecam = GuiLibrary["ObjectsThatCanBeSaved"]["WorldWindow"]["Api"].Create
 			Input.StartCapture()
 		else
 			Input.StopCapture()
-			RunLoops:UnbindFromRenderStep("Freecam")
+			UnbindFromRenderStep("Freecam")
 			PlayerState.Pop()
 		end
 	end,
@@ -3660,13 +3645,13 @@ runcode(function()
 						entity.character.Humanoid:SetStateEnabled(v, false)
 					end
 					entity.character.Humanoid:ChangeState(Enum.HumanoidStateType.Swimming)
-					RunLoops:BindToHeartbeat("Swim", 1, function()
+					BindToStepped("Swim", 1, function()
 						entity.character.HumanoidRootPart.Velocity = ((entity.character.Humanoid.MoveDirection ~= Vector3.new() or entity.character.Humanoid.Jump) and entity.character.HumanoidRootPart.Velocity or Vector3.new())
 					end)
 				end
 			else 
 				workspace.Gravity = oldgravity
-				RunLoops:UnbindFromHeartbeat("Swim")
+				UnbindFromStepped("Swim")
 				if entity.isAlive then
 					local enums = Enum.HumanoidStateType:GetEnumItems()
 					table.remove(enums, table.find(enums, Enum.HumanoidStateType.None))
