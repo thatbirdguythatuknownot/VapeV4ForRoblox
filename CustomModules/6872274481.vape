@@ -1255,7 +1255,7 @@ local function iPatternSpace(pattern, brackets)
 	    i=i+1
 	    pat, lenpat = iPatternSpace(pattern:sub(i),brackets)
 	    tmp[#tmp+1] = '('..pat..')'
-	    i = i + lenpat + 1
+	    i = i + lenpat
 	elseif char==')' then
 	    break
         elseif char:match("[A-Za-z0-9_]") then    -- word characters
