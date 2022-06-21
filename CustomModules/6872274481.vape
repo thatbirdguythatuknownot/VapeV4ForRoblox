@@ -1395,6 +1395,7 @@ end
 
 local AntiToxic = {["Enabled"] = false}
 chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
+	local textlabel2 = text:WaitForChild("TextLabel")
 	local check
 	local endpos
 	check, endpos = textlabel2.Text:find("^%s*/mutegroup ")
