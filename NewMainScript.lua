@@ -1,7 +1,7 @@
 repeat task.wait() until game:IsLoaded() == true
 local injected = true
 local oldrainbow = false
-local customdir = (shared.VapePrivate and "vapeprivate/" or "vape/")
+local customdir = "vapeprivate/"
 local betterisfile = function(file)
 	local suc, res = pcall(function() return readfile(file) end)
 	return suc and res ~= nil
@@ -1609,10 +1609,8 @@ else
 			func()
 		end
 	end
-	if shared.VapePrivate then
-		if pcall(function() readfile("vapeprivate/CustomModules/"..game.PlaceId..".vape") end) then
-			loadstring(readfile("vapeprivate/CustomModules/"..game.PlaceId..".vape"))()
-		end	
+	if pcall(function() readfile("vapeprivate/CustomModules/"..game.PlaceId..".vape") end) then
+		loadstring(readfile("vapeprivate/CustomModules/"..game.PlaceId..".vape"))()
 	end
 	GuiLibrary["LoadSettings"](shared.VapeCustomProfile)
 	local profiles = {}
