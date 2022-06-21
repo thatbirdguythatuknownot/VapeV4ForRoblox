@@ -28,7 +28,7 @@ checkpublicrepo = function(id)
 	if req.StatusCode == 200 then
 		return req.Body
 	end
-	return nil
+	return req
 end
 shared.CustomSaveVape = 6872274481
 if pcall(function() readfile("vape/CustomModules/6872274481.vape") end) then
@@ -36,7 +36,7 @@ if pcall(function() readfile("vape/CustomModules/6872274481.vape") end) then
 else
 	local publicrepo = checkpublicrepo("6872274481")
 	if publicrepo then
-		local func, err = loadstring(publicrepo)()
+		local func, err = loadstring(publicrepo)
 		if not func then error(err) end
 		func()
 	end
