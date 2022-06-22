@@ -1444,23 +1444,24 @@ local wordsTable = {
 	"ma+d", "trash", "noo+b+", "nu+b+",
 	"brainles+", "su+c+k+[sz]?",
 	"getalife", "nolife", "lo[sz]+er+",
-	"hack*[sz]*towin+", "kid+", "ke+d+",
-	"adopte+d+", "commitnotalive", "die+d*",
+	"kid+", "ke+d+",
+	"adopte+d+", "com+itnotali*ve+", "die+d*",
 	"shutup", "sham+e+",
 	"scare+d+", "scare+dy+ca+t+", "u+g+ly+", "su+x+",
 	"co+pe+", "be+ta+", "se+the*", "ince+l+",
-	"haxtowin+", "virgin+",
 	"brainde+a*d+", "touchgra+s+", "touchs[ou]+m+e*gra+s+",
-	"fa+t+", "e+w+", "letyo+u*win", "lety?u+win",
-	"cri+ng+e+", "use+le*[sz]+"
+	"letyo+u*win", "lety?u+win",
+	"use+le*[sz]+",
 }
 
 local wordsBeginTable = {
 	"kil+yo+u*r", "kil+y?u+r", "yo+u*r*m[ou]+m+",
 	"y?u+r*m[ou]+m+", "clap+", "tryha*r+d+", "du+m+",
-	"cance+r+", "run+er", "skillis+u+e+", "ima*gi+n+",
-	"noskill+", "poo+r", "cry+", "swe+a*t+", "(e+z+)+",
-	"no+w*o+n+e*li+k+e*s+y?[ou]+u*", "id+i*o+t+"
+	"cance+r+", "run+er", "skil+is+u+e+", "ima*gi+n+",
+	"no+skil+", "poo+r", "cry+", "swe+a*t+", "(e+z+)+",
+	"no+w*o+n+e*li+k+e*s+y?[ou]+u*", "id+i*o+t+",
+	"fa+t+", "e+w+", "hack*[sz]*towin+", "haxtowin+",
+	"virgin+", "cri+ng+", "skil+e+s+"
 }
 
 local words_table = words(wordsTable)
@@ -1473,21 +1474,22 @@ local niceTable = keysFrom(toxicTable, {
 	"good", "very good", "pro", "pro",
 	"big brain", "awesome",
 	"i wish i had your life", "have a good life", "winner",
-	"nice hacks", "mature guy", "mature guy",
+	"mature guy", "mature guy",
 	"lucky to still have real parents", "nice skills", "nice skills",
 	"keep going :)", "gigachad",
 	"brave", "brave fighter", "beautiful", "awesome",
 	"celebrate", "sigma", "nice", "nice",
-	"nice hacks", "chad",
 	"big brain", "brb gonna touch grass", "brb gonna touch grass",
-	"fit", "nice", "you too good", "you too good",
-	"good stuff", "useful",
+	"you too good", "you too good",
+	"useful",
 
 	"love your", "love your", "my dad",
 	"my dad", "fair-fight", "pro", "smart",
 	"pro", "fighter", "very good skills", "congrats on fulfilling your dreams",
 	"very good skills", "rich", "so good", "pro", "good job man",
-	"everyone loves you", "lol"
+	"everyone loves you", "lol",
+	"fit", "nice", "nice hacks", "nice hacks",
+	"chad", "good stuff", "skillful"
 })
 local function findFromTable(text, tab)
 	text = text:lower()
