@@ -1381,7 +1381,9 @@ end
 local function words(tab_)
     local tab = {}
 	for i, v in ipairs(tab_) do
-		tab[i] = "{:word:"..(iPatternSpace(v, true)).."/[A-Za-z0-9_]^0[A-Za-z0-9_]^1=word:}![A-Za-z0-9_]"
+		tab[i] = L.P{
+			re.compile((iPatternSpace(v, true))) + re.compile("[A-Za-z0-9_]^0[^A-Za-z0-9_]^1")*L.V(1)
+		} * re.compile"![A-Za-z0-9_]"
 	end
 	return tab
 end
@@ -1389,7 +1391,9 @@ end
 local function wordsbegin(tab_)
     local tab = {}
 	for i, v in ipairs(tab_) do
-		tab[i] = "{:word:"..(iPatternSpace(v, true)).."/[A-Za-z0-9_]^0[A-Za-z0-9_]^1=word:}"	
+		tab[i] = L.P{
+			re.compile((iPatternSpace(v, true))) + re.compile("[A-Za-z0-9_]^0[^A-Za-z0-9_]^1")*L.V(1)
+		}
 	end
 	return tab
 end
@@ -1615,7 +1619,11 @@ runcode(function()
 				while pat do
 					excepts[#excepts+1] = pat
 					print(band(flags, IS_REGEX), pat, normalized[pat])
-					text2 = (if band(flags, IS_REGEX) ~= 0 then re.gsub else string.gsub)(text2, pat, bypass_autoreport)
+                    if band(flags, IS_REGEX) ~= 0 then
+                        text2 = re.gsub(text2, pat, bypass_autoreport)
+                    else
+                        text2 = text2:gsub(pat, bypass_autoreport)
+					end
 					_, pat, flags = findreport(text2, excepts)
 				end
 			end
