@@ -6233,6 +6233,13 @@ runcode(function()
 	local AutoReportList = {["ObjectList"] = {}}
 	local RegexAutoReportList = {["ObjectList"] = {}}
 
+	local listreportmessage = {
+		["Bullying"] = "they're bullying me",
+		["Scamming"] = "they trying to scam me",
+		["Offsite Links"] = "they're giving me offsite links that can hurt me",
+		["Swearing"] = "they said a bad word",
+	}
+
 	local function containsexact(x, tab)
 		for _, v in pairs(tab) do
 			if x == v then
@@ -6355,25 +6362,20 @@ runcode(function()
 			end
 		end
 		if AutoReport["Enabled"] and plr and plr ~= lplr then
-            local reportreason, reportedmatch = findreport(tab.Message)
-            if reportreason then 
-				if alreadyreported[plr] == nil then
-					task.spawn(function()
-						reported = reported + 1
-						players:ReportAbuse(plr, reportreason, "he said a bad word")
+			local reportreason, reportedmatch = findreport(tab.Message)
+			if reportreason then 
+				task.spawn(function()
+					reported = reported + 1
+					players:ReportAbuse(plr, reportreason, listreportmessage[reportreason] or "they did something bad")
+				end)
+				if AutoReportNotify["Enabled"] then 
+					local warning = createwarning("AutoReport", "Reported "..plr.Name.." for\n"..reportreason..' ('..reportedmatch..')', 15)
+					pcall(function()
+						warning:GetChildren()[5].Position = UDim2.new(0, 46, 0, 38)
 					end)
-					if AutoReportNotify["Enabled"] then 
-						local warning = createwarning("AutoReport", "Reported "..plr.Name.." for\n"..reportreason..' ('..reportedmatch..')', 15)
-						pcall(function()
-							warning:GetChildren()[5].Position = UDim2.new(0, 46, 0, 38)
-						end)
-					end
-					alreadyreported[plr] = true
-				else
-					print("already reported: "..plr.Name)
 				end
-            end
-        end
+			end
+		end
 		if (AutoToxicTeam["Enabled"] == false and lplr:GetAttribute("Team") ~= plr:GetAttribute("Team") or AutoToxicTeam["Enabled"]) and (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and (tab["Message"]:lower():find("hack") or tab["Message"]:lower():find("hax") or tab["Message"]:lower():find("exploit") or tab["Message"]:lower():find("cheater"))) and plr ~= lplr and table.find(ignoredplayers, plr.UserId) == nil and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
 			local custommsg = #AutoToxicPhrases4["ObjectList"] > 0 and AutoToxicPhrases4["ObjectList"][math.random(1, #AutoToxicPhrases4["ObjectList"])]
 			if custommsg == lastsaid2 then
