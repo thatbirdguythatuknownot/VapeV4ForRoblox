@@ -1536,6 +1536,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	if not textlabel2:FindFirstChild("TextButton") then return end
 	local originalText = textlabel2.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
+	print(modifiedText, originalText)
 	local startpos
 	local pattern
 	startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
