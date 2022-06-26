@@ -1523,6 +1523,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 			end
 		end
     end
+    	print(AntiToxic["Enabled"])
 	if not AntiToxic["Enabled"] then return end
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	while text and text.TextLabel.Text:match("^%s+_+$") do
@@ -1530,6 +1531,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	end
 	if not text then return end
 	textlabel2 = text.TextLabel
+	print(textlabel2)
 	if not textlabel2.Text:match("^%s+") then return end
 	if not textlabel2:FindFirstChild("TextButton") then return end
 	local originalText = textlabel2.Text
@@ -1537,6 +1539,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 	local startpos
 	local pattern
 	startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
+	print(startpos, endpos, pattern)
 	if not startpos then return end
 	while startpos do
 		if niceTable[pattern] == nil then
@@ -1547,6 +1550,7 @@ chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFra
 		startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
 		task.wait()
 	end
+	print(modifiedText, originalText)
 	textlabel2.MouseEnter:Connect(function()
 		textlabel2.RichText = false
 		textlabel2.Text = originalText
@@ -6222,6 +6226,7 @@ runcode(function()
 		["cheat"] = "Scamming",
 		["auto"] = "Scamming",
 		["hax"] = "Scamming",
+		["clicker"] = "Scamming",
 	}
 	local regexreporttable = keysFrom(toxicTable, repeatTable({"Bullying"}, #toxicTable))
 
