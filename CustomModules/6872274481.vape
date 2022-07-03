@@ -5277,7 +5277,7 @@ runcode(function()
 		if sword and sword["tool"] then
 			local attacksuccess = killaurarealremote:InvokeServer({
 				["weapon"] = sword["tool"],
-				["chargedAttack"] = {chargeRatio = 1},
+				["chargedAttack"] = {chargeRatio = "nan"},
 				["entityInstance"] = plr.Character,
 				["validate"] = {
 					["raycast"] = {
