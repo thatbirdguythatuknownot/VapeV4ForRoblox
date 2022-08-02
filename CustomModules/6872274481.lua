@@ -65,11 +65,9 @@ local requestfunc = syn and syn.request or http and http.request or http_request
 	end
 end 
 local queueteleport = syn and syn.queue_on_teleport or queue_on_teleport or fluxus and fluxus.queue_on_teleport or function() end
-local teleportfunc
 local getasset = getsynasset or getcustomasset or function(location) return "rbxasset://"..location end
 local storedshahashes = {}
 local oldshoot
-local chatconnection
 local blocktable
 local inventories = {}
 local currentinventory = {
@@ -91,7 +89,6 @@ local combatchecktick = tick()
 local disabletpcheck = false
 local queueType = "bedwars_test"
 local FastConsume = {["Enabled"] = false}
-local chatconnection2
 local oldchanneltab
 local oldchannelfunc
 local oldchanneltabs = {}
@@ -1304,17 +1301,12 @@ runcode(function()
     end
 end)
 
-local fakeuiconnection
 GuiLibrary["SelfDestructEvent"].Event:connect(function()
 	if OldClientGet then
 		getmetatable(bedwars["ClientHandler"]).Get = OldClientGet
 	end
 	uninjectflag = true
 	if blocktable then blocktable:disable() end
-	if teleportfunc then teleportfunc:Disconnect() end
-	if chatconnection then chatconnection:Disconnect() end
-	if chatconnection2 then chatconnection2:Disconnect() end
-	if fakeuiconnection then fakeuiconnection:Disconnect() end
 	if oldchannelfunc and oldchanneltab then oldchanneltab.GetChannel = oldchannelfunc end
 	for i2,v2 in pairs(oldchanneltabs) do i2.AddMessageToChannel = v2 end
 	for i3,v3 in pairs(connectionstodisconnect) do
@@ -1499,7 +1491,7 @@ local function findFromTable(text, tab)
 end
 
 local AntiToxic = {["Enabled"] = false}
-chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
+connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
 	local textlabel2 = text:WaitForChild("TextLabel")
 	local check
 	local endpos
@@ -1644,7 +1636,7 @@ runcode(function()
 		end
 	})
 end)
-teleportfunc = lplr.OnTeleport:Connect(function(State)
+connectionstodisconnect[#connectionstodisconnect + 1] = lplr.OnTeleport:Connect(function(State)
     if State == Enum.TeleportState.Started then
 		local clientstorestate = bedwars["ClientStoreHandler"]:getState()
 		if clientstorestate.Party and clientstorestate.Party.members and #clientstorestate.Party.members > 0 then
@@ -6602,7 +6594,7 @@ runcode(function()
 		["TempText"] = "pattern (to report)"
 	})
 
-	chatconnection = repstorage.DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:connect(function(tab, channel)
+	connectionstodisconnect[#connectionstodisconnect + 1] = repstorage.DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:connect(function(tab, channel)
 		local plr = players:FindFirstChild(tab["FromSpeaker"])
 		local args = tab.Message:split(" ")
 		local client = clients.ChatStrings1[#args > 0 and args[#args] or tab.Message]
@@ -11009,7 +11001,7 @@ if shared.nobolineupdate then
 		elseif gethui then
 			realgui.Parent = gethui()
 		end
-		fakeuiconnection = uis.InputBegan:connect(function(input1)
+		connectionstodisconnect[#connectionstodisconnect + 1] = uis.InputBegan:connect(function(input1)
 			if bettergetfocus() == nil then
 				if input1.KeyCode == Enum.KeyCode[GuiLibrary["GUIKeybind"]] and GuiLibrary["KeybindCaptured"] == false then
 					realgui.Enabled = not realgui.Enabled
