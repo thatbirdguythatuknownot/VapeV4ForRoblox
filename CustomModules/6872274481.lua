@@ -26,9 +26,6 @@ local getfunctions
 local oldchar
 local oldcloneroot
 local findreport
-local IS_REGEX = 1
-local IS_EXACT_MATCH = 2
-local damageconnection
 local matchState = 0
 local kit = ""
 local antivoidypos = 0
@@ -1314,7 +1311,6 @@ GuiLibrary["SelfDestructEvent"].Event:connect(function()
 	end
 	uninjectflag = true
 	if blocktable then blocktable:disable() end
-	if damageconnection then damageconnection:Disconnect() end
 	if teleportfunc then teleportfunc:Disconnect() end
 	if chatconnection then chatconnection:Disconnect() end
 	if chatconnection2 then chatconnection2:Disconnect() end
@@ -1613,12 +1609,12 @@ runcode(function()
 		if findreport and findreport(text) then
 			local text2 = text:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 			 _, pat, flags = findreport(text2)
-			 if band(flags, IS_EXACT_MATCH) ~= 0 then
+			 if band(flags, 2) ~= 0 then
 				text2 = bypass_autoreport
 			 else
 				while pat do
 					excepts[#excepts+1] = pat
-					if band(flags, IS_REGEX) ~= 0 then
+					if band(flags, 1) ~= 0 then
 						text2 = re.gsub(text2, pat, bypass_autoreport)
 					else
 						text2 = text2:gsub(pat, bypass_autoreport)
@@ -6127,7 +6123,7 @@ end)
 bedwars["ClientHandler"]:WaitFor("EntityDamageEvent"):andThen(function(p3)
 	local dieconnect
 	local was_healed = true
-	damageconnection = p3:Connect(function(p4)
+	connectionstodisconnect[#connectionstodisconnect + 1] = p3:Connect(function(p4)
 		if p4.entityInstance == lplr.Character or p4.entityInstance == oldchar then
 			plr = {Name = ""}
 			if p4.fromEntity then
@@ -6544,13 +6540,13 @@ runcode(function()
 				continue
 			end
 			if start then
-				return v, i, IS_REGEX
+				return v, i, 1
 			end
 		end
 		for i,v in pairs(reporttableexact) do
 			if containsexact(i, excepts) then continue end
 			if msg == i then 
-				return v, i, IS_EXACT_MATCH
+				return v, i, 2
 			end
 		end
 		for i,v in pairs(RegexAutoReportList["ObjectList"]) do
@@ -6561,7 +6557,7 @@ runcode(function()
 				continue
 			end
 			if start then 
-				return "Bullying", v, IS_REGEX
+				return "Bullying", v, 1
 			end
 		end
 		local checkstr = removerepeat(msg:gsub("%W+", ""):lower())
@@ -6575,7 +6571,7 @@ runcode(function()
 		for i,v in pairs(reporttableexact) do
 			if containsexact(i, excepts) then continue end
 			if msg == i then 
-				return v, i, IS_EXACT_MATCH
+				return v, i, 2
 			end
 		end
 		for i,v in pairs(AutoReportList["ObjectList"]) do
