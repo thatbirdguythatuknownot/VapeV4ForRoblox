@@ -645,7 +645,7 @@ local compat = {
     lua52 = _VERSION == "Lua 5.2",
     luajit = jit and true or false,
     jit = jit and jit.status(),
-    lua52_len = not #setmetatable({},{__len = function()end}),
+    lua52_len = false,
     proxies = pcall(function()
         local prox = newproxy(true)
         local prox2 = newproxy(prox)
