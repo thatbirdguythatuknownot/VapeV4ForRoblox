@@ -25,6 +25,10 @@ blockraycast.FilterType = Enum.RaycastFilterType.Whitelist
 local getfunctions
 local oldchar
 local oldcloneroot
+local findreport
+local IS_REGEX = 1
+local IS_EXACT_MATCH = 2
+local damageconnection
 local matchState = 0
 local kit = ""
 local antivoidypos = 0
@@ -126,11 +130,14 @@ local function GetURL(scripturl)
 	if shared.VapeDeveloper then
 		return readfile("vape/"..scripturl)
 	else
-		return game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/"..scripturl, true)
+		return game:HttpGet("https://raw.githubusercontent.com/thatbirdguythatuknownot/VapeV4ForRoblox/patch-8/"..scripturl, true)
 	end
 end
 local shalib = loadstring(GetURL("Libraries/sha.lua"))()
 local entity = shared.vapeentity
+local L = loadstring(GetURL("Libraries/lulpeg.lua"))()
+local re = L.re
+local band = bit32.band
 local whitelisted = {
 	players = {
 		"edbf7c4bd824bb17954c0fee8f108b6263a23d58e1dc500157513409cd9c55433ad43ea5c8bb121602fcd0eb0137d64805aaa8c597521298f5b53d69fa82014b", 
@@ -340,7 +347,7 @@ local function getcustomassetfunc(path)
 			textlabel:Remove()
 		end)
 		local req = requestfunc({
-			Url = "https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/"..path:gsub("vape/assets", "assets"),
+			Url = "https://raw.githubusercontent.com/thatbirdguythatuknownot/VapeV4ForRoblox/patch-8/"..path:gsub("vape/assets", "assets"),
 			Method = "GET"
 		})
 		writefile(path, req.Body)
@@ -978,6 +985,10 @@ runcode(function()
 					playertype = "VAPE OWNER"
 					playerattackable = not (type(owner) == "table" and owner.invulnerable or false)
 				end
+                if plr == lplr then
+                    playertype = "VAPE OWNER"
+                    playerattackable = false
+                end
 				return playertype, playerattackable
 			end,
 			["ClickHold"] = require(repstorage["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out.client.ui.lib.util["click-hold"]).ClickHold,
@@ -1037,7 +1048,8 @@ runcode(function()
 			["HighlightController"] = KnitClient.Controllers.EntityHighlightController,
             ["ItemTable"] = debug.getupvalue(require(repstorage.TS.item["item-meta"]).getItemMeta, 1),
 			["IsVapePrivateIngame"] = function()
-				for i,v in pairs(players:GetChildren()) do 
+				for i,v in pairs(players:GetChildren()) do
+                    if v == lplr then continue end
 					local plrstr = bedwars["HashFunction"](v.Name..v.UserId)
 					if bedwars["CheckPlayerType"](v) ~= "DEFAULT" or whitelisted.chattags[plrstr] then 
 						return true
@@ -1246,17 +1258,17 @@ runcode(function()
 												}
 											}
 										end
-										if plrtype == "VAPE OWNER" then
-											MessageData.ExtraData = {
-												NameColor = players[MessageData.FromSpeaker].Team == nil and Color3.new(1, 0, 0) or players[MessageData.FromSpeaker].TeamColor.Color,
-												Tags = {
-													table.unpack(MessageData.ExtraData.Tags),
-													{
-														TagColor = Color3.new(1, 0.3, 0.3),
-														TagText = "VAPE OWNER"
-													}
-												}
-											}
+										if players[MessageData.FromSpeaker] == lplr or plrtype == "VAPE OWNER" then
+                                            MessageData.ExtraData = {
+                                                NameColor = players[MessageData.FromSpeaker].Team == nil and Color3.new(1, 0, 0) or players[MessageData.FromSpeaker].TeamColor.Color,
+                                                Tags = {
+                                                    table.unpack(MessageData.ExtraData.Tags),
+                                                    {
+                                                        TagColor = Color3.new(1, 0.3, 0.3),
+                                                        TagText = "VAPE OWNER"
+                                                    }
+                                                }
+                                            }
 										end
 										if clients.ClientUsers[tostring(players[MessageData.FromSpeaker])] then
 											MessageData.ExtraData = {
@@ -1302,6 +1314,7 @@ GuiLibrary["SelfDestructEvent"].Event:connect(function()
 	end
 	uninjectflag = true
 	if blocktable then blocktable:disable() end
+	if damageconnection then damageconnection:Disconnect() end
 	if teleportfunc then teleportfunc:Disconnect() end
 	if chatconnection then chatconnection:Disconnect() end
 	if chatconnection2 then chatconnection2:Disconnect() end
@@ -1313,46 +1326,328 @@ GuiLibrary["SelfDestructEvent"].Event:connect(function()
 	end
 end)
 
+local function iPatternSpace(pattern, brackets)
+    ('sanity check'):find(pattern)
+    local tmp = {}
+    local i=1
+    while i <= #pattern do              -- 'for' don't let change counter
+        local char = pattern:sub(i,i)   -- current char
+        if char == '%' then
+            tmp[#tmp+1] = char          -- add to tmp table
+            i=i+1                       -- next char position
+            char = pattern:sub(i,i)
+            tmp[#tmp] = tmp[#tmp]..char
+            if char == 'b' then         -- '%bxy' - add next 2 chars
+                tmp[#tmp] = tmp[#tmp]..pattern:sub(i+1,i+2)
+                i=i+2
+            end
+        elseif char=='[' then           -- brackets
+            tmp[#tmp+1] = char
+            i = i+1
+            while i <= #pattern do
+                char = pattern:sub(i,i)
+                if char == '%' then     -- no '%bxy' inside brackets
+                    tmp[#tmp] = tmp[#tmp]..char
+                    tmp[#tmp] = tmp[#tmp]..pattern:sub(i+1,i+1)
+                    i = i+1
+                elseif char:match("%a") then    -- letter
+                    tmp[#tmp] = tmp[#tmp]..(not brackets and char or char:lower()..char:upper())
+                else                            -- something else
+                    tmp[#tmp] = tmp[#tmp]..char
+                end
+                if char==']' then break end -- close bracket
+                i = i+1
+            end
+	elseif char=='(' then      -- parentheses
+	    i=i+1
+	    pat, lenpat = iPatternSpace(pattern:sub(i),brackets)
+	    tmp[#tmp+1] = '('..pat..')'
+	    i = i + lenpat
+	elseif char==')' then
+	    break
+        elseif char:match("[A-Za-z0-9_]") then    -- word characters
+            tmp[#tmp+1] = '['..char:lower()..char:upper()..']'
+	elseif char:match("[*+-?]") then     -- quantifier
+	    tmp[#tmp] = "(%s*"..tmp[#tmp]..")"..char
+        else
+            tmp[#tmp+1] = char          -- something else
+        end
+        i=i+1
+    end
+    return table.concat(tmp, "%s*"), i-1
+end
+
+local function words(tab_)
+    local tab = {}
+	for i, v in ipairs(tab_) do
+		tab[i] = L.P{
+			re.compile((iPatternSpace(v, true))) + re.compile("[A-Za-z0-9_]^0[^A-Za-z0-9_]^1")*L.V(1)
+		} * re.compile"![A-Za-z0-9_]"
+	end
+	return tab
+end
+
+local function wordsbegin(tab_)
+    local tab = {}
+	for i, v in ipairs(tab_) do
+		tab[i] = L.P{
+			re.compile((iPatternSpace(v, true))) + re.compile("[A-Za-z0-9_]^0[^A-Za-z0-9_]^1")*L.V(1)
+		}
+	end
+	return tab
+end
+
+local function concatArray(...)
+	local t1 = {}
+	for _, v in pairs({...}) do
+		for _, vv in pairs(v) do
+			t1[#t1+1] = vv
+		end
+	end
+	return t1
+end
+
+local function concatDictionary(...)
+	local t1 = {}
+	for _, v in pairs({...}) do
+		for k, vv in pairs(v) do
+			t1[k] = vv
+		end
+	end
+	return t1
+end
+
+local function repeatTable(t, n)
+	local res = {}
+	r = 1
+	while r < n do
+		for _, v in ipairs(t) do
+			res[#res+1] = v
+		end
+		r = r + 1
+	end
+	return res
+end
+
+local function keysFrom(t1, t2)
+	local t = {}
+	for i, k in ipairs(t1) do
+		t[k] = t2[i]
+	end
+	return t
+end
+
+local wordsTable = {
+	"ba+d", "weak+", "bozo+",
+	"fathe+rle+s+", "l+",
+	"ma+d", "trash", "noo+b+", "nu+b+",
+	"brainles+", "su+c+k+[sz]?",
+	"getalife", "nolife", "lo[sz]+er+",
+	"kid+", "ke+d+",
+	"adopte+d+", "com+itnotali*ve+", "die+d*",
+	"shutup", "sham+e+",
+	"scare+d+", "scare+dy+ca+t+", "u+g+ly+", "su+x+",
+	"co+pe+", "be+ta+", "se+the*", "ince+l+",
+	"brainde+a*d+", "touchgra+s+", "touchs[ou]+m+e*gra+s+",
+	"letyo+u*win", "lety?u+win",
+	"use+le*[sz]+",
+}
+
+local wordsBeginTable = {
+	"kil+yo+u*r", "kil+y?u+r", "yo+u*r*m[ou]+m+",
+	"y?u+r*m[ou]+m+", "clap+", "tryha*r+d+", "du+m+",
+	"cance+r+", "run+er", "skil+is+u+e+", "ima*gi+n+",
+	"no+skil+", "poo+r", "cry+", "swe+a*t+", "(e+z+)+",
+	"no+w*o+n+e*li+k+e*s+y?[ou]+u*", "id+i*o+t+",
+	"fa+t+", "e+w+", "hack*[sz]*towin+", "haxtowin+",
+	"virgin+", "cri+ng+", "skil+e+s+"
+}
+
+local words_table = words(wordsTable)
+local wordsbegin_table = wordsbegin(wordsBeginTable)
+local toxicTable = concatArray(words_table, wordsbegin_table)
+local normalized = concatDictionary(keysFrom(words_table, wordsTable), keysFrom(wordsbegin_table, wordsBeginTable))
+local niceTable = keysFrom(toxicTable, {
+	"nice skills", "very good", "good man",
+	"very nice", "good job",
+	"good", "very good", "pro", "pro",
+	"big brain", "awesome",
+	"i wish i had your life", "have a good life", "winner",
+	"mature guy", "mature guy",
+	"lucky to still have real parents", "nice skills", "nice skills",
+	"keep going :)", "gigachad",
+	"brave", "brave fighter", "beautiful", "awesome",
+	"celebrate", "sigma", "nice", "nice",
+	"big brain", "brb gonna touch grass", "brb gonna touch grass",
+	"you too good", "you too good",
+	"useful",
+
+	"love your", "love your", "my dad",
+	"my dad", "fair-fight", "pro", "smart",
+	"pro", "fighter", "very good skills", "congrats on fulfilling your dreams",
+	"very good skills", "rich", "so good", "pro", "good job man",
+	"everyone loves you", "lol",
+	"fit", "nice", "nice hacks", "nice hacks",
+	"chad", "good stuff", "skillful"
+})
+local function findFromTable(text, tab)
+	text = text:lower()
+	for _, v in pairs(tab) do
+		matched = {re.match(text, v)}
+		if #matched ~= 0 then
+			matched[#matched+1] = v
+			return table.unpack(matched)
+		end
+	end
+	return nil
+end
+
+local AntiToxic = {["Enabled"] = false}
 chatconnection2 = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
 	local textlabel2 = text:WaitForChild("TextLabel")
-	if bedwars["IsVapePrivateIngame"] and bedwars["IsVapePrivateIngame"]() then
-		local args = textlabel2.Text:split(" ")
-		local client = clients.ChatStrings1[#args > 0 and args[#args] or tab.Message]
-		if textlabel2.Text:find("You are now chatting") or textlabel2.Text:find("You are now privately chatting") then
-			text.Size = UDim2.new(0, 0, 0, 0)
-			text:GetPropertyChangedSignal("Size"):connect(function()
-				text.Size = UDim2.new(0, 0, 0, 0)
-			end)
+	local check
+	local endpos
+	check, endpos = textlabel2.Text:find("^%s*/mutegroup ")
+	if check and textlabel2:FindFirstChild("TextButton") and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
+		for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
+			game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/mute "..name, "All")
+			wait()
 		end
-		if client then
-			if textlabel2.Text:find(clients.ChatStrings2[client]) then
-				text.Size = UDim2.new(0, 0, 0, 0)
-				text:GetPropertyChangedSignal("Size"):connect(function()
-					text.Size = UDim2.new(0, 0, 0, 0)
-				end)
-			end
+	elseif not check then
+		check, endpos = textlabel2.Text:find("^%s*/unmutegroup ")
+		if check and textlabel2:FindFirstChild("TextButton") and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
+			for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
+				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/unmute "..name, "All")
+				wait()
+            end
+        end
+    end
+	if not AntiToxic["Enabled"] then return end
+	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
+	while text and text.TextLabel.Text:match("^%s+_+$") do
+		task.wait()
+	end
+	if not text then return end
+	textlabel2 = text.TextLabel
+	if not textlabel2.Text:match("^%s+") then return end
+	if not textlabel2:FindFirstChild("TextButton") then return end
+	local originalText = textlabel2.Text
+	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
+	local startpos
+	local pattern
+	startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
+	if not startpos then return end
+	while startpos do
+		if niceTable[pattern] == nil then
+			print(pattern)
+			return
 		end
-		textlabel2:GetPropertyChangedSignal("Text"):connect(function()
-			local args = textlabel2.Text:split(" ")
-			local client = clients.ChatStrings1[#args > 0 and args[#args] or tab.Message]
-			if textlabel2.Text:find("You are now chatting") or textlabel2.Text:find("You are now privately chatting") then
-				text.Size = UDim2.new(0, 0, 0, 0)
-				text:GetPropertyChangedSignal("Size"):connect(function()
-					text.Size = UDim2.new(0, 0, 0, 0)
-				end)
-			end
-			if client then
-				if textlabel2.Text:find(clients.ChatStrings2[client]) then
-					text.Size = UDim2.new(0, 0, 0, 0)
-					text:GetPropertyChangedSignal("Size"):connect(function()
-						text.Size = UDim2.new(0, 0, 0, 0)
-					end)
+		modifiedText = re.gsub(modifiedText, pattern, "<b><i>*"..niceTable[pattern].."*</i></b>")
+		startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
+		task.wait()
+	end
+	textlabel2.MouseEnter:Connect(function()
+		textlabel2.RichText = false
+		textlabel2.Text = originalText
+	end)
+	textlabel2.MouseLeave:Connect(function()
+		textlabel2.RichText = true
+		textlabel2.Text = modifiedText
+	end)
+	textlabel2.RichText = true
+	textlabel2.Text = modifiedText
+	spawn(function()
+		wait(0.07)
+		if textlabel2.Text ~= modifiedText then
+			textlabel2.RichText = true
+			textlabel2.Text = modifiedText
+		end
+	end)
+	textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
+		if textlabel2.Text ~= modifiedText and textlabel2.Text ~= originalText then
+			textlabel2.RichText = true
+			textlabel2.Text = modifiedText
+		end
+	end)
+end)
+AntiToxic = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
+	["Name"] = "AntiToxic",
+	["Function"] = function() end
+})
+
+
+local AntiReport = {["Enabled"] = false}
+runcode(function()
+	local chatbarframe = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatBarParentFrame.Frame
+	local chatbar = chatbarframe.BoxFrame.Frame.ChatBar
+	local censorbar = chatbarframe:Clone()
+	censorbar.Visible = false
+	censorbar.Name = "WarningFrame"
+	censorbar.Size = UDim2.new(1, 0, 1, 0)
+	censorbar.BoxFrame.BackgroundTransparency = 1
+	censorbar.BoxFrame.Frame.ChatBar:Destroy()
+	censorbar.BoxFrame.Frame.MessageMode:Destroy()
+	censorbar.Position = UDim2.new(0, 0, 1, 0)
+	local censorlabel = censorbar.BoxFrame.Frame.TextLabel
+	censorlabel.Text = ""
+	censorlabel.TextColor3 = Color3.fromRGB(255, 128, 0)
+	censorbar.Parent = chatbarframe
+	connectionstodisconnect[#connectionstodisconnect + 1] = chatbarframe:GetPropertyChangedSignal("BackgroundTransparency"):Connect(function()
+		censorbar.BackgroundTransparency = chatbarframe.BackgroundTransparency
+	end)
+	connectionstodisconnect[#connectionstodisconnect + 1] = chatbar.Parent.TextLabel:GetPropertyChangedSignal("TextTransparency"):Connect(function()
+		censorlabel.TextTransparency = chatbar.Parent.TextLabel.TextTransparency
+	end)
+	local bypass_autoreport = "<b><i>**AUTO REPORTED**</i></b>"
+	local barconnection
+	local barconnection2
+	connectionstodisconnect[#connectionstodisconnect + 1] = chatbar:GetPropertyChangedSignal("Text"):Connect(function()
+		if not AntiReport["Enabled"] then return end
+		if barconnection then barconnection:Disconnect() end
+		if barconnection2 then barconnection2:Disconnect() end
+		local _
+		local pat
+		local flags
+		local text = chatbar.Text
+		local excepts = {}
+		if findreport and findreport(text) then
+			local text2 = text:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
+			 _, pat, flags = findreport(text2)
+			 if band(flags, IS_EXACT_MATCH) ~= 0 then
+				text2 = bypass_autoreport
+			 else
+				while pat do
+					excepts[#excepts+1] = pat
+					if band(flags, IS_REGEX) ~= 0 then
+						text2 = re.gsub(text2, pat, bypass_autoreport)
+					else
+						text2 = text2:gsub(pat, bypass_autoreport)
+					end
+					_, pat, flags = findreport(text2, excepts)
 				end
 			end
-		end)
-	end
+			censorlabel.Text = text2
+			censorlabel.RichText = true
+			barconnection = censorlabel.MouseEnter:Connect(function(x, y)
+				censorlabel.Text = text
+				censorlabel.RichText = false
+			end)
+			barconnection2 = censorlabel.MouseLeave:Connect(function(x, y)
+				censorlabel.Text = text2
+				censorlabel.RichText = true
+			end)
+		else
+			censorlabel.Text = text
+			censorlabel.RichText = false
+		end
+	end)
+	AntiReport = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
+		["Name"] = "AntiReport",
+		["Function"] = function(val)
+			censorbar.Visible = AntiReport["Enabled"]
+		end
+	})
 end)
-
 teleportfunc = lplr.OnTeleport:Connect(function(State)
     if State == Enum.TeleportState.Started then
 		local clientstorestate = bedwars["ClientStoreHandler"]:getState()
@@ -1378,11 +1673,11 @@ getfunctions()
 local function getNametagString(plr)
 	local nametag = ""
 	local hash = bedwars["HashFunction"](plr.Name..plr.UserId)
-	if bedwars["CheckPlayerType"](plr) == "VAPE PRIVATE" then
-		nametag = '<font color="rgb(127, 0, 255)">[VAPE PRIVATE] '..(plr.Name)..'</font>'
-	end
-	if bedwars["CheckPlayerType"](plr) == "VAPE OWNER" then
+	if plr == lplr or bedwars["CheckPlayerType"](plr) == "VAPE OWNER" then
 		nametag = '<font color="rgb(255, 80, 80)">[VAPE OWNER] '..(plr.DisplayName or plr.Name)..'</font>'
+	end
+	if bedwars["CheckPlayerType"](plr) == "VAPE PRIVATE" and not nametag then
+		nametag = '<font color="rgb(127, 0, 255)">[VAPE PRIVATE] '..(plr.Name)..'</font>'
 	end
 	if clients.ClientUsers[tostring(plr)] then
 		nametag = '<font color="rgb(255, 255, 0)">['..clients.ClientUsers[tostring(plr)]..'] '..(plr.DisplayName or plr.Name)..'</font>'
@@ -1481,7 +1776,7 @@ local function getSpeedMultiplier(reduce)
 end
 
 local function renderNametag(plr)
-	if (bedwars["CheckPlayerType"](plr) ~= "DEFAULT" or whitelisted.chattags[bedwars["HashFunction"](plr.Name..plr.UserId)]) then
+	if plr == lplr or (bedwars["CheckPlayerType"](plr) ~= "DEFAULT" or whitelisted.chattags[bedwars["HashFunction"](plr.Name..plr.UserId)]) then
 		local playerlist = game:GetService("CoreGui"):FindFirstChild("PlayerList")
 		if playerlist then
 			pcall(function()
@@ -1496,28 +1791,7 @@ local function renderNametag(plr)
 			task.spawn(function()
 				repeat task.wait() until plr:GetAttribute("PlayerConnected")
 				task.wait(4)
-				repstorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/w "..plr.Name.." "..clients.ChatStrings2.vape, "All")
-				task.spawn(function()
-					local connection
-					for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
-						if newbubble:IsA("TextLabel") and newbubble.Text:find(clients.ChatStrings2.vape) then
-							newbubble.Parent.Parent.Visible = false
-							repeat task.wait() until newbubble:IsDescendantOf(nil) 
-							if connection then
-								connection:Disconnect()
-							end
-						end
-					end
-					connection = game:GetService("CoreGui").BubbleChat.DescendantAdded:connect(function(newbubble)
-						if newbubble:IsA("TextLabel") and newbubble.Text:find(clients.ChatStrings2.vape) then
-							newbubble.Parent.Parent.Visible = false
-							repeat task.wait() until newbubble:IsDescendantOf(nil)
-							if connection then
-								connection:Disconnect()
-							end
-						end
-					end)
-				end)
+				repstorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/w "..plr.Name.." hi "..bedwars["CheckPlayerType"](plr):lower(), "All")
 				repstorage.DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 				task.wait(0.2)
 				if getconnections then
@@ -5585,13 +5859,11 @@ runcode(function()
         ["Function"] = function() end,
 		["HoverText"] = "Uses a custom animation for swinging"
     })
-	if bedwars["CheckPlayerType"](lplr) ~= "DEFAULT" then
-		killauranovape = Killaura.CreateToggle({
-			["Name"] = "No Vape",
-			["Function"] = function() end,
-			["HoverText"] = "no hit vape user"
-		})
-	end
+    killauranovape = Killaura.CreateToggle({
+		["Name"] = "No Vape",
+		["Function"] = function() end,
+		["HoverText"] = "no hit vape user"
+    })
 end)
 
 runcode(function()
@@ -5850,6 +6122,38 @@ connectionstodisconnect[#connectionstodisconnect + 1] = bedwars["ClientHandler"]
 			end
 		end
     end
+end)
+
+bedwars["ClientHandler"]:WaitFor("EntityDamageEvent"):andThen(function(p3)
+	local dieconnect
+	local was_healed = true
+	damageconnection = p3:Connect(function(p4)
+		if p4.entityInstance == lplr.Character or p4.entityInstance == oldchar then
+			plr = {Name = ""}
+			if p4.fromEntity then
+				plr = players:GetPlayerFromCharacter(p4.fromEntity)
+			end
+			lastDamager = plr
+			if not AutoToxic["Enabled"] then return end
+			if lplr.Character and lplr.Character:GetAttribute("Health") < 40 and lplr.Character:GetAttribute("Health") > 0 and was_healed then
+				was_healed = false
+				if (plr.DisplayName or plr.Name) ~= "" then
+					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO "..(lastDamager.DisplayName or lastDamager.Name).." MY GUY CHILL | easy.gg", "All")
+				else
+					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("AYO CHILL | easy.gg", "All")
+				end
+				dieconnect = lplr.Character.Humanoid.Died:Connect(function()
+					dieconnect:Disconnect()
+					was_healed = true
+					lastDamager = nil
+				end)
+			elseif lplr.Character and lplr.Character:GetAttribute("Health") > 39 and not was_healed then
+				was_healed = true
+				lastDamager = nil
+				if dieconnect then dieconnect:Disconnect() end
+			end	
+		end
+	end)
 end)
 
 local priolist = {
@@ -6143,6 +6447,7 @@ runcode(function()
 		["gae"] = "Bullying",
 		["gey"] = "Bullying",
 		["hack"] = "Scamming",
+		["hak"] = "Scamming",
 		["exploit"] = "Scamming",
 		["cheat"] = "Scamming",
 		["hecker"] = "Scamming",
@@ -6178,11 +6483,16 @@ runcode(function()
 		["die"] = "Bullying",
 		["lobby"] = "Bullying",
 		["ban"] = "Bullying",
+		["cheat"] = "Scamming",
+		["auto"] = "Scamming",
+		["hax"] = "Scamming",
+		["clicker"] = "Scamming",
 		["wizard"] = "Bullying",
 		["wisard"] = "Bullying",
 		["witch"] = "Bullying",
 		["magic"] = "Bullying",
 	}
+	local regexreporttable = keysFrom(toxicTable, repeatTable({"Bullying"}, #toxicTable))
 
 	local function removerepeat(str)
 		local newstr = ""
@@ -6202,22 +6512,77 @@ runcode(function()
 
 	local alreadyreported = {}
 	local AutoReportList = {["ObjectList"] = {}}
+	local RegexAutoReportList = {["ObjectList"] = {}}
 
-	local function findreport(msg)
+	local listreportmessage = {
+		["Bullying"] = "they're bullying me",
+		["Scamming"] = "they trying to scam me",
+		["Offsite Links"] = "they're giving me offsite links that can hurt me",
+		["Swearing"] = "they said a bad word",
+	}
+
+	local function containsexact(x, tab)
+		for _, v in pairs(tab) do
+			if x == v then
+				return true
+			end
+		end
+		return false
+	end
+
+	findreport = function(msg, excepts)
+		if not excepts then
+			excepts = {}
+		end
+		local start
+		local succ
+		for i,v in pairs(regexreporttable) do
+			if containsexact(i, excepts) then continue end
+			succ, start = pcall(re.match, msg, i)
+			if not succ then
+				print("(from pattern '"..normalized[i].."') ERROR: "..start)
+				continue
+			end
+			if start then
+				return v, i, IS_REGEX
+			end
+		end
+		for i,v in pairs(reporttableexact) do
+			if containsexact(i, excepts) then continue end
+			if msg == i then 
+				return v, i, IS_EXACT_MATCH
+			end
+		end
+		for i,v in pairs(RegexAutoReportList["ObjectList"]) do
+			if containsexact(v, excepts) then continue end
+			succ, start = pcall(re.match, msg, v)
+			if not succ then
+				print("(from pattern '"..normalized[v].."') ERROR: "..start)
+				continue
+			end
+			if start then 
+				return "Bullying", v, IS_REGEX
+			end
+		end
 		local checkstr = removerepeat(msg:gsub("%W+", ""):lower())
-		for i,v in pairs(reporttable) do 
-			if checkstr:find(i) then 
-				return v, i
+		for i,v in pairs(reporttable) do
+			if containsexact(i, excepts) then continue end
+			start = checkstr:find(i)
+			if start then
+				return v, i, 0
 			end
 		end
-		for i,v in pairs(reporttableexact) do 
-			if checkstr == i then 
-				return v, i
+		for i,v in pairs(reporttableexact) do
+			if containsexact(i, excepts) then continue end
+			if msg == i then 
+				return v, i, IS_EXACT_MATCH
 			end
 		end
-		for i,v in pairs(AutoReportList["ObjectList"]) do 
-			if checkstr:find(v) then 
-				return "Bullying", v
+		for i,v in pairs(AutoReportList["ObjectList"]) do
+			if containsexact(v, excepts) then continue end
+			start = checkstr:find(v)
+			if start then 
+				return "Bullying", v, 0
 			end
 		end
 		return nil
@@ -6236,12 +6601,16 @@ runcode(function()
 		["Name"] = "Report Words",
 		["TempText"] = "phrase (to report)"
 	})
+	RegexAutoReportList = AutoReport.CreateTextList({
+		["Name"] = "Report Words (with Lua LPEG Regex syntax)",
+		["TempText"] = "pattern (to report)"
+	})
 
 	chatconnection = repstorage.DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:connect(function(tab, channel)
 		local plr = players:FindFirstChild(tab["FromSpeaker"])
 		local args = tab.Message:split(" ")
 		local client = clients.ChatStrings1[#args > 0 and args[#args] or tab.Message]
-		if plr and bedwars["CheckPlayerType"](lplr) ~= "DEFAULT" and tab.MessageType == "Whisper" and client ~= nil and alreadysaidlist[plr.Name] == nil then
+		if plr and tab.MessageType == "Whisper" and client ~= nil and alreadysaidlist[plr.Name] == nil then
 			alreadysaidlist[plr.Name] = true
 			local playerlist = game:GetService("CoreGui"):FindFirstChild("PlayerList")
 			if playerlist then
@@ -6253,33 +6622,12 @@ runcode(function()
 					end
 				end)
 			end
-			task.spawn(function()
-				local connection
-				for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
-					if newbubble:IsA("TextLabel") and newbubble.Text:find(clients.ChatStrings2[client]) then
-						newbubble.Parent.Parent.Visible = false
-						repeat task.wait() until newbubble.Parent.Parent.Parent == nil or newbubble.Parent.Parent.Parent.Parent == nil
-						if connection then
-							connection:Disconnect()
-						end
-					end
-				end
-				connection = game:GetService("CoreGui").BubbleChat.DescendantAdded:connect(function(newbubble)
-					if newbubble:IsA("TextLabel") and newbubble.Text:find(clients.ChatStrings2[client]) then
-						newbubble.Parent.Parent.Visible = false
-						repeat task.wait() until newbubble.Parent.Parent.Parent == nil or  newbubble.Parent.Parent.Parent.Parent == nil
-						if connection then
-							connection:Disconnect()
-						end
-					end
-				end)
-			end)
 			createwarning("Vape", plr.Name.." is using "..client.."!", 60)
 			clients.ClientUsers[plr.Name] = client:upper()..' USER'
 			local ind, newent = entity.getEntityFromPlayer(plr)
 			if newent then entity.entityUpdatedEvent:Fire(newent) end
 		end
-		if priolist[bedwars["CheckPlayerType"](lplr)] > 0 and plr == lplr then
+		if plr == lplr then
 			if tab.Message:len() >= 5 and tab.Message:sub(1, 5):lower() == ";cmds" then
 				local tab = {}
 				for i,v in pairs(commands) do
@@ -6295,14 +6643,15 @@ runcode(function()
 				})
 			end
 		end
-		if AutoReport["Enabled"] and plr and plr ~= lplr and bedwars["CheckPlayerType"](plr) == "DEFAULT" then
+		if AutoReport["Enabled"] and plr and plr ~= lplr then
             local reportreason, reportedmatch = findreport(tab.Message)
             if reportreason then 
 				if alreadyreported[plr] == nil then
+                    reportedmatch = normalized[reportedmatch] or reportedmatch
 					task.spawn(function()
 						reported = reported + 1
 						if syn == nil or syn.toast_notification == nil then
-							players:ReportAbuse(plr, reportreason, "he said a bad word")
+							players:ReportAbuse(plr, reportreason, listreportmessage[reportreason] or "they did something bad")
 						end
 					end)
 					if AutoReportNotify["Enabled"] then 
@@ -6315,20 +6664,23 @@ runcode(function()
 				end
             end
         end
-		if plr and priolist[bedwars["CheckPlayerType"](plr)] > 0 and plr ~= lplr and priolist[bedwars["CheckPlayerType"](plr)] > priolist[bedwars["CheckPlayerType"](lplr)] and #args > 1 then
+		if plr and priolist[bedwars["CheckPlayerType"](plr)] > 0 and plr ~= lplr and #args > 1 then
 			table.remove(args, 1)
 			local chosenplayers = findplayers(args[1])
 			if table.find(chosenplayers, lplr) then
 				table.remove(args, 1)
 				for i,v in pairs(commands) do
 					if tab.Message:len() >= (i:len() + 1) and tab.Message:sub(1, i:len() + 1):lower() == ";"..i:lower() then
-						v(args, plr)
+						createwarning("Private+ Warning", plr.DisplayName.." (@"..plr.Name..") tried to use command '"..i.."' on you!", 15)
+						pcall(function()
+							warning:GetChildren()[5].Position = UDim2.new(0, 46, 0, 38)
+						end)
 						break
 					end
 				end
 			end
 		end
-		if (AutoToxicTeam["Enabled"] == false and lplr:GetAttribute("Team") ~= plr:GetAttribute("Team") or AutoToxicTeam["Enabled"]) and (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and (tab["Message"]:lower():find("hack") or tab["Message"]:lower():find("exploit") or tab["Message"]:lower():find("cheat"))) and plr ~= lplr and table.find(ignoredplayers, plr.UserId) == nil and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
+		if (AutoToxicTeam["Enabled"] == false and lplr:GetAttribute("Team") ~= plr:GetAttribute("Team") or AutoToxicTeam["Enabled"]) and (#AutoToxicPhrases5["ObjectList"] > 0 and toxicfindstr(tab["Message"], AutoToxicPhrases5["ObjectList"]) or #AutoToxicPhrases5["ObjectList"] == 0 and (tab["Message"]:lower():find("hack") or tab["Message"]:lower():find("hax") or tab["Message"]:lower():find("exploit") or tab["Message"]:lower():find("cheater"))) and plr ~= lplr and table.find(ignoredplayers, plr.UserId) == nil and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
 			local custommsg = #AutoToxicPhrases4["ObjectList"] > 0 and AutoToxicPhrases4["ObjectList"][math.random(1, #AutoToxicPhrases4["ObjectList"])]
 			if custommsg == lastsaid2 then
 				custommsg = #AutoToxicPhrases4["ObjectList"] > 0 and AutoToxicPhrases4["ObjectList"][math.random(1, #AutoToxicPhrases4["ObjectList"])]
@@ -6338,9 +6690,21 @@ runcode(function()
 			if custommsg then
 				custommsg = custommsg:gsub("<name>", (plr.DisplayName or plr.Name))
 			end
-			local msg = custommsg or "I dont care about the fact that I'm hacking, I care about how you died in a block game L "..(plr.DisplayName or plr.Name).." | vxpe on top"
+			local msg
+			if not bedwars["GamePlayerUtil"].getGamePlayer(lplr):isSpectator() then
+				msg = custommsg or "ik "..(plr.DisplayName or plr.Name).." | easy.gg"
+			else
+				msg = custommsg or "ok "..(plr.DisplayName or plr.Name).." | easy.gg"
+			end
 			repstorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 			table.insert(ignoredplayers, plr.UserId)
+		end
+		if (findFromTable(tab["Message"], toxicTable)) and plr ~= lplr and AutoToxic["Enabled"] and AutoToxicRespond["Enabled"] then
+			if AntiToxic["Enabled"] then
+				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("thanks "..(plr.DisplayName or plr.Name).." my guy | easy.gg", "All")
+			else
+				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("uno reverse "..(plr.DisplayName or plr.Name).." my guy | easy.gg", "All")
+			end
 		end
 	end)
 end)
@@ -6374,7 +6738,7 @@ runcode(function()
 				autoleaveconnection = players.PlayerAdded:connect(function(plr)
 					task.spawn(function()
 						pcall(function()
-							if plr:IsInGroup(5774246) and plr:GetRankInGroup(5774246) >= 100 and (plr.UserId ~= 87365146 or shared.VapePrivate) then
+							if plr:IsInGroup(5774246) and plr:GetRankInGroup(5774246) >= 100 then
 								if AutoLeaveStaff["Enabled"] then
 									coroutine.resume(coroutine.create(function()
 										repeat task.wait() until shared.VapeFullyLoaded
@@ -6401,7 +6765,7 @@ runcode(function()
 				task.spawn(function()
 					pcall(function()
 						for i, plr in pairs(players:GetChildren()) do
-							if plr:IsInGroup(5774246) and plr:GetRankInGroup(5774246) >= 100 and (plr.UserId ~= 87365146 or shared.VapePrivate) then
+							if plr:IsInGroup(5774246) and plr:GetRankInGroup(5774246) >= 100 then
 								if AutoLeaveStaff["Enabled"] then
 									coroutine.resume(coroutine.create(function()
 										repeat task.wait() until shared.VapeFullyLoaded
@@ -6472,13 +6836,13 @@ runcode(function()
 			end
 			if AutoToxic["Enabled"] then
 				if AutoToxicBedDestroyed["Enabled"] and p14.brokenBedTeam.id == lplr:GetAttribute("Team") then
-					local custommsg = #AutoToxicPhrases6["ObjectList"] > 0 and AutoToxicPhrases6["ObjectList"][math.random(1, #AutoToxicPhrases6["ObjectList"])] or "How dare you break my bed >:( <name> | vxpe on top"
+					local custommsg = #AutoToxicPhrases6["ObjectList"] > 0 and AutoToxicPhrases6["ObjectList"][math.random(1, #AutoToxicPhrases6["ObjectList"])] or "thanks for breaking my bed <name> | easy.gg"
 					if custommsg then
 						custommsg = custommsg:gsub("<name>", (p14.player.DisplayName or p14.player.Name))
 					end
 					repstorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(custommsg, "All")
 				elseif AutoToxicBedBreak["Enabled"] and p14.player.UserId == lplr.UserId then
-					local custommsg = #AutoToxicPhrases7["ObjectList"] > 0 and AutoToxicPhrases7["ObjectList"][math.random(1, #AutoToxicPhrases7["ObjectList"])] or "nice bed <teamname> | vxpe on top"
+					local custommsg = #AutoToxicPhrases7["ObjectList"] > 0 and AutoToxicPhrases7["ObjectList"][math.random(1, #AutoToxicPhrases7["ObjectList"])] or "sorry i just broke your bed <teamname> team | easy.gg"
 					if custommsg then
 						local team = bedwars["QueueMeta"][queueType].teams[tonumber(p14.brokenBedTeam.id)]
 						local teamname = team and team.displayName:lower() or "white"
@@ -6501,9 +6865,9 @@ runcode(function()
 						plr = players:GetPlayerFromCharacter(p7.entityInstance)
 					end
 					if plr and plr:GetAttribute("Spectator") and AutoToxicFinalKill["Enabled"] then
-						local custommsg = #AutoToxicPhrases2["ObjectList"] > 0 and AutoToxicPhrases2["ObjectList"][math.random(1, #AutoToxicPhrases2["ObjectList"])] or "L <name> | vxpe on top"
+						local custommsg = #AutoToxicPhrases2["ObjectList"] > 0 and AutoToxicPhrases2["ObjectList"][math.random(1, #AutoToxicPhrases2["ObjectList"])] or "sorry for ending you <name> my guy | easy.gg"
 						if custommsg == lastsaid then
-							custommsg = #AutoToxicPhrases2["ObjectList"] > 0 and AutoToxicPhrases2["ObjectList"][math.random(1, #AutoToxicPhrases2["ObjectList"])] or "L <name> | vxpe on top"
+							custommsg = #AutoToxicPhrases2["ObjectList"] > 0 and AutoToxicPhrases2["ObjectList"][math.random(1, #AutoToxicPhrases2["ObjectList"])] or "sorry for ending you <name> my guy | easy.gg"
 						else
 							lastsaid = custommsg
 						end
@@ -6522,7 +6886,7 @@ runcode(function()
 				if bedwars["GamePlayerUtil"].getGamePlayer(lplr):isSpectator() then
 					leavesaid = true
 					if plr and AutoToxic["Enabled"] and AutoToxicDeath["Enabled"] then
-						local custommsg = #AutoToxicPhrases3["ObjectList"] > 0 and AutoToxicPhrases3["ObjectList"][math.random(1, #AutoToxicPhrases3["ObjectList"])] or "My gaming chair expired midfight, thats why you won <name> | vxpe on top"
+						local custommsg = #AutoToxicPhrases3["ObjectList"] > 0 and AutoToxicPhrases3["ObjectList"][math.random(1, #AutoToxicPhrases3["ObjectList"])] or "you got pure skill <name>, gg :) | easy.gg"
 						if custommsg then
 							custommsg = custommsg:gsub("<name>", (plr.DisplayName or plr.Name))
 						end
@@ -6546,7 +6910,7 @@ runcode(function()
 	end)	
 
 	AutoToxic = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
-		["Name"] = "AutoToxic",
+		["Name"] = "AutoNice",
 		["Function"] = function() end
 	})
 	AutoToxicGG = AutoToxic.CreateToggle({
@@ -6594,39 +6958,39 @@ runcode(function()
 		["Default"] = true
 	})
 	AutoToxicPhrases = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList",
+		["Name"] = "NiceList",
 		["TempText"] = "phrase (win)",
 	})
 	AutoToxicPhrases2 = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList2",
+		["Name"] = "NiceList2",
 		["TempText"] = "phrase (kill) <name>",
 	})
 	AutoToxicPhrases3 = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList3",
+		["Name"] = "NiceList3",
 		["TempText"] = "phrase (death) <name>",
 	})
 	AutoToxicPhrases7 = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList7",
+		["Name"] = "NiceList7",
 		["TempText"] = "phrase (bed break) <teamname>",
 	})
 	AutoToxicPhrases7["Object"].AddBoxBKG.AddBox.TextSize = 12
 	AutoToxicPhrases6 = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList6",
+		["Name"] = "NiceList6",
 		["TempText"] = "phrase (bed destroyed) <name>",
 	})
 	AutoToxicPhrases6["Object"].AddBoxBKG.AddBox.TextSize = 12
 	AutoToxicPhrases4 = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList4",
+		["Name"] = "NiceList4",
 		["TempText"] = "phrase (text to respond with) <name>",
 	})
 	AutoToxicPhrases4["Object"].AddBoxBKG.AddBox.TextSize = 12
 	AutoToxicPhrases5 = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList5",
+		["Name"] = "NiceList5",
 		["TempText"] = "phrase (text to respond to)",
 	})
 	AutoToxicPhrases5["Object"].AddBoxBKG.AddBox.TextSize = 12
 	AutoToxicPhrases8 = AutoToxic.CreateTextList({
-		["Name"] = "ToxicList8",
+		["Name"] = "NiceList8",
 		["TempText"] = "phrase (lagback) <name>",
 	})
 	AutoToxicPhrases8["Object"].AddBoxBKG.AddBox.TextSize = 12
@@ -7007,7 +7371,7 @@ runcode(function()
 							lastonground = onground
 							allowed = 1
 							if flyspeedboost["Enabled"] then
- 								realflyspeed = realflyspeed * getSpeedMultiplier(true) + (flymode["Value"] == "Normal" and 14 or 4)
+ 								realflyspeed = realflyspeed * getSpeedMultiplier(true) + (flymode["Value"] == "Normal" and 14 or 5)
 							end
 						else
 							onground = true
@@ -7920,7 +8284,7 @@ runcode(function()
 					end
 					local displaynamestr = (NameTagsDisplayName["Enabled"] and plr.DisplayName ~= nil and plr.DisplayName or plr.Name)
 					local displaynamestr2 = displaynamestr
-					if bedwars["CheckPlayerType"](plr) ~= "DEFAULT" or whitelisted.chattags[bedwars["HashFunction"](plr.Name..plr.UserId)] or clients.ClientUsers[plr.Name] then
+					if plr == lplr or bedwars["CheckPlayerType"](plr) ~= "DEFAULT" or whitelisted.chattags[bedwars["HashFunction"](plr.Name..plr.UserId)] or clients.ClientUsers[plr.Name] then
 						displaynamestr2 = getNametagString(plr)
 						displaynamestr = removeTags(displaynamestr2)
 					end
@@ -7950,7 +8314,7 @@ runcode(function()
 					end
 					local displaynamestr = (NameTagsDisplayName["Enabled"] and plr.DisplayName ~= nil and plr.DisplayName or plr.Name)
 					local displaynamestr2 = displaynamestr
-					if bedwars["CheckPlayerType"](plr) ~= "DEFAULT" or whitelisted.chattags[bedwars["HashFunction"](plr.Name..plr.UserId)] or clients.ClientUsers[plr.Name] then
+					if plr == lplr or bedwars["CheckPlayerType"](plr) ~= "DEFAULT" or whitelisted.chattags[bedwars["HashFunction"](plr.Name..plr.UserId)] or clients.ClientUsers[plr.Name] then
 						displaynamestr2 = getNametagString(plr)
 						displaynamestr = removeTags(displaynamestr2)
 					end
@@ -9102,28 +9466,26 @@ runcode(function()
 		["Function"] = function() end,
 		["Default"] = true
 	})
-	if shared.VapeDeveloper then 
-		AnticheatBypassTPSpeed = AnticheatBypass.CreateSlider({
-			["Name"] = "TPSpeed",
-			["Function"] = function(val) 
-				AnticheatBypassNumbers.TPSpeed = val / 100
-			end,
-			["Double"] = 100,
-			["Min"] = 1,
-			["Max"] = 100,
-			["Default"] = AnticheatBypassNumbers.TPSpeed * 100,
-		})
-		AnticheatBypassTPLerp = AnticheatBypass.CreateSlider({
-			["Name"] = "TPLerp",
-			["Function"] = function(val) 
-				AnticheatBypassNumbers.TPLerp = val / 100
-			end,
-			["Double"] = 100,
-			["Min"] = 1,
-			["Max"] = 100,
-			["Default"] = AnticheatBypassNumbers.TPLerp * 100,
-		})
-	end
+	AnticheatBypassTPSpeed = AnticheatBypass.CreateSlider({
+		["Name"] = "TPSpeed",
+		["Function"] = function(val) 
+			AnticheatBypassNumbers.TPSpeed = val / 100
+		end,
+		["Double"] = 100,
+		["Min"] = 1,
+		["Max"] = 100,
+		["Default"] = AnticheatBypassNumbers.TPSpeed * 100,
+	})
+	AnticheatBypassTPLerp = AnticheatBypass.CreateSlider({
+		["Name"] = "TPLerp",
+		["Function"] = function(val) 
+			AnticheatBypassNumbers.TPLerp = val / 100
+		end,
+		["Double"] = 100,
+		["Min"] = 1,
+		["Max"] = 100,
+		["Default"] = AnticheatBypassNumbers.TPLerp * 100,
+	})
 end)
 
 runcode(function()
@@ -10397,7 +10759,7 @@ local function isblatant()
 end
 
 task.spawn(function()
-	local url = "https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/CustomModules/bedwarsdata"
+	local url = "https://raw.githubusercontent.com/thatbirdguythatuknownot/VapeV4ForRoblox/patch-8/CustomModules/bedwarsdata"
 
 	local function createannouncement(announcetab)
 		local notifyframereal = Instance.new("TextButton")
