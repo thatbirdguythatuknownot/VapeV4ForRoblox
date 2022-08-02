@@ -1490,6 +1490,7 @@ local function findFromTable(text, tab)
 	return nil
 end
 
+runcode(function()
 local AntiToxic = {["Enabled"] = false}
 connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
 	local textlabel2 = text:WaitForChild("TextLabel")
@@ -1562,10 +1563,11 @@ AntiToxic = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOp
 	["Name"] = "AntiToxic",
 	["Function"] = function() end
 })
+end)
 
 
-local AntiReport = {["Enabled"] = false}
 runcode(function()
+	local AntiReport = {["Enabled"] = false}
 	local chatbarframe = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatBarParentFrame.Frame
 	local chatbar = chatbarframe.BoxFrame.Frame.ChatBar
 	local censorbar = chatbarframe:Clone()
@@ -7826,6 +7828,7 @@ local function HealthbarColorTransferFunction(healthPercent)
 	return lastcolor
 end
 
+runcode(function()
 local BedESP = {["Enabled"] = false}
 local BedESPFolder = Instance.new("Folder")
 BedESPFolder.Name = "BedESPFolder"
@@ -7886,6 +7889,7 @@ BedESP = GuiLibrary["ObjectsThatCanBeSaved"]["RenderWindow"]["Api"].CreateOption
 	end,
 	["HoverText"] = "Render Beds through walls" 
 })
+end)
 
 runcode(function()
 	local old
