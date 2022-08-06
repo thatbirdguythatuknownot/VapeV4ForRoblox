@@ -1371,7 +1371,7 @@ local function words(tab_)
     local tab = {}
 	for i, v in ipairs(tab_) do
 		tab[i] = L.P{
-			re.compile((iPatternSpace(v, true)))*re.compile"![A-Za-z0-9_]" + re.compile"[A-Za-z0-9_]^0[^A-Za-z0-9_]^1"*L.V(1) + re.compile"[A-Za-z0-9_]+[A-Za-z0-9_]^0"*L.V(1)
+			re.compile((iPatternSpace(v, true)))*re.compile"[A-Za-z0-9_]^0" + re.compile"[A-Za-z0-9_]^0[^A-Za-z0-9_]^1"*L.V(1) + re.compile"[A-Za-z0-9_]+[A-Za-z0-9_]^0"*L.V(1)
 		}
 	end
 	return tab
@@ -1450,7 +1450,7 @@ local wordsBeginTable = {
 	"no+skil+", "poo+r", "cry+", "swe+a*t+", "(e+z+)+",
 	"no+w*o+n+e*li+k+e*s+y?[ou]+u*", "id+i*o+t+",
 	"fa+t+", "e+w+", "hack*[sz]*towin+", "haxtowin+",
-	"virgin+", "cri+ng+", "skil+e+s+"
+	"virgin+", "cri+ng+", "skil+e+s+", "unskil+"
 }
 
 local words_table = words(wordsTable)
@@ -1478,7 +1478,7 @@ local niceTable = keysFrom(toxicTable, {
 	"very good skills", "rich", "so good", "pro", "good job man",
 	"everyone loves you", "lol",
 	"fit", "nice", "nice hacks", "nice hacks",
-	"chad", "good stuff", "skillful"
+	"chad", "good stuff", "skillful", "skill"
 })
 local function findFromTable(text, tab)
 	text = text:lower()
@@ -1533,7 +1533,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 			print(pattern)
 			return
 		end
-		modifiedText = re.gsub(modifiedText, pattern, "<b><i>*"..niceTable[pattern].."*</i></b>")
+		modifiedText = ("%s<b><i>*%s*</i></b>%s"):format(modifiedText:sub(1, startpos), niceTable[pattern], modifiedText:sub(endpos))
 		startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
 		task.wait()
 	end
