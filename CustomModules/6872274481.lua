@@ -40,7 +40,7 @@ local allowspeed = true
 local antivoiding = false
 local bettergetfocus = function()
 	if KRNL_LOADED then 
-		return ((game:GetService("Players").LocalPlayer.PlayerGui.Chat.Frame.ChatBarParentFrame.Frame.BoxFrame.Frame.ChatBar:IsFocused() or searchbar:IsFocused()) and true or nil) 
+		return (game:GetService("Players").LocalPlayer.PlayerGui.Chat.Frame.ChatBarParentFrame.Frame.BoxFrame.Frame.ChatBar:IsFocused() and true or nil) 
 	else
 		return game:GetService("UserInputService"):GetFocusedTextBox()
 	end
