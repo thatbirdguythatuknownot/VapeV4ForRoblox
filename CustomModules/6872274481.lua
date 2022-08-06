@@ -1371,8 +1371,8 @@ local function words(tab_)
     local tab = {}
 	for i, v in ipairs(tab_) do
 		tab[i] = L.P{
-			re.compile((iPatternSpace(v, true)))*re.compile"[A-Za-z0-9_]^0" + re.compile"[A-Za-z0-9_]^0[^A-Za-z0-9_]^1"*L.V(1) + re.compile"[A-Za-z0-9_]+[A-Za-z0-9_]^0"*L.V(1)
-		}
+			re.compile((iPatternSpace(v, true))) + re.compile"[A-Za-z0-9_]^0[^A-Za-z0-9_]^1"*L.V(1)
+		} * re.compile"![A-Za-z0-9_]"
 	end
 	return tab
 end
@@ -1381,7 +1381,7 @@ local function wordsbegin(tab_)
     local tab = {}
 	for i, v in ipairs(tab_) do
 		tab[i] = L.P{
-			re.compile((iPatternSpace(v, true))) + re.compile("[A-Za-z0-9_]^0[^A-Za-z0-9_]^1")*L.V(1) + re.compile"[A-Za-z0-9_]+[A-Za-z0-9_]^0"*L.V(1)
+			re.compile((iPatternSpace(v, true))) + re.compile("[A-Za-z0-9_]^0[^A-Za-z0-9_]^1")*L.V(1)
 		}
 	end
 	return tab
@@ -1483,10 +1483,13 @@ local niceTable = keysFrom(toxicTable, {
 local function findFromTable(text, tab)
 	text = text:lower()
 	for _, v in pairs(tab) do
-		matched = {re.match(text, v)}
+		matched = {re.find(text, v, 1)}
 		if #matched ~= 0 then
-			matched[#matched+1] = v
-			return table.unpack(matched)
+			before = matched[1] - 1
+			if not text:sub(before, before):match("[a-z0-9_]") then
+				matched[#matched+1] = v
+				return table.unpack(matched)
+			end
 		end
 	end
 	return nil
@@ -1530,10 +1533,10 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	if not startpos then return end
 	while startpos do
 		if niceTable[pattern] == nil then
-			print(pattern)
+			print("pattern not in niceTable: "..normalized[pattern])
 			return
 		end
-		modifiedText = ("%s<b><i>*%s*</i></b>%s"):format(modifiedText:sub(1, startpos), niceTable[pattern], modifiedText:sub(endpos))
+		modifiedText = ("%s<b><i>*%s*</i></b>%s"):format(modifiedText:sub(1, startpos - 1), niceTable[pattern], modifiedText:sub(endpos + 1))
 		startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
 		task.wait()
 	end
@@ -6783,12 +6786,12 @@ runcode(function()
 		local succ
 		for i,v in pairs(regexreporttable) do
 			if containsexact(i, excepts) then continue end
-			succ, start = pcall(re.match, msg, i)
+			succ, start = pcall(re.find, msg, i, 1)
 			if not succ then
 				print("(from pattern '"..normalized[i].."') ERROR: "..start)
 				continue
 			end
-			if start then
+			if start and not msg:sub(start - 1, start - 1):match("[A-Za-z0-9_]") then
 				return v, i, 1
 			end
 		end
