@@ -1583,6 +1583,17 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 				bubble.Text = modifiedText
 			end
 		end)
+		task.wait(0.5)
+		if bubble == nil then
+			local con; con = game:GetService("CoreGui").BubbleChat.DescendantAdded:Connect(function(newbubble)
+				if newbubble.Text:match("^%s*(%S+)") == originalText then
+					newbubble.RichText = textlabel2.RichText
+					newbubble.Text = if textlabel2.RichText then modifiedText else originalText
+					bubble = newbubble
+					con:Disconnect()
+				end
+			end
+		end
 		textlabel2.Visible = true
 	end)
 end)
