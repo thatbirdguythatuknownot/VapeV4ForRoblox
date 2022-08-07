@@ -1559,7 +1559,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 				newbubble.Text = modifText
 				oldDim = newbubble.Parent.Parent.Size
 				local bounds = textservice:GetTextSize(modifText:gsub("<b><i>(.-)</i></b>", "%1"), 18, Enum.Font.GothamMedium, Vector2.new(400, 250))
-				newDim = UDim2.new(0, math.ceil(bounds.X + 16), 0, (bounds.Y / 18 + 4) * 28)
+				newDim = UDim2.new(0, math.ceil(bounds.X + 16), 0, (bounds.Y / 18) * 32)
 				newbubble.Parent.Parent.Size = newDim
 				bubble = newbubble
 				break
