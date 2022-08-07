@@ -1507,7 +1507,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
 			if newbubble:IsA("TextLabel") and newbubble.Text == origText then
 				newbubble.RichText = true
-				newbubble.Visible = false
+				newbubble.Parent.Parent.Visible = false
 				oldDim = newbubble.Parent.Parent.Size
 				bubble = newbubble
 				break
@@ -1517,22 +1517,33 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 			local con; con = game:GetService("CoreGui").BubbleChat.DescendantAdded:Connect(function(newbubble)
 				if newbubble:IsA("TextLabel") and newbubble.Text == origText then
 					newbubble.RichText = true
-					newbubble.Visible = false
+					newbubble.Parent.Parent.Visible = false
 					oldDim = newbubble.Parent.Parent.Size
 					bubble = newbubble
+					task.spawn(function()
+						while task.wait() do
+							if bubble.RichText and newDim then
+								bubble.Parent.Parent.Size = newDim
+							else
+								bubble.Parent.Parent.Size = oldDim
+							end
+						end
+					end)
 					con:Disconnect()
 				end
 			end)
 		end
-		task.spawn(function()
-			while task.wait() do
-				if bubble.RichText and newDim then
-					bubble.Parent.Parent.Size = newDim
-				else
-					bubble.Parent.Parent.Size = oldDim
+		else
+			task.spawn(function()
+				while task.wait() do
+					if bubble.RichText and newDim then
+						bubble.Parent.Parent.Size = newDim
+					else
+						bubble.Parent.Parent.Size = oldDim
+					end
 				end
-			end
-		end)
+			end)
+		end
 	end)
 	textlabel2.Visible = false
 	task.spawn(function()
@@ -1623,7 +1634,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 			end
 		end)
 		textlabel2.Visible = true
-		bubble.Visible = true
+		bubble.Parent.Parent.Visible = true
 	end)
 end)
 AntiToxic = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
