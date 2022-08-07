@@ -1519,7 +1519,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		    end
 		end
 	    end
-	end
+	end)
 	if not AntiToxic["Enabled"] then textlabel2.Visible = true return end
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	while text and text.TextLabel.Text:match("^%s+_+$") do
