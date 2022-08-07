@@ -1499,23 +1499,21 @@ end
 runcode(function()
 local AntiToxic = {["Enabled"] = false}
 connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
-	local textlabel2 = text:WaitForChild("TextLabel")
-	if not textlabel2:FindFirstChild("TextButton") then return end
-	textlabel2.Visible = false
+	text.Visible = false
 	local bubble, oldDim, newDim
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	while text and text.TextLabel.Text:match("^%s+_+$") do
 		task.wait()
 	end
 	if not text then 
-		textlabel2.Visible = true
 		return
 	end
-	textlabel2 = text.TextLabel
+	local textlabel2 = text.TextLabel
+	if not textlabel2:FindFirstChild("TextButton") then return end
 	local origText = textlabel2.Text:match("^%s*(.+)")
 	task.spawn(function()
 		if not AntiToxic["Enabled"] then
-			textlabel2.Visible = true
+			text.Visible = true
 			return
 		end
 		for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
@@ -1583,14 +1581,14 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	local pattern
 	startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
 	if not startpos then
-		textlabel2.Visible = true
+		text.Visible = true
 		bubble.Parent.Parent.Visible = true
 		return
 	end
 	while startpos do
 		if niceTable[pattern] == nil then
 			print("pattern not in niceTable: "..normalized[pattern])
-			textlabel2.Visible = true
+			text.Visible = true
 			bubble.Parent.Parent.Visible = true
 			return
 		end
@@ -1639,7 +1637,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 				bubble.Text = modifText
 			end
 		end)
-		textlabel2.Visible = true
+		text.Visible = true
 		bubble.Parent.Parent.Visible = true
 	end)
 end)
