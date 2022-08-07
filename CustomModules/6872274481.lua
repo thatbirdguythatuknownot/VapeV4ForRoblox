@@ -1501,23 +1501,25 @@ local AntiToxic = {["Enabled"] = false}
 connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
 	local textlabel2 = text:WaitForChild("TextLabel")
 	textlabel2.Visible = false
-	local check
-	local endpos
-	check, endpos = textlabel2.Text:find("^%s*/mutegroup ")
-	if check and textlabel2:FindFirstChild("TextButton") and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
-		for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
-			game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/mute "..name, "All")
-			wait()
-		end
-	elseif not check then
-		check, endpos = textlabel2.Text:find("^%s*/unmutegroup ")
+	task.spawn(function()
+		local check
+		local endpos
+		check, endpos = textlabel2.Text:find("^%s*/mutegroup ")
 		if check and textlabel2:FindFirstChild("TextButton") and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
 			for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
-				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/unmute "..name, "All")
+				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/mute "..name, "All")
 				wait()
-            end
-        end
-    end
+			end
+		elseif not check then
+			check, endpos = textlabel2.Text:find("^%s*/unmutegroup ")
+			if check and textlabel2:FindFirstChild("TextButton") and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
+				for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
+					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/unmute "..name, "All")
+					wait()
+		    end
+		end
+	    end
+	end
 	if not AntiToxic["Enabled"] then textlabel2.Visible = true return end
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	while text and text.TextLabel.Text:match("^%s+_+$") do
@@ -1549,12 +1551,16 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	task.spawn(function()
 		local origText = originalText:match("^%s*(.+)")
 		local modifText = modifiedText:match("^%s*(.+)")
-		local bubble
+		local bubble, oldDim, newDim
 		task.wait(0.1)
 		for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
 			if newbubble:IsA("TextLabel") and newbubble.Text == origText then
 				newbubble.RichText = true
 				newbubble.Text = modifText
+				oldDim = newbubble.Parent.Parent.Size
+				local bounds = textservice:GetTextSize(modifText:gsub("<b><i>(.-)</i></b>", "%1"), 18, Enum.Font.GothamMedium, Vector2.new(400, 250))
+				newDim = UDim2.new(0, math.ceil(bounds.X + 16), 0, (bounds.Y / 18) * 28)
+				newbubble.Parent.Parent.Size = newDim
 				bubble = newbubble
 				break
 			end
@@ -1563,12 +1569,14 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 			textlabel2.RichText = false
 			textlabel2.Text = originalText
 			bubble.RichText = false
+			bubble.Parent.Parent.Size = oldDim
 			bubble.Text = origText
 		end)
 		textlabel2.MouseLeave:Connect(function()
 			textlabel2.RichText = true
 			textlabel2.Text = modifiedText
 			bubble.RichText = true
+			bubble.Parent.Parent.Size = newDim
 			bubble.Text = modifText
 		end)
 		textlabel2.RichText = true
@@ -1579,6 +1587,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 				textlabel2.RichText = true
 				textlabel2.Text = modifiedText
 				bubble.RichText = true
+				bubble.Parent.Parent.Size = newDim
 				bubble.Text = modifText
 			end
 		end)
@@ -1587,6 +1596,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 				textlabel2.RichText = true
 				textlabel2.Text = modifiedText
 				bubble.RichText = true
+				bubble.Parent.Parent.Size = newDim
 				bubble.Text = modifText
 			end
 		end)
