@@ -1550,10 +1550,11 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		local origText = originalText:match("^%s+(%S+)")
 		local modifText = modifiedText:match("^%s+(%S+)")
 		local bubble
+		task.wait(0.1)
 		for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
 			if newbubble:IsA("TextLabel") and newbubble.Text == origText then
 				newbubble.RichText = true
-				newbubble.Text = modifiedText
+				newbubble.Text = modifText
 				bubble = newbubble
 				break
 			end
