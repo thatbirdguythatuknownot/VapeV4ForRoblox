@@ -1550,6 +1550,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		local bubbles = {}
 		for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
 			if newbubble:IsA("TextLabel") and newbubble.Text:match("^%s*(%S+)") == originalText then
+				print("match", newbubble)
 				newbubble.RichText = true
 				newbubble.Text = modifiedText
 				bubbles[#bubbles + 1] = newbubble
@@ -1599,6 +1600,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		if bubble == nil then
 			local con; con = game:GetService("CoreGui").BubbleChat.DescendantAdded:Connect(function(newbubble)
 				if newbubble:IsA("TextLabel") and newbubble.Text:match("^%s*(%S+)") == originalText then
+					print("match2", newbubble)
 					newbubble.RichText = textlabel2.RichText
 					newbubble.Text = if textlabel2.RichText then modifiedText else originalText
 					bubbles[#bubbles + 1] = newbubble
