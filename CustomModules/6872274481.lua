@@ -1569,9 +1569,6 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 			bubble.RichText = textlabel2.RichText
 			bubble.Parent.Parent.Size = if textlabel2.RichText then newDim else oldDim
 		end)
-		bubble:GetPropertyChangedSignal("Size"):Connect(function()
-			bubble.Parent.Parent.Size = if textlabel2.RichText then newDim else oldDim
-		end)
 		textlabel2.MouseEnter:Connect(function()
 			textlabel2.RichText = false
 			textlabel2.Text = originalText
@@ -1608,6 +1605,15 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 				bubble.RichText = true
 				bubble.Parent.Parent.Size = newDim
 				bubble.Text = modifText
+			end
+		end)
+		task.spawn(function()
+			while task.wait() do
+				if bubble.RichText then
+					bubble.Parent.Parent.Size = newDim
+				else
+					bubble.Parent.Parent.Size = oldDim
+				end
 			end
 		end)
 		textlabel2.Visible = true
