@@ -1501,7 +1501,7 @@ local AntiToxic = {["Enabled"] = false}
 connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
 	local textlabel2 = text:WaitForChild("TextLabel")
 	if not textlabel2:FindFirstChild("TextButton") then return end
-	textlabel2.Visible = false
+	ee = false
 	task.spawn(function()
 		local check
 		local endpos
@@ -1613,6 +1613,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 			end
 		end)
 		textlabel2.Visible = true
+		bubble.Visible = true
 	end)
 end)
 AntiToxic = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
