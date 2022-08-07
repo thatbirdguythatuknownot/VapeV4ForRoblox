@@ -1538,25 +1538,12 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		textlabel2.Visible = true
 		return
 	end
-	while startpos do
-		if niceTable[pattern] == nil then
-			print("pattern not in niceTable: "..normalized[pattern])
-			textlabel2.Visible = true
-			return
-		end
-		modifiedText = ("%s<b><i>*%s*</i></b>%s"):format(modifiedText:sub(1, startpos - 1), niceTable[pattern], modifiedText:sub(endpos + 1))
-		startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
-		task.wait()
-	end
+	local bubble, oldDim, newDim
 	task.spawn(function()
-		local origText = originalText:match("^%s*(.+)")
-		local modifText = modifiedText:match("^%s*(.+)")
-		local bubble, oldDim, newDim
-		task.wait(0.1)
 		for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
 			if newbubble:IsA("TextLabel") and newbubble.Text == origText then
 				newbubble.RichText = true
-				newbubble.Text = modifText
+				newbubble.Visible = false
 				oldDim = newbubble.Parent.Parent.Size
 				local bounds = textservice:GetTextSize(modifText:gsub("<b><i>(.-)</i></b>", "%1"), 18, Enum.Font.GothamMedium, Vector2.new(400, 250))
 				newDim = UDim2.new(0, math.ceil(bounds.X + 16), 0, (bounds.Y / 18) * 28 + 4)
@@ -1574,6 +1561,21 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 				end
 			end
 		end)
+	end)
+	while startpos do
+		if niceTable[pattern] == nil then
+			print("pattern not in niceTable: "..normalized[pattern])
+			textlabel2.Visible = true
+			return
+		end
+		modifiedText = ("%s<b><i>*%s*</i></b>%s"):format(modifiedText:sub(1, startpos - 1), niceTable[pattern], modifiedText:sub(endpos + 1))
+		startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
+		task.wait()
+	end
+	task.spawn(function()
+		local origText = originalText:match("^%s*(.+)")
+		local modifText = modifiedText:match("^%s*(.+)")
+		bubble.Text = modifText
 		bubble:GetPropertyChangedSignal("RichText"):Connect(function()
 			bubble.RichText = textlabel2.RichText
 		end)
