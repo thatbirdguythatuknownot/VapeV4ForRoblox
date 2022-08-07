@@ -1532,7 +1532,6 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 					con:Disconnect()
 				end
 			end)
-		end
 		else
 			task.spawn(function()
 				while task.wait() do
