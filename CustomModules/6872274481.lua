@@ -1486,7 +1486,7 @@ local function findFromTable(text, tab)
 		matched = {re.find(text, v, 1)}
 		if #matched ~= 0 then
 			before = matched[1] - 1
-			if not text:sub(before, before):match("[a-z0-9_]") then
+			if not (text:sub(before + 1, before + 1):match("[a-z0-9_]") and text:sub(before, before):match("[a-z0-9_]")) then
 				matched[#matched+1] = v
 				return table.unpack(matched)
 			end
@@ -6792,7 +6792,7 @@ runcode(function()
 				print("(from pattern '"..normalized[i].."') ERROR: "..start)
 				continue
 			end
-			if start and not msg:sub(start - 1, start - 1):match("[a-z0-9_]") then
+			if start and not (msg:sub(start, start):match("[a-z0-9_]") and msg:sub(start - 1, start - 1):match("[a-z0-9_]")) then
 				return v, i, 1, start, endpos
 			end
 		end
