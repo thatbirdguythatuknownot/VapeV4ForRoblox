@@ -1592,7 +1592,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 					bubble = newbubble
 					con:Disconnect()
 				end
-			end
+			end)
 		end
 		textlabel2.Visible = true
 	end)
