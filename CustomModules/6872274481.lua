@@ -1530,6 +1530,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	textlabel2 = text.TextLabel
 	if not textlabel2.Text:match("^%s+") then textlabel2.Visible = true return end
 	local originalText = textlabel2.Text
+	local origText = originalText:match("^%s*(.+)")
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 	local startpos
 	local pattern
@@ -1545,12 +1546,20 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 				newbubble.RichText = true
 				newbubble.Visible = false
 				oldDim = newbubble.Parent.Parent.Size
-				local bounds = textservice:GetTextSize(modifText:gsub("<b><i>(.-)</i></b>", "%1"), 18, Enum.Font.GothamMedium, Vector2.new(400, 250))
-				newDim = UDim2.new(0, math.ceil(bounds.X + 16), 0, (bounds.Y / 18) * 28 + 4)
-				newbubble.Parent.Parent.Size = newDim
 				bubble = newbubble
 				break
 			end
+		end
+		if bubble == nil then
+			local con; con = game:GetService("CoreGui").BubbleChat.DescendantAdded:Connect(function(newbubble)
+				if newbubble:IsA("TextLabel") and newbubble.Text == origText then
+					newbubble.RichText = true
+					newbubble.Visible = false
+					oldDim = newbubble.Parent.Parent.Size
+					bubble = newbubble
+					con:Disconnect()
+				end
+			end)
 		end
 		task.spawn(function()
 			while task.wait() do
@@ -1573,8 +1582,10 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		task.wait()
 	end
 	task.spawn(function()
-		local origText = originalText:match("^%s*(.+)")
 		local modifText = modifiedText:match("^%s*(.+)")
+		local bounds = textservice:GetTextSize(modifText:gsub("<b><i>(.-)</i></b>", "%1"), 18, Enum.Font.GothamMedium, Vector2.new(400, 250))
+		newDim = UDim2.new(0, math.ceil(bounds.X + 16), 0, (bounds.Y / 18) * 28 + 4)
+		bubble.Parent.Parent.Size = newDim
 		bubble.Text = modifText
 		bubble:GetPropertyChangedSignal("RichText"):Connect(function()
 			bubble.RichText = textlabel2.RichText
