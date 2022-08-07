@@ -6779,6 +6779,7 @@ runcode(function()
 	end
 
 	findreport = function(msg, excepts)
+		msg = msg:lower()
 		if not excepts then
 			excepts = {}
 		end
@@ -6791,7 +6792,7 @@ runcode(function()
 				print("(from pattern '"..normalized[i].."') ERROR: "..start)
 				continue
 			end
-			if start and not msg:sub(start - 1, start - 1):match("[A-Za-z0-9_]") then
+			if start and not msg:sub(start - 1, start - 1):match("[a-z0-9_]") then
 				return v, i, 1
 			end
 		end
@@ -6812,7 +6813,7 @@ runcode(function()
 				return "Bullying", v, 1
 			end
 		end
-		local checkstr = removerepeat(msg:gsub("%W+", ""):lower())
+		local checkstr = removerepeat(msg:gsub("%W+", ""))
 		for i,v in pairs(reporttable) do
 			if containsexact(i, excepts) then continue end
 			start = checkstr:find(i)
