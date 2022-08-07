@@ -39,7 +39,7 @@ local reported = 0
 local allowspeed = true
 local antivoiding = false
 local bettergetfocus = function()
-	if KRNL_LOADED then 
+	if KRNL_LOADED then
 		return (game:GetService("Players").LocalPlayer.PlayerGui.Chat.Frame.ChatBarParentFrame.Frame.BoxFrame.Frame.ChatBar:IsFocused() and true or nil) 
 	else
 		return game:GetService("UserInputService"):GetFocusedTextBox()
@@ -1501,45 +1501,8 @@ local AntiToxic = {["Enabled"] = false}
 connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
 	local textlabel2 = text:WaitForChild("TextLabel")
 	if not textlabel2:FindFirstChild("TextButton") then return end
-	ee = false
-	task.spawn(function()
-		local check
-		local endpos
-		check, endpos = textlabel2.Text:find("^%s*/mutegroup ")
-		if check and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
-			for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
-				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/mute "..name, "All")
-				wait()
-			end
-		elseif not check then
-			check, endpos = textlabel2.Text:find("^%s*/unmutegroup ")
-			if check and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
-				for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
-					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/unmute "..name, "All")
-					wait()
-		    end
-		end
-	    end
-	end)
-	if not AntiToxic["Enabled"] then textlabel2.Visible = true return end
-	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
-	while text and text.TextLabel.Text:match("^%s+_+$") do
-		task.wait()
-	end
-	if not text then textlabel2.Visible = true return end
-	textlabel2 = text.TextLabel
-	if not textlabel2.Text:match("^%s+") then textlabel2.Visible = true return end
-	local originalText = textlabel2.Text
-	local origText = originalText:match("^%s*(.+)")
-	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
-	local startpos
-	local pattern
-	startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
-	if not startpos then
-		textlabel2.Visible = true
-		return
-	end
 	local bubble, oldDim, newDim
+	local origText = newbubble.Text:match("^%s*(.+)")
 	task.spawn(function()
 		for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
 			if newbubble:IsA("TextLabel") and newbubble.Text == origText then
@@ -1571,6 +1534,43 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 			end
 		end)
 	end)
+	textlabel2.Visible = false
+	task.spawn(function()
+		local check
+		local endpos
+		check, endpos = textlabel2.Text:find("^%s*/mutegroup ")
+		if check and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
+			for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
+				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/mute "..name, "All")
+				wait()
+			end
+		elseif not check then
+			check, endpos = textlabel2.Text:find("^%s*/unmutegroup ")
+			if check and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
+				for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
+					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/unmute "..name, "All")
+					wait()
+		    end
+		end
+	    end
+	end)
+	if not AntiToxic["Enabled"] then textlabel2.Visible = true return end
+	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
+	while text and text.TextLabel.Text:match("^%s+_+$") do
+		task.wait()
+	end
+	if not text then textlabel2.Visible = true return end
+	textlabel2 = text.TextLabel
+	if not textlabel2.Text:match("^%s+") then textlabel2.Visible = true return end
+	local originalText = textlabel2.Text
+	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
+	local startpos
+	local pattern
+	startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
+	if not startpos then
+		textlabel2.Visible = true
+		return
+	end
 	while startpos do
 		if niceTable[pattern] == nil then
 			print("pattern not in niceTable: "..normalized[pattern])
