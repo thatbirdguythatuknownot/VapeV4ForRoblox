@@ -1487,6 +1487,7 @@ local function findFromTable(text, tab)
 		if #matched ~= 0 then
 			before = matched[1] - 1
 			if not (text:sub(before + 1, before + 1):match("[a-z0-9_]") and text:sub(before, before):match("[a-z0-9_]")) then
+				matched[1] = before + text:sub(matched[1]):find("[a-z0-9_]")
 				matched[#matched+1] = v
 				return table.unpack(matched)
 			end
@@ -6793,6 +6794,7 @@ runcode(function()
 				continue
 			end
 			if start and not (msg:sub(start, start):match("[a-z0-9_]") and msg:sub(start - 1, start - 1):match("[a-z0-9_]")) then
+				start = start + msg:sub(start):find("[a-z0-9_]") - 1
 				return v, i, 1, start, endpos
 			end
 		end
@@ -6802,6 +6804,7 @@ runcode(function()
 				return v, i, 2
 			end
 		end
+		local checkstr = removerepeat(msg:gsub("%W+", ""))
 		for i,v in pairs(RegexAutoReportList["ObjectList"]) do
 			if containsexact(v, excepts) then continue end
 			succ, start, endpos = pcall(re.find, msg, v)
@@ -6813,7 +6816,6 @@ runcode(function()
 				return "Bullying", v, 1, start, endpos
 			end
 		end
-		local checkstr = removerepeat(msg:gsub("%W+", ""))
 		for i,v in pairs(reporttable) do
 			if containsexact(i, excepts) then continue end
 			start = checkstr:find(i)
