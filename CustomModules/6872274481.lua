@@ -1600,25 +1600,25 @@ runcode(function()
 		if not AntiReport["Enabled"] then return end
 		if barconnection then barconnection:Disconnect() end
 		if barconnection2 then barconnection2:Disconnect() end
-		local _
+		local startpos, endpos
 		local pat
 		local flags
 		local text = chatbar.Text
 		local excepts = {}
 		if findreport and findreport(text) then
 			local text2 = text:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
-			 _, pat, flags = findreport(text2)
+			 _, pat, flags, startpos, endpos = findreport(text2)
 			 if band(flags, 2) ~= 0 then
 				text2 = bypass_autoreport
 			 else
 				while pat do
-					excepts[#excepts+1] = pat
 					if band(flags, 1) ~= 0 then
-						text2 = re.gsub(text2, pat, bypass_autoreport)
+						text2 = ("%s%s%s"):format(text2:sub(1, startpos - 1), bypass_autoreport, text2:sub(endpos + 1))
 					else
+						excepts[#excepts+1] = pat
 						text2 = text2:gsub(pat, bypass_autoreport)
 					end
-					_, pat, flags = findreport(text2, excepts)
+					_, pat, flags, startpos, endpos = findreport(text2, excepts)
 				end
 			end
 			censorlabel.Text = text2
@@ -6787,13 +6787,13 @@ runcode(function()
 		local succ
 		for i,v in pairs(regexreporttable) do
 			if containsexact(i, excepts) then continue end
-			succ, start = pcall(re.find, msg, i, 1)
+			succ, start, endpos = pcall(re.find, msg, i, 1)
 			if not succ then
 				print("(from pattern '"..normalized[i].."') ERROR: "..start)
 				continue
 			end
 			if start and not msg:sub(start - 1, start - 1):match("[a-z0-9_]") then
-				return v, i, 1
+				return v, i, 1, start, endpos
 			end
 		end
 		for i,v in pairs(reporttableexact) do
@@ -6804,13 +6804,13 @@ runcode(function()
 		end
 		for i,v in pairs(RegexAutoReportList["ObjectList"]) do
 			if containsexact(v, excepts) then continue end
-			succ, start = pcall(re.match, msg, v)
+			succ, start, endpos = pcall(re.find, msg, v)
 			if not succ then
 				print("(from pattern '"..normalized[v].."') ERROR: "..start)
 				continue
 			end
 			if start then 
-				return "Bullying", v, 1
+				return "Bullying", v, 1, start, endpos
 			end
 		end
 		local checkstr = removerepeat(msg:gsub("%W+", ""))
