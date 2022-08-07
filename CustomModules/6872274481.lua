@@ -1590,7 +1590,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		bubble.Text = modifText
 		task.spawn(function()
 			wait(0.07)
-			if textlabel2.Text ~= modifiedText then
+			if textlabel2.Text ~= modifiedText or bubble.Parent.Parent.Size ~= newDim then
 				textlabel2.RichText = true
 				textlabel2.Text = modifiedText
 				bubble.RichText = true
