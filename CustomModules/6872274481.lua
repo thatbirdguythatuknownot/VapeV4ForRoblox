@@ -1506,7 +1506,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		local check
 		local endpos
 		check, endpos = textlabel2.Text:find("^%s*/mutegroup ")
-		if check textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
+		if check and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
 			for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
 				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/mute "..name, "All")
 				wait()
