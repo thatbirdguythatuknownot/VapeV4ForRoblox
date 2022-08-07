@@ -1558,10 +1558,8 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 				newbubble.RichText = true
 				newbubble.Text = modifText
 				oldDim = newbubble.Parent.Parent.Size
-				local bounds = textservice:GetTextSize(modifText:gsub("<b><i>(.-)</i></b>", function(x)
-					return x:gsub("(%S)", "%1...")
-				end), 18, Enum.Font.GothamMedium, Vector2.new(400, 250))
-				newDim = UDim2.new(0, math.ceil(bounds.X + 16), 0, (bounds.Y / 18) * 28 + 8)
+				local bounds = textservice:GetTextSize(modifText:gsub("<b><i>(.-)</i></b>", "%1"), 18, Enum.Font.GothamMedium, Vector2.new(400, 250))
+				newDim = UDim2.new(0, math.ceil(bounds.X + 16), 0, (bounds.Y / 18) * 28)
 				newbubble.Parent.Parent.Size = newDim
 				bubble = newbubble
 				break
@@ -1587,6 +1585,9 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		end)
 		textlabel2.RichText = true
 		textlabel2.Text = modifiedText
+		bubble.RichText = true
+		bubble.Parent.Parent.Size = newDim
+		bubble.Text = modifText
 		task.spawn(function()
 			wait(0.07)
 			if textlabel2.Text ~= modifiedText then
