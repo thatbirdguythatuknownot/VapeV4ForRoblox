@@ -1526,43 +1526,51 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	textlabel2 = text.TextLabel
 	if not textlabel2.Text:match("^%s+") then return end
 	if not textlabel2:FindFirstChild("TextButton") then return end
+	textlabel2.Visible = false
 	local originalText = textlabel2.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 	local startpos
 	local pattern
 	startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
-	if not startpos then return end
+	if not startpos then
+		textlabel2.Visible = true
+		return
+	end
 	while startpos do
 		if niceTable[pattern] == nil then
 			print("pattern not in niceTable: "..normalized[pattern])
+			textlabel2.Visible = true
 			return
 		end
 		modifiedText = ("%s<b><i>*%s*</i></b>%s"):format(modifiedText:sub(1, startpos - 1), niceTable[pattern], modifiedText:sub(endpos + 1))
 		startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
 		task.wait()
 	end
-	textlabel2.Visible = false
 	task.spawn(function()
-		local bubble
+		local bubbles = {}
 		for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
 			if newbubble:IsA("TextLabel") and newbubble.Text:match("^%s*(%S+)") == originalText then
 				newbubble.RichText = true
 				newbubble.Text = modifiedText
-				bubble = newbubble
+				bubbles[#bubbles + 1] = newbubble
 				break
 			end
 		end
 		textlabel2.MouseEnter:Connect(function()
 			textlabel2.RichText = false
-			bubble.RichText = false
 			textlabel2.Text = originalText
-			bubble.Text = originalText
+			for _, bubble in bubbles do
+				bubble.RichText = false
+				bubble.Text = originalText
+			end
 		end)
 		textlabel2.MouseLeave:Connect(function()
 			textlabel2.RichText = true
-			bubble.RichText = true
 			textlabel2.Text = modifiedText
-			bubble.Text = modifiedText
+			for _, bubble in bubbles do
+				bubble.RichText = true
+				bubble.Text = modifiedText
+			end
 		end)
 		textlabel2.RichText = true
 		textlabel2.Text = modifiedText
@@ -1570,27 +1578,30 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 			wait(0.07)
 			if textlabel2.Text ~= modifiedText then
 				textlabel2.RichText = true
-				bubble.RichText = true
 				textlabel2.Text = modifiedText
-				bubble.Text = modifiedText
+				for _, bubble in bubbles do
+					bubble.RichText = true
+					bubble.Text = modifiedText
+				end
 			end
 		end)
 		textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
 			if textlabel2.Text ~= modifiedText and textlabel2.Text ~= originalText then
 				textlabel2.RichText = true
-				bubble.RichText = true
 				textlabel2.Text = modifiedText
-				bubble.Text = modifiedText
+				for _, bubble in bubbles do
+					bubble.RichText = true
+					bubble.Text = modifiedText
+				end
 			end
 		end)
 		task.wait(0.5)
 		if bubble == nil then
 			local con; con = game:GetService("CoreGui").BubbleChat.DescendantAdded:Connect(function(newbubble)
-				if newbubble.Text:match("^%s*(%S+)") == originalText then
+				if newbubble:IsA("TextLabel") and newbubble.Text:match("^%s*(%S+)") == originalText then
 					newbubble.RichText = textlabel2.RichText
 					newbubble.Text = if textlabel2.RichText then modifiedText else originalText
-					bubble = newbubble
-					con:Disconnect()
+					bubbles[#bubbles + 1] = newbubble
 				end
 			end)
 		end
