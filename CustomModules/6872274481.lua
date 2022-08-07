@@ -1500,19 +1500,20 @@ runcode(function()
 local AntiToxic = {["Enabled"] = false}
 connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
 	local textlabel2 = text:WaitForChild("TextLabel")
+	if not textlabel2:FindFirstChild("TextButton") then return end
 	textlabel2.Visible = false
 	task.spawn(function()
 		local check
 		local endpos
 		check, endpos = textlabel2.Text:find("^%s*/mutegroup ")
-		if check and textlabel2:FindFirstChild("TextButton") and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
+		if check textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
 			for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
 				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/mute "..name, "All")
 				wait()
 			end
 		elseif not check then
 			check, endpos = textlabel2.Text:find("^%s*/unmutegroup ")
-			if check and textlabel2:FindFirstChild("TextButton") and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
+			if check and textlabel2.TextButton.Text == "["..(lplr.DisplayName or lplr.Name).."]:" then
 				for name in textlabel2.Text:sub(endpos + 1):gmatch("%S+") do
 					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/unmute "..name, "All")
 					wait()
@@ -1528,7 +1529,6 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	if not text then textlabel2.Visible = true return end
 	textlabel2 = text.TextLabel
 	if not textlabel2.Text:match("^%s+") then textlabel2.Visible = true return end
-	if not textlabel2:FindFirstChild("TextButton") then textlabel2.Visible = true return end
 	local originalText = textlabel2.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 	local startpos
