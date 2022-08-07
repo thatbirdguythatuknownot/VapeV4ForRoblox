@@ -1558,13 +1558,18 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 				newbubble.RichText = true
 				newbubble.Text = modifText
 				oldDim = newbubble.Parent.Parent.Size
-				local bounds = textservice:GetTextSize(modifText:gsub("<b><i>(.-)</i></b>", "%1"), 18, Enum.Font.GothamMedium, Vector2.new(400, 250))
+				local bounds = textservice:GetTextSize(modifText:gsub("<b><i>(.-)</i></b>", (function(x)
+					return x:gsub("(%S)", "%1.")
+				end), 18, Enum.Font.GothamMedium, Vector2.new(400, 250))
 				newDim = UDim2.new(0, math.ceil(bounds.X + 16), 0, (bounds.Y / 18) * 28)
 				newbubble.Parent.Parent.Size = newDim
 				bubble = newbubble
 				break
 			end
 		end
+		bubble:GetPropertyChangedSignal("RichText"):Connect(function()
+			bubble.RichText = textlabel2.RichText
+		end)
 		textlabel2.MouseEnter:Connect(function()
 			textlabel2.RichText = false
 			textlabel2.Text = originalText
