@@ -1541,28 +1541,49 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
 		task.wait()
 	end
-	textlabel2.MouseEnter:Connect(function()
-		textlabel2.RichText = false
-		textlabel2.Text = originalText
-	end)
-	textlabel2.MouseLeave:Connect(function()
+	textlabel2.Visible = false
+	task.spawn(function()
+		local bubble
+		for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
+			if newbubble:IsA("TextLabel") and newbubble.Text:match("^%s*(%S+)") == originalText then
+				newbubble.RichText = true
+				newbubble.Text = modifiedText
+				bubble = newbubble
+				break
+			end
+		end
+		textlabel2.MouseEnter:Connect(function()
+			textlabel2.RichText = false
+			bubble.RichText = false
+			textlabel2.Text = originalText
+			bubble.Text = originalText
+		end)
+		textlabel2.MouseLeave:Connect(function()
+			textlabel2.RichText = true
+			bubble.RichText = true
+			textlabel2.Text = modifiedText
+			bubble.Text = modifiedText
+		end)
 		textlabel2.RichText = true
 		textlabel2.Text = modifiedText
-	end)
-	textlabel2.RichText = true
-	textlabel2.Text = modifiedText
-	spawn(function()
-		wait(0.07)
-		if textlabel2.Text ~= modifiedText then
-			textlabel2.RichText = true
-			textlabel2.Text = modifiedText
-		end
-	end)
-	textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
-		if textlabel2.Text ~= modifiedText and textlabel2.Text ~= originalText then
-			textlabel2.RichText = true
-			textlabel2.Text = modifiedText
-		end
+		task.spawn(function()
+			wait(0.07)
+			if textlabel2.Text ~= modifiedText then
+				textlabel2.RichText = true
+				bubble.RichText = true
+				textlabel2.Text = modifiedText
+				bubble.Text = modifiedText
+			end
+		end)
+		textlabel2:GetPropertyChangedSignal("Text"):Connect(function()
+			if textlabel2.Text ~= modifiedText and textlabel2.Text ~= originalText then
+				textlabel2.RichText = true
+				bubble.RichText = true
+				textlabel2.Text = modifiedText
+				bubble.Text = modifiedText
+			end
+		end)
+		textlabel2.Visible = true
 	end)
 end)
 AntiToxic = GuiLibrary["ObjectsThatCanBeSaved"]["UtilityWindow"]["Api"].CreateOptionsButton({
