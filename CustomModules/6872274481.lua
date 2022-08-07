@@ -1502,8 +1502,16 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	local textlabel2 = text:WaitForChild("TextLabel")
 	if not textlabel2:FindFirstChild("TextButton") then return end
 	local bubble, oldDim, newDim
+	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
+	while text and text.TextLabel.Text:match("^%s+_+$") do
+		task.wait()
+	end
+	if not text then return end
+	textlabel2 = text.TextLabel
+	if not textlabel2.Text:match("^%s+") then return end
 	local origText = textlabel2.Text:match("^%s*(.+)")
 	task.spawn(function()
+		if not AntiToxic["Enabled"] then return end
 		for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
 			if newbubble:IsA("TextLabel") and newbubble.Text == origText then
 				newbubble.RichText = true
@@ -1564,14 +1572,6 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		end
 	    end
 	end)
-	if not AntiToxic["Enabled"] then textlabel2.Visible = true return end
-	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
-	while text and text.TextLabel.Text:match("^%s+_+$") do
-		task.wait()
-	end
-	if not text then textlabel2.Visible = true return end
-	textlabel2 = text.TextLabel
-	if not textlabel2.Text:match("^%s+") then textlabel2.Visible = true return end
 	local originalText = textlabel2.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
 	local startpos
@@ -1579,12 +1579,14 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
 	if not startpos then
 		textlabel2.Visible = true
+		bubble.Parent.Parent.Visible = true
 		return
 	end
 	while startpos do
 		if niceTable[pattern] == nil then
 			print("pattern not in niceTable: "..normalized[pattern])
 			textlabel2.Visible = true
+			bubble.Parent.Parent.Visible = true
 			return
 		end
 		modifiedText = ("%s<b><i>*%s*</i></b>%s"):format(modifiedText:sub(1, startpos - 1), niceTable[pattern], modifiedText:sub(endpos + 1))
