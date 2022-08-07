@@ -1510,52 +1510,6 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	end
 	local textlabel2 = text.TextLabel
 	if not textlabel2:FindFirstChild("TextButton") then return end
-	local origText = textlabel2.Text:match("^%s*(.+)")
-	task.spawn(function()
-		if not AntiToxic["Enabled"] then
-			text.Visible = true
-			return
-		end
-		for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
-			if newbubble:IsA("TextLabel") and newbubble.Text == origText then
-				newbubble.RichText = true
-				newbubble.Parent.Parent.Visible = false
-				oldDim = newbubble.Parent.Parent.Size
-				bubble = newbubble
-				break
-			end
-		end
-		if bubble == nil then
-			local con; con = game:GetService("CoreGui").BubbleChat.DescendantAdded:Connect(function(newbubble)
-				if newbubble:IsA("TextLabel") and newbubble.Text == origText then
-					newbubble.RichText = true
-					newbubble.Parent.Parent.Visible = false
-					oldDim = newbubble.Parent.Parent.Size
-					bubble = newbubble
-					task.spawn(function()
-						while task.wait() do
-							if bubble.RichText and newDim then
-								bubble.Parent.Parent.Size = newDim
-							else
-								bubble.Parent.Parent.Size = oldDim
-							end
-						end
-					end)
-					con:Disconnect()
-				end
-			end)
-		else
-			task.spawn(function()
-				while task.wait() do
-					if bubble.RichText and newDim then
-						bubble.Parent.Parent.Size = newDim
-					else
-						bubble.Parent.Parent.Size = oldDim
-					end
-				end
-			end)
-		end
-	end)
 	task.spawn(function()
 		local check
 		local endpos
@@ -1574,6 +1528,40 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		    end
 		end
 	    end
+	end)
+	if not AntiToxic["Enabled"] then
+		text.Visible = true
+		return
+	end
+	local origText = textlabel2.Text:match("^%s*(.+)")
+	for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
+		if newbubble:IsA("TextLabel") and newbubble.Text == origText then
+			newbubble.RichText = true
+			newbubble.Parent.Parent.Visible = false
+			oldDim = newbubble.Parent.Parent.Size
+			bubble = newbubble
+			break
+		end
+	end
+	if bubble == nil then
+		while bubble == nil do
+			local newbubble = game:GetService("CoreGui").BubbleChat.DescendantAdded:Wait()
+			if newbubble:IsA("TextLabel") and newbubble.Text == origText then
+				newbubble.RichText = true
+				newbubble.Parent.Parent.Visible = false
+				oldDim = newbubble.Parent.Parent.Size
+				bubble = newbubble
+			end
+		end
+	end
+	task.spawn(function()
+		while task.wait() do
+			if bubble.RichText and newDim then
+				bubble.Parent.Parent.Size = newDim
+			else
+				bubble.Parent.Parent.Size = oldDim
+			end
+		end
 	end)
 	local originalText = textlabel2.Text
 	local modifiedText = originalText:gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;")
