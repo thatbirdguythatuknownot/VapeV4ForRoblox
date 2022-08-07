@@ -1502,7 +1502,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	local textlabel2 = text:WaitForChild("TextLabel")
 	if not textlabel2:FindFirstChild("TextButton") then return end
 	local bubble, oldDim, newDim
-	local origText = newbubble.Text:match("^%s*(.+)")
+	local origText = textlabel2.Text:match("^%s*(.+)")
 	task.spawn(function()
 		for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
 			if newbubble:IsA("TextLabel") and newbubble.Text == origText then
