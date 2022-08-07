@@ -1569,6 +1569,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		end
 		bubble:GetPropertyChangedSignal("RichText"):Connect(function()
 			bubble.RichText = textlabel2.RichText
+			bubble.Parent.Parent.Size = if textlabel2.RichText then newDim else oldDim
 		end)
 		textlabel2.MouseEnter:Connect(function()
 			textlabel2.RichText = false
