@@ -1547,8 +1547,8 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		task.wait()
 	end
 	task.spawn(function()
-		local origText = originalText:match("^%s+(%S+)")
-		local modifText = modifiedText:match("^%s+(%S+)")
+		local origText = originalText:match("^%s*(.+)")
+		local modifText = modifiedText:match("^%s*(.+)")
 		local bubble
 		task.wait(0.1)
 		for i,newbubble in pairs(game:GetService("CoreGui").BubbleChat:GetDescendants()) do
@@ -1590,20 +1590,6 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 				bubble.Text = modifText
 			end
 		end)
-		task.spawn(function()
-			task.wait(0.05)
-			if bubble == nil then
-				local con; con = game:GetService("CoreGui").BubbleChat.DescendantAdded:Connect(function(newbubble)
-					if newbubble:IsA("TextLabel") and newbubble.Text == origText then
-						newbubble.RichText = textlabel2.RichText
-						newbubble.Text = if textlabel2.RichText then modifText else origText
-						bubble = newbubble
-						con:Disconnect()
-					end
-				end)
-			end
-		end)
-		task.wait(0.25)
 		textlabel2.Visible = true
 	end)
 end)
