@@ -7712,7 +7712,7 @@ runcode(function()
 							end
 							if groundtime <= tick() and (not onground) then 
 								if fly["Enabled"] then 
-									fly["ToggleButton"](false)
+									-- fly["ToggleButton"](false)
 								end
 							end
 							if flyacprogressbarframe then 
