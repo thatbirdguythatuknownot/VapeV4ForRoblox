@@ -1440,7 +1440,8 @@ local wordsTable = {
 	"co+pe+", "be+ta+", "se+the*", "ince+l+[sz]*",
 	"brainde+a*d+[sz]*", "touchgra+s+", "touchs[ou]+m+e*gra+s+",
 	"letyo+u*win", "lety?u+win",
-	"use+le*[sz]+", "uglie?[sz]*", "chi?ld[sz]*", "chi?ldre?n[sz]*"
+	"use+le*[sz]+", "uglie?[sz]*", "chi?ld[sz]*", "chi?ldre?n[sz]*",
+	"n[ou]*brain[sz]*", "no?u+se+[sz]*"
 }
 
 local wordsBeginTable = {
@@ -1471,6 +1472,7 @@ local niceTable = keysFrom(toxicTable, {
 	"big brain", "brb gonna touch grass", "brb gonna touch grass",
 	"you too good", "you too good",
 	"useful", "handsomes", "adult", "adults",
+	"big brain", "useful",
 
 	"love your", "love your", "my dad",
 	"my dad", "fair-fight", "pro", "smart",
