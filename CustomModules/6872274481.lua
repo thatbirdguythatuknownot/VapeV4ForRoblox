@@ -1595,7 +1595,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	task.spawn(function()
 		local modifText = modifiedText:match("^%s*(.+)")
 		local bounds = textservice:GetTextSize(modifText:gsub("<b><i>(.-)</i></b>", "%1"), 18, Enum.Font.GothamMedium, Vector2.new(400, 250))
-		newDim = UDim2.new(0, math.ceil(bounds.X + 16), 0, (bounds.Y / 18) * 28 + 4)
+		newDim = UDim2.new(0, math.ceil(bounds.X + 16), 0, (bounds.Y / 18) * 28 + 16)
 		bubble.Text = modifText
 		bubble:GetPropertyChangedSignal("RichText"):Connect(function()
 			bubble.RichText = textlabel2.RichText
