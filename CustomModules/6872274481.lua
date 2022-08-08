@@ -1430,17 +1430,17 @@ end
 local wordsTable = {
 	"ba+d", "weak+", "bozo+",
 	"fathe+rle+s+", "l+",
-	"ma+d", "trash", "noo+b+", "nu+b+",
-	"brainles+", "su+c+k+[sz]?",
-	"getalife", "nolife", "lo[sz]+er+",
-	"kid+", "ke+d+",
-	"adopte+d+", "com+itnotali*ve+", "die+d*",
+	"ma+d", "trash(e?[sz]?)?", "noo+b+[sz]*", "nu+b+[sz]*",
+	"brainles+", "su+c+k+[sz]*",
+	"getalife", "noli?[fv]es", "lo[sz]+er+[sz]*",
+	"kid+[sz]*", "ke+d+[sz]*",
+	"adopte+d+[sz]*", "com+itnotali*ve+", "die+d*",
 	"shutup", "sham+e+",
-	"scare+d+", "scare+dy+ca+t+", "u+g+ly+", "su+x+",
-	"co+pe+", "be+ta+", "se+the*", "ince+l+",
-	"brainde+a*d+", "touchgra+s+", "touchs[ou]+m+e*gra+s+",
+	"scare+d+[sz]*", "scare+dy+ca+t+[s]*", "u+g+ly+[sz]*", "su+x+",
+	"co+pe+", "be+ta+", "se+the*", "ince+l+[sz]*",
+	"brainde+a*d+[sz]*", "touchgra+s+", "touchs[ou]+m+e*gra+s+",
 	"letyo+u*win", "lety?u+win",
-	"use+le*[sz]+",
+	"use+le*[sz]+", "uglie?[sz]*", "chi?ld[sz]*", "chi?ldre?n[sz]*"
 }
 
 local wordsBeginTable = {
@@ -1470,7 +1470,7 @@ local niceTable = keysFrom(toxicTable, {
 	"celebrate", "sigma", "nice", "nice",
 	"big brain", "brb gonna touch grass", "brb gonna touch grass",
 	"you too good", "you too good",
-	"useful",
+	"useful", "handsomes", "adult", "adults"
 
 	"love your", "love your", "my dad",
 	"my dad", "fair-fight", "pro", "smart",
