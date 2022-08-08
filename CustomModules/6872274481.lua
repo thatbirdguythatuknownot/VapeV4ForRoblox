@@ -1470,7 +1470,7 @@ local niceTable = keysFrom(toxicTable, {
 	"celebrate", "sigma", "nice", "nice",
 	"big brain", "brb gonna touch grass", "brb gonna touch grass",
 	"you too good", "you too good",
-	"useful", "handsomes", "adult", "adults"
+	"useful", "handsomes", "adult", "adults",
 
 	"love your", "love your", "my dad",
 	"my dad", "fair-fight", "pro", "smart",
