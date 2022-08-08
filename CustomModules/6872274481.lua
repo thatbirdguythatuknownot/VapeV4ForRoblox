@@ -1430,7 +1430,7 @@ end
 local wordsTable = {
 	"ba+d", "weak+", "bozo+",
 	"fathe+rle+s+", "l+",
-	"ma+d", "trash(e?[sz]?)?", "noo+b+[sz]*", "nu+b+[sz]*",
+	"ma+d", "trashe?[sz]?", "noo+b+[sz]*", "nu+b+[sz]*",
 	"brainles+", "su+c+k+[sz]*",
 	"getalife", "noli?[fv]es", "lo[sz]+er+[sz]*",
 	"kid+[sz]*", "ke+d+[sz]*",
