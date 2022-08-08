@@ -1503,17 +1503,19 @@ end
 runcode(function()
 local AntiToxic = {["Enabled"] = false}
 connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
+	local old_visible = text.Visible
 	text.Visible = false
 	task.spawn(function()
 		task.wait(5)
-		if text.Visible == false then text.Visible = true end
+		if text.Visible == false then text.Visible = old_visible end
 	end)
 	local bubble, oldDim, newDim
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	while text and text.TextLabel.Text:match("^%s+_+$") do
 		task.wait(0.02)
 	end
-	if not text then 
+	if not text then
+		text.Visible = old_visible
 		return
 	end
 	local textlabel2 = text.TextLabel
@@ -1538,7 +1540,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	    end
 	end)
 	if not AntiToxic["Enabled"] then
-		text.Visible = true
+		text.Visible = old_visible
 		return
 	end
 	local origText = textlabel2.Text:match("^%s*(.+)")
@@ -1563,7 +1565,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		end
 	end
 	task.spawn(function()
-		while task.wait(0.075) do
+		while task.wait() do
 			if bubble.RichText and newDim then
 				bubble.Parent.Parent.Size = newDim
 			else
@@ -1577,14 +1579,14 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	local pattern
 	startpos, endpos, pattern = findFromTable(modifiedText, toxicTable)
 	if not startpos then
-		text.Visible = true
+		text.Visible = old_visible
 		bubble.Parent.Parent.Visible = true
 		return
 	end
 	while startpos do
 		if niceTable[pattern] == nil then
 			print("pattern not in niceTable: "..normalized[pattern])
-			text.Visible = true
+			text.Visible = old_visible
 			bubble.Parent.Parent.Visible = true
 			return
 		end
@@ -1633,7 +1635,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 				bubble.Text = modifText
 			end
 		end)
-		text.Visible = true
+		text.Visible = old_visible
 		bubble.Parent.Parent.Visible = true
 	end)
 end)
