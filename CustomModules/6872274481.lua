@@ -1563,7 +1563,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		end
 	end
 	task.spawn(function()
-		while task.wait() do
+		while task.wait(0.02) do
 			if bubble.RichText and newDim then
 				bubble.Parent.Parent.Size = newDim
 			else
