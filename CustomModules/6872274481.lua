@@ -6444,7 +6444,7 @@ lagbackevent.Event:connect(function(plr)
 			if custommsg then
 				custommsg = custommsg:gsub("<name>", (plr.DisplayName or plr.Name))
 			end
-			local msg = custommsg or "Imagine lagbacking L "..(plr.DisplayName or plr.Name).." | vxpe on top"
+			local msg = custommsg or "sorry you got lagbacked "..(plr.DisplayName or plr.Name).." | easy.gg"
 			repstorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 		end
 	end
