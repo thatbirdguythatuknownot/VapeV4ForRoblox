@@ -1504,6 +1504,10 @@ runcode(function()
 local AntiToxic = {["Enabled"] = false}
 connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
 	text.Visible = false
+	task.spawn(function()
+		task.wait(5)
+		if text.Visible == false then text.Visible = true end
+	end)
 	local bubble, oldDim, newDim
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	while text and text.TextLabel.Text:match("^%s+_+$") do
