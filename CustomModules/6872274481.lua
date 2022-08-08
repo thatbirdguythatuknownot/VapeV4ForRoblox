@@ -1511,7 +1511,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 	local bubble, oldDim, newDim
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	while text and text.TextLabel.Text:match("^%s+_+$") do
-		task.wait()
+		task.wait(0.02)
 	end
 	if not text then 
 		return
@@ -1563,7 +1563,7 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		end
 	end
 	task.spawn(function()
-		while task.wait(0.02) do
+		while task.wait(0.075) do
 			if bubble.RichText and newDim then
 				bubble.Parent.Parent.Size = newDim
 			else
