@@ -1505,10 +1505,6 @@ local AntiToxic = {["Enabled"] = false}
 connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForChild("Chat").Frame.ChatChannelParentFrame["Frame_MessageLogDisplay"].Scroller.ChildAdded:connect(function(text)
 	local old_visible = text.Visible
 	text.Visible = false
-	task.spawn(function()
-		task.wait(5)
-		if text.Visible == false then text.Visible = old_visible end
-	end)
 	local bubble, oldDim, newDim
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent:Wait()
 	while text and text.TextLabel.Text:match("^%s+_+$") do
@@ -1518,6 +1514,10 @@ connectionstodisconnect[#connectionstodisconnect + 1] = lplr.PlayerGui:WaitForCh
 		text.Visible = old_visible
 		return
 	end
+	task.spawn(function()
+		task.wait(1.5)
+		if text.Visible == false then text.Visible = old_visible end
+	end)
 	local textlabel2 = text.TextLabel
 	if not textlabel2:FindFirstChild("TextButton") then return end
 	task.spawn(function()
